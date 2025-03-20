@@ -1,20 +1,22 @@
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD html 4.01 Frameset//EN">
 <html lang="ru">
 <head>
-  <meta charset="koi8-r">
+  <meta http-equiv="Content-type" content="text/html;charset=koi8-r" />
+  <!-- <meta charset="koi8-r"> -->
 <title>-=CIS=- InfoCenter CashMan</title>
 <link rel="SHORTCUT ICON" href="/content/00/favicon.ico">
-<!-- <meta http-equiv="Content-Type" content="text/html; charset=koi8-r"> -->
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <link href="../ochered/styleo.css" rel="stylesheet" type="text/css">
 
 <style>
+  @charset "koi8-r";
 .menulist {
     
     width:100%;
     height:100%;
     /* background-color:#D2EDF8; */
-    background-image: url('https://catherineasquithgallery.com/uploads/posts/2021-02/1612791029_94-p-goluboi-meditsinskii-fon-138.jpg');
+    /* background-image: url('https://catherineasquithgallery.com/uploads/posts/2021-02/1612791029_94-p-goluboi-meditsinskii-fon-138.jpg'); */
     display: grid;
     align-content: center;
     text-align:center;
@@ -102,7 +104,10 @@
     cursor:pointer;
 }
 .uzhead{
-    margin: auto;
+    /* margin: auto; */
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
     width:100%;
     top:2%;
     font-family:inherit;
@@ -126,161 +131,163 @@
 <script language="JavaScript" type="text/JavaScript">
 <!--
 
-// function show_r(nI_) {
-// 	ndop=document.getElementById(nI_).style.display;
-// 	if(ndop==''){
-// 		document.getElementById(nI_).style.display = 'none';
-// 		document.body.style.overflow = '';
-// 		boolLockBody_ = false;
-// 		document.getElementById("bodytal").innerHTML ='';
-// 	}else{
-// 		document.getElementById(nI_).style.display = '';
-// 		document.body.style.overflow = 'hidden';
-// 		boolLockBody_ = true;
+function show_r(nI_) {
+	ndop=document.getElementById(nI_).style.display;
+	if(ndop==''){
+		document.getElementById(nI_).style.display = 'none';
+		document.body.style.overflow = '';
+		boolLockBody_ = false;
+		document.getElementById("bodytal").innerHTML ='';
+	}else{
+		document.getElementById(nI_).style.display = '';
+		document.body.style.overflow = 'hidden';
+		boolLockBody_ = true;
 		
-// 	}
-// };
+	}
+};
 
-// function getXmlHttp() {
-// 	var xmlhttp;
-// 	try {
-// 	xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-// 	} catch (e) {
-// 	try {
-// 		xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-// 	} catch (E) {
-// 		xmlhttp = false;
-// 	}
-// 	}
-// 	if (!xmlhttp && typeof XMLHttpRequest!='undefined') {
-// 	xmlhttp = new XMLHttpRequest();
-// 	}
-// 	return xmlhttp;
-// };
+function getXmlHttp() {
+	var xmlhttp;
+	try {
+	xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
+	} catch (e) {
+	try {
+		xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+	} catch (E) {
+		xmlhttp = false;
+	}
+	}
+	if (!xmlhttp && typeof XMLHttpRequest!='undefined') {
+	xmlhttp = new XMLHttpRequest();
+	}
+	return xmlhttp;
+};
 
-// function jsa_032(nType,sUrl_,sBody_,sConttype){
-// 	var sResults_ = '';
-// 	var xmlhttp = getXmlHttp();
-// 	xmlhttp.open(nType,sUrl_, false);
+function jsa_032(nType,sUrl_,sBody_,sConttype){
+	var sResults_ = '';
+	var xmlhttp = getXmlHttp();
+	xmlhttp.open(nType,sUrl_, false);
 	
-// 	xmlhttp.send(sBody_);
-// 	if (xmlhttp.status == 200) {
+	xmlhttp.send(sBody_);
+	if (xmlhttp.status == 200) {
 	
-// 	sResults_= xmlhttp.responseText;
+	sResults_= xmlhttp.responseText;
 	
-// 	}else{
-// 	sResults_=xmlhttp.status;
+	}else{
+	sResults_=xmlhttp.status;
 	
-// 	}
+	}
 	
-// 	return sResults_;
-// };
+	return sResults_;
+};
 
 
-// function ochered(nI_, nK_){
-// 	var sRes_='';
-// 	sRes_=jsa_032('GET','http://127.0.0.1:32103/tcreate?q='+nI_+'&w='+nK_,'application/json');
-// };
+function ochered(nI_, nK_){
+	var sRes_='';
+	sRes_=jsa_032('GET','http://127.0.0.1:32103/tcreate?q='+nI_+'&w='+nK_,'application/json');
+};
 
-// function ochered_old(nI_, nK_){
-// 	var sRes_='';
-// 	sRes_=jsa_032('GET','http://127.0.0.1:32103/tcreate?q='+nI_+'&w='+nK_,'application/json');
-// 	show_r('dop_div');
-// 	const obj = JSON.parse(sRes_);
-// 	const obj1 = obj.stdout;
-// 	document.getElementById("bodytal").innerHTML =obj1[0];
-// 	document.getElementById("foottal").innerHTML =obj1[1];
-// 	setTimeout(function(){
-// 		show_r('dop_div');
-// 	}, 0000);
-// };
-// function ochered1(nI_){
-// 	var sRes_='';
-// 	sRes_=jsa_032('GET','http://127.0.0.1:86/cgi-bin/is10_09?sSd_=0&svid_=1&sgr_l=360&stst_=0&sit_l=200&shead_=0&sgr_r=0&sfil_n=19&style_=1&sadd_=1,1,'+nI_+',MITSU_RP-809','','application/json');
-// 	show_r('dop_div');
-// 	const obj = JSON.parse(sRes_);
-// 	const obj1 = obj.stdout;
+function ochered_old(nI_, nK_){
+	var sRes_='';
+	sRes_=jsa_032('GET','http://127.0.0.1:32103/tcreate?q='+nI_+'&w='+nK_,'application/json');
+	show_r('dop_div');
+	const obj = JSON.parse(sRes_);
+	const obj1 = obj.stdout;
+	document.getElementById("bodytal").innerHTML =obj1[0];
+	document.getElementById("foottal").innerHTML =obj1[1];
+	setTimeout(function(){
+		show_r('dop_div');
+	}, 0000);
+};
+function ochered1(nI_){
+	var sRes_='';
+	sRes_=jsa_032('GET','http://127.0.0.1:86/cgi-bin/is10_09?sSd_=0&svid_=1&sgr_l=360&stst_=0&sit_l=200&shead_=0&sgr_r=0&sfil_n=19&style_=1&sadd_=1,1,'+nI_+',MITSU_RP-809','','application/json');
+	show_r('dop_div');
+	const obj = JSON.parse(sRes_);
+	const obj1 = obj.stdout;
 	
-// 	document.getElementById("bodytal").innerHTML =obj1[0];
-// 	document.getElementById("foottal").innerHTML =obj1[1];
-// 	setTimeout(function(){
-// 		show_r('dop_div');
-// 	}, 4000);
-// };
+	document.getElementById("bodytal").innerHTML =obj1[0];
+	document.getElementById("foottal").innerHTML =obj1[1];
+	setTimeout(function(){
+		show_r('dop_div');
+	}, 4000);
+};
 
 
-// function ochered_v01(nI_, nK_){
-//         var butt_ = 'ochered'+nI_
-//         var sRes_='';
-//         sRes_=jsa_032('GET','http://127.0.0.1:32103/tcreate?q='+nI_+'&w='+nK_,'application/json');
-//         show_r('dop_div');
-//         console.log(sRes_.length);
-//         const obj = JSON.parse(sRes_);
-//         if (obj.stdout) {
-//             const obj1 = obj.stdout;
-//             console.log(obj.stdout)
-//             document.getElementById("bodytal").innerHTML = obj1[0];
-//             document.getElementById("foottal").innerHTML = obj1[1];
-//         } else if (obj.stderr) {
-//             console.log(obj.stderr)
-//             document.getElementById("bodytal").innerHTML = obj.stderr;
-//             document.getElementById("bodytal").innerHTML = "пп╠яп╟яп╦яп╣яя п╨ пп╢п╪п╦п╫п╦яяяп╟яп╬яя";
-//         } else {
-//             document.getElementById("bodytal").innerHTML = '';
-//             document.getElementById("foottal").innerHTML = '';
-//         }
-//         //document.getElementById('ochered22').style.color = 'red';
-//         setTimeout(function(){
-//                 show_r('dop_div');
-//         }, 2000);
-// };
+function ochered_v01(nI_, nK_){
+        var butt_ = 'ochered'+nI_
+        var sRes_='';
+        sRes_=jsa_032('GET','http://127.0.0.1:32103/tcreate?q='+nI_+'&w='+nK_,'application/json');
+        show_r('dop_div');
+        console.log(sRes_.length);
+        const obj = JSON.parse(sRes_);
+        if (obj.stdout) {
+            const obj1 = obj.stdout;
+            console.log(obj.stdout)
+            document.getElementById("bodytal").innerHTML = obj1[0];
+            document.getElementById("foottal").innerHTML = obj1[1];
+        } else if (obj.stderr) {
+            console.log(obj.stderr)
+            document.getElementById("bodytal").innerHTML = obj.stderr;
+            document.getElementById("bodytal").innerHTML = "пп╠яп╟яп╦яп╣яя п╨ пп╢п╪п╦п╫п╦яяяп╟яп╬яя";
+        } else {
+            document.getElementById("bodytal").innerHTML = '';
+            document.getElementById("foottal").innerHTML = '';
+        }
+        //document.getElementById('ochered22').style.color = 'red';
+        setTimeout(function(){
+                show_r('dop_div');
+        }, 2000);
+};
 
 
 
-// function jsa_031(nVid_,nGr_l,nNum_,sTarget_,sAddn_,sAction_) {
-//     var sTmp=document.f_10_02_2_1.target;
-//     var sTmp1=document.f_10_02_2_1.svid_.value;
-//     var sTmp2=document.f_10_02_2_1.sgr_l.value;
-//     var sTmp3=document.f_10_02_2_1.sit_l.value;
-//     var sTmp4=document.f_10_02_2_1.sadd_.value;
-//     var sTmp5=document.f_10_02_2_1.action;
-//     var sTmp6=document.f_10_02_2_1.sfrname_.value;
-//     if ( sTarget_ !== undefined && sTarget_ !== '') {
-// 	document.f_10_02_2_1.target=sTarget_;
-//         document.f_10_02_2_1.sfrname_.value=sTarget_;
-//      }
-//     if ( sAction_!==undefined&&sAction_ !=='') {
-// 	document.f_10_02_2_1.action=sAction_;
-//      }
-//     document.f_10_02_2_1.svid_.value=nVid_;
-//     document.f_10_02_2_1.sgr_l.value=nGr_l;
-//     document.f_10_02_2_1.sit_l.value=nNum_;
-//     if ( sAddn_!==undefined&&sAddn_ !=='') {
+function jsa_031(nVid_,nGr_l,nNum_,sTarget_,sAddn_,sAction_) {
+    var sTmp=document.f_10_02_2_1.target;
+    var sTmp1=document.f_10_02_2_1.svid_.value;
+    var sTmp2=document.f_10_02_2_1.sgr_l.value;
+    var sTmp3=document.f_10_02_2_1.sit_l.value;
+    var sTmp4=document.f_10_02_2_1.sadd_.value;
+    var sTmp5=document.f_10_02_2_1.action;
+    var sTmp6=document.f_10_02_2_1.sfrname_.value;
+    if ( sTarget_ !== undefined && sTarget_ !== '') {
+	document.f_10_02_2_1.target=sTarget_;
+        document.f_10_02_2_1.sfrname_.value=sTarget_;
+     }
+    if ( sAction_!==undefined&&sAction_ !=='') {
+	document.f_10_02_2_1.action=sAction_;
+     }
+    document.f_10_02_2_1.svid_.value=nVid_;
+    document.f_10_02_2_1.sgr_l.value=nGr_l;
+    document.f_10_02_2_1.sit_l.value=nNum_;
+    if ( sAddn_!==undefined&&sAddn_ !=='') {
 
-// 	document.f_10_02_2_1.sadd_.value=sAddn_;
-//      }
-//     document.f_10_02_2_1.submit();
-//     document.f_10_02_2_1.target=sTmp;
-//     document.f_10_02_2_1.svid_.value=sTmp1;
-//     document.f_10_02_2_1.sgr_l.value=sTmp2;
-//     document.f_10_02_2_1.sit_l.value=sTmp3;
-//     document.f_10_02_2_1.sadd_.value=sTmp4;
-//     document.f_10_02_2_1.action=sTmp5;
-//     document.f_10_02_2_1.sfrname_.value=sTmp6;
-// }
+	document.f_10_02_2_1.sadd_.value=sAddn_;
+     }
+    document.f_10_02_2_1.submit();
+    document.f_10_02_2_1.target=sTmp;
+    document.f_10_02_2_1.svid_.value=sTmp1;
+    document.f_10_02_2_1.sgr_l.value=sTmp2;
+    document.f_10_02_2_1.sit_l.value=sTmp3;
+    document.f_10_02_2_1.sadd_.value=sTmp4;
+    document.f_10_02_2_1.action=sTmp5;
+    document.f_10_02_2_1.sfrname_.value=sTmp6;
+}
+
+// const divDoctor = document.getElementById("doctor");
 // function checkTimeForEnableDivIdO22() {
-//    var d = new Date();
-//    var m = d.getMinutes();
-//    var h = d.getHours();
-//    var w = d.getDay();
-//    if(h >= 10 ){
-// document.getElementById("doctor").style.color = 'white';
-// document.getElementById("doctor").style.pointerEvents = "auto";
-//    }
-//    else{
-// document.getElementById("doctor").style.background = 'gray';
-// document.getElementById("doctor").style.pointerEvents = "none";
-//    }
+//   var d = new Date();
+//   var m = d.getMinutes();
+//   var h = d.getHours();
+//   var w = d.getDay();
+//   if(h >= 10 ){
+//     divDoctor.style.color = 'white';
+//     divDoctor.style.pointerEvents = "auto";
+//   }
+//   else{
+//     divDoctor.style.background = 'gray';
+//     divDoctor.style.pointerEvents = "none";
+//   }
 // }
 // setInterval(checkTimeForEnableDivIdO22, 3000);
 //-->
@@ -301,25 +308,29 @@
 <input type="hidden" name="s_print" value="MITSU_RP-809">
 <input type="hidden" name="RaspToKab" value="1">
 <script language="JavaScript" type="text/JavaScript">
-// document.getElementById("sAdres_start").value=document.location.href;
+document.getElementById("sAdres_start").value=document.location.href;
 	
-// window.name="is10_08";
+window.name="is10_08";
 
 
 </script>
 <div class="menulist">
 
-    <div class="uzhead" >
-	<!-- <div class="uzlog"> <img src="../ochered/favicon/b_no_logo.png"> </div> -->
-	<div class="uzname">УЗ "Малоритская ЦРБ"</div>
+  <div class="uzhead" >
+	  <!-- <div class="uzlog"> <img src="../ochered/favicon/b_no_logo.png"> </div> -->
+	  <div class="uzname">УЗ "Малоритская ЦРБ"</div>
+	  <div class="uztime" id="uztime"></div>
+  </div>
+  <div class="och_body">
+    <div class="ochered" onclick="ochered_v01(1, 101);">Регистратура моя</div>
+    <div class="ochered" onclick="ochered_v01(2, 101);">Регистратура <BR> по льготе</div>
+    <div class="ochered" onclick="ochered_v01(3, 101);">Стоматология</div>
+    <!---  <div class="ochered" onclick="ochered1(2);" %Процедурный кабинет</div% --->
+    <div class="ochered" id="doctor" onclick="jsa_031(5,645,602)">
+      Запись на прием
+      <div class="msg" id="doctorMsg">sdc</div>
     </div>
-    <div class="och_body">
-	<div class="ochered" onclick="ochered_v01(1, 101);">Регистратура моя</div>
-	<div class="ochered" onclick="ochered_v01(2, 101);">Регистратура <BR> по льготе</div>
-	<div class="ochered" onclick="ochered_v01(3, 101);">Стоматология</div>
-	<!---  <div class="ochered" onclick="ochered1(2);" %Процедурный кабинет</div% --->
-	<div class="ochered" id="doctor" onclick="jsa_031(5,645,602)">Запись на прием</div>
-    </div>	
+  </div>	
   <div class="uzfoot" >ООО Апекс-Реал</div>
 </div>
 
@@ -328,5 +339,38 @@
 	<div class="bodytal" id="bodytal"></div>
 	<div class="foottal" id="foottal"></div>
 </div>
+<script>
+  function formatTime(n) {
+    return (n < 10) ? '0' + n : n;
+  };
+  
+  const divDoctor = document.getElementById("doctor");
+  const divTime = document.getElementById("uztime");
+  const divMsg = document.getElementById("doctorMsg");
+  const hourOpen = 7;
+  const minutOpen = 45;
+  divMsg.innerHTML = `Откроется с ${formatTime(hourOpen)}:${formatTime(minutOpen)}`
+  
+  function checkTimeForEnableDivIdO22() {
+    var d = new Date();
+    var m = d.getMinutes();
+    var h = d.getHours();
+    var w = d.getDay();
+    var timeString = `${formatTime(h)}:${formatTime(m)}`;
+    divTime.innerHTML = timeString;
+    if(h > hourOpen || (h == hourOpen && m >= minutOpen) ){
+      divDoctor.style.color = 'white';
+      divDoctor.style.background = '#035720';
+      divDoctor.style.pointerEvents = "auto";
+      divMsg.classList.add('msg-hidden');
+    }
+    else{
+      divDoctor.style.background = 'gray';
+      divDoctor.style.pointerEvents = "none";
+      divMsg.classList.remove('msg-hidden');
+    }
+  }
+  setInterval(checkTimeForEnableDivIdO22, 3000);
+</script>
 </body>
 </html>

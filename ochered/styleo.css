@@ -1,3 +1,9 @@
+/* @charset "koi8-r"; */
+* {
+  box-sizing: border-box;
+  margin: 0px;
+  padding: 0px;
+}
 html {
     overflow-y: hidden;
     background-image: url('../ochered/kiosk_fon.jpg');
@@ -88,7 +94,20 @@ html {
     -ms-user-select: none;
     user-select: none;
     cursor: none;
-}	
+}
+
+#doctor {
+  display: flex;
+  flex-direction: column;
+}
+
+#doctorMsg {
+  font-size: 25px;
+}
+
+.msg-hidden {
+  display: none;
+}
 
 .uzhead{
     width:100%;
@@ -130,6 +149,11 @@ html {
   /* //#4444ab;//#6767e8; */
   align-items: center;
 }
+.uztime {
+  font-size:calc(36px + 16 * (100vw / 1280));
+  color: #970606;
+}
+
 .uzfoot{
 	font-family:cursive;
 	/* font-family:inherit; */
