@@ -8,53 +8,53 @@
   <link href="../ochered/styleo.css" rel="stylesheet" type="text/css">
 </head>
 <body>
-  <form accept-charset="koi8-r" method="post" id="f_10_02_2_1" name="f_10_02_2_1" action="https://zeromis.tutmed.by/cgi-bin/is10_08?sabc_=ochered_185" target="is10_08">
-    <input type="hidden" name="sSd_" value="0">
-    <input type="hidden" name="svid_" value="0">
-    <input type="hidden" name="sgr_l" value="0">
-    <input type="hidden" name="sit_l" id="x0001" value="0">
-    <input type="hidden" name="stst_" value="0">
-    <input type="hidden" name="cod_e" value="0">
-    <input type="hidden" name="stat_e" value="0">
-    <input type="hidden" name="sfil_n" value="19">
-    <input type="hidden" name="sfrname_" value="is10_08">
-    <input type="hidden" name="sadd_" id="x0005" value="">
-    <input type="hidden" name="nAgain_" id="x0006" value="2">
-    <input type="hidden" name="sAdres_start" id="sAdres_start" value="">
-    <input type="hidden" name="s_print" value="MITSU_RP-809">
-    <input type="hidden" name="RaspToKab" value="1">
-
-    <div class="wrapper">
-      <header class="header">
-        <div class="header__logo">
-          <span>УЗ "Малоритская ЦРБ"</span>
-        </div>
-        <div class="header__time">
-          <span id="time"></span>
-        </div>
-      </header>
-      <main class="main">
-        <div class="list main__list">
-          <button class="list__item" onclick="ochered_v01(1, 101);">Регистратура</button>
-          <button class="list__item" onclick="ochered_v01(2, 101);">Регистратура<BR>по льготе</button>
-          <button class="list__item" onclick="ochered_v01(3, 101);">Стоматология</button>
-          <button class="list__item" id="doctor" onclick="jsa_031(5,645,602)">
-            <span>Запись на прием</span>
-            <div class="item__msg" id="access"></div>
-          </button>
-        </div>
-      </main>	
-      <footer class="footer">
-        <span>ООО Апекс-Реал</span>
-      </footer>
-      <div style="display:none;" class="objtal" id="dop_div">
-        <div class="headtal">Талон</div>
-        <div class="bodytal" id="bodytal"></div>
-        <div class="foottal" id="foottal"></div>
+  <div class="wrapper">
+    <header class="header">
+      <div class="header__logo">
+        <span>УЗ "Малоритская ЦРБ"</span>
       </div>
-    </div>
+      <div class="header__time">
+        <span id="time"></span>
+      </div>
+    </header>
+    <main class="main">
+      <div class="list main__list">
+        <button class="list__item" onclick="ochered_v01(1, 101);">Регистратура</button>
+        <button class="list__item" onclick="ochered_v01(2, 101);">Регистратура<BR>по льготе</button>
+        <button class="list__item" onclick="ochered_v01(3, 101);">Стоматология</button>
+        <form class="list__item_external" accept-charset="koi8-r" method="post" id="f_10_02_2_1" name="f_10_02_2_1" action="https://zeromis.tutmed.by/cgi-bin/is10_08" target="is10_08">
+          <div id="doctor" onclick="jsa_031(5,645,602)">
+            <span id="item__text">Запись на прием</span>
+            <div class="item__msg" id="access"></div>
+          </div>
 
-  </form>
+          <input type="hidden" name="sSd_" value="0">
+          <input type="hidden" name="svid_" value="0">
+          <input type="hidden" name="sgr_l" value="0">
+          <input type="hidden" name="sit_l" id="x0001" value="0">
+          <input type="hidden" name="stst_" value="0">
+          <input type="hidden" name="cod_e" value="0">
+          <input type="hidden" name="stat_e" value="0">
+          <input type="hidden" name="sfil_n" value="19">
+          <input type="hidden" name="sfrname_" value="is10_08">
+          <input type="hidden" name="sadd_" id="x0005" value="">
+          <input type="hidden" name="nAgain_" id="x0006" value="2">
+          <input type="hidden" name="sAdres_start" id="sAdres_start" value="">
+          <input type="hidden" name="s_print" value="MITSU_RP-809">
+          <input type="hidden" name="RaspToKab" value="1">
+          
+        </form>
+      </div>
+    </main>	
+    <footer class="footer">
+      <span>ООО Апекс-Реал</span>
+    </footer>
+    <div style="display:none;" class="objtal" id="dop_div">
+      <div class="headtal">Талон</div>
+      <div class="bodytal" id="bodytal"></div>
+      <div class="foottal" id="foottal"></div>
+    </div>
+  </div>
   <script>
     document.getElementById("sAdres_start").value=document.location.href;
     
@@ -203,8 +203,9 @@
     const divDoctor = document.getElementById("doctor");
     const divTime = document.getElementById("time");
     const divMsg = document.getElementById("access");
-    const hourOpen = 11;
-    const minutOpen = 0;
+    const itemText = document.getElementById("item__text");
+    const hourOpen = 13;
+    const minutOpen = 25;
     divMsg.textContent = `откроется с ${formatTime(hourOpen)}:${formatTime(minutOpen)}`
     
     function checkTimeOpenButton() {
@@ -217,10 +218,12 @@
         divDoctor.style.background = '#035720';
         divDoctor.style.pointerEvents = "auto";
         divMsg.classList.add('msg-hidden');
+        itemText.style.fontWeight = 'bold';
       } else {
         divDoctor.style.background = 'gray';
         divDoctor.style.pointerEvents = "none";
         divMsg.classList.remove('msg-hidden');
+        itemText.style.fontWeight = 'normal';
       }
     }
     checkTimeOpenButton();
