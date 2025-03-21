@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Запись на прием</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background: linear-gradient(to right,#9fcdff, #007bff);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 10px;
+            overflow: hidden;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+            position: relative;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .select-container {
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 18px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            cursor: pointer;
+        }
+        .hidden {
+            display: none;
+        }
+        .date-buttons, .time-buttons, .doctor-buttons, .specialty-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 5px;
+        }
+        .date-buttons button, .time-buttons button, .doctor-buttons button, .specialty-buttons button {
+            padding: 8px;
+            font-size: 16px;
+            border: 1px solid #007bff;
+            background: white;
+            color: #007bff;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+            width: 100px;
+        }
+        .date-buttons button.selected, .time-buttons button.selected, .doctor-buttons button.selected, .specialty-buttons button.selected {
+            background: #007bff;
+            color: white;
+        }
+
+        .specialty-buttons button.selected {
+            background: #007bff; /* Цвет для выбранной специализации */
+            color: white;
+        }  
+        .doctor-buttons button.selected {
+            background: #007bff; /* Цвет для выбранного врача */
+            color: white;
+        }
+        .auth-container {
+            display: none;
+            text-align: center;
+            margin-top: 30px;
+        }
+        .auth-container input {
+            padding: 10px;
+            font-size: 18px;
+            width: 80%;
+            margin-top: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .auth-container button {
+            width: 80%;
+            margin-top: 10px;
+        }
+        .back-button, .auth-button {
+            width: auto;
+            font-size: 16px;
+            padding: 10px 20px;
+            margin-top: 20px;
+            background: #f44336;
+            color: white;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+        }
+        .back-button {
+            background: #007bff;
+        }
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-top: 10px;
+            display: none;
+        }
+        .scroll-buttons {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .scroll-buttons button {
+            background-color: rgba(0, 0, 0, 0.2);
+            border: none;
+            padding: 8px;
+            color: white;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        .scroll-buttons button:hover {
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+    </style>
+    <script>
+        const doctorSchedule = {
+            Терапевт: {
+                "Иванов И.И.": ["10:00", "11:00", "12:00"],
+                "Петров П.П.": ["13:00", "14:00", "15:00"]
+            },
+            Стоматолог: {
+                "Сидоров С.С.": ["09:00", "10:30", "11:30"],
+                "Кузнецов К.К.": ["14:30", "15:30", "16:30"]
+            }
+        };
+
+        let selectedSpecialty = '';
+        let selectedDoctor = '';
+        let selectedDate = '';
+        let selectedTime = '';
+
+        function showSpecialties() {
+            const specialtyContainer = document.getElementById('specialtySelect');
+            specialtyContainer.innerHTML = '';
+            for (let specialty in doctorSchedule) {
+                specialtyContainer.innerHTML += `<button onclick="selectSpecialty('${specialty}', this)">${specialty.charAt(0).toUpperCase() + specialty.slice(1)}</button>`;
+            }
+        }
+
+        function selectSpecialty(specialty, button) {
+            selectedSpecialty = specialty;
+            selectedDoctor = ''; // Сбрасываем выбранного врача
+            selectedDate = ''; // Сбрасываем выбранную дату
+            selectedTime = ''; // Сбрасываем выбранное время
+            highlightSelectedSpecialty(button);
+            showDoctors();
+        }
+
+        function highlightSelectedSpecialty(button) {
+            // Убираем выделение с других кнопок
+            const specialtyButtons = document.querySelectorAll('#specialtySelect button');
+            specialtyButtons.forEach(btn => btn.classList.remove('selected'));
+            // Добавляем выделение к выбранной кнопке
+            button.classList.add('selected');
+        }
+
+        function showDoctors() {
+            const doctorContainer = document.getElementById('doctorSelect');
+            doctorContainer.classList.remove('hidden');
+            doctorContainer.innerHTML = '';
+            for (let doctor in doctorSchedule[selectedSpecialty]) {
+                doctorContainer.innerHTML += `<button onclick="selectDoctor('${doctor}', this)">${doctor}</button>`;
+            }
+            // Скрываем выбор специализации после выбора
+            document.getElementById('specialtySelect').classList.add('hidden');
+        }
+
+        function selectDoctor(doctor, button) {
+            selectedDoctor = doctor;
+            showDates();
+            highlightSelectedDoctor(button);
+            selectedDate = ''; // Сбрасываем выбранную дату
+            selectedTime = ''; // Сбрасываем выбранное время
+        }
+
+        function highlightSelectedDoctor(button) {
+            // Убираем выделение с других кнопок
+            const doctorButtons = document.querySelectorAll('#doctorSelect button');
+            doctorButtons.forEach(btn => btn.classList.remove('selected'));
+            // Добавляем выделение к выбранной кнопке
+            button.classList.add('selected');
+        }
+
+        function showDates() {
+            const dateContainer = document.getElementById('dateSelect');
+            dateContainer.classList.remove('hidden');
+        }
+
+        function showTimes() {
+            const timeContainer = document.querySelector('.time-buttons');
+            timeContainer.innerHTML = '';
+
+            if (selectedDoctor && doctorSchedule[selectedSpecialty][selectedDoctor]) {
+                doctorSchedule[selectedSpecialty][selectedDoctor].forEach(time => {
+                    timeContainer.innerHTML += `<button onclick="selectTime(this)">${time}</button>`;
+                });
+                document.getElementById('timeSelect').classList.remove('hidden');
+            } else {
+                document.getElementById('timeSelect').classList.add('hidden');
+            }
+        }
+
+        function selectDate(button) {
+            document.querySelectorAll('.date-buttons button').forEach(btn => btn.classList.remove('selected'));
+            button.classList.add('selected');
+            selectedDate = button.textContent;
+            selectedTime = ''; // Сбрасываем выбранное время при смене даты
+            showTimes();
+        }
+
+        function selectTime(button) {
+            document.querySelectorAll('.time-buttons button').forEach(btn => btn.classList.remove('selected'));
+            button.classList.add('selected');
+            selectedTime = button.textContent;
+        }
+
+        function authorizeAppointment() {
+            if (!selectedSpecialty || !selectedDoctor || !selectedDate || !selectedTime) {
+                showError();
+            } else {
+                document.querySelector('.auth-container').style.display = 'block';
+                document.querySelector('.container').style.display = 'none';
+            }
+        }
+
+        function goBack() {
+            document.querySelector('.auth-container').style.display = 'none';
+            document.querySelector('.container').style.display = 'block';
+        }
+
+        function showError() {
+            document.querySelector('.error-message').style.display = 'block';
+        }
+
+        function scrollUp() {
+            window.scrollBy(0, -100);
+        }
+
+        function scrollDown() {
+            window.scrollBy(0, 100);
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Запись на прием</h1>
+
+        <div class="select-container">
+            <label>Выберите специализацию:</label>
+            <div class="specialty-buttons" id="specialtySelect"></div>
+            <script>showSpecialties();</script> <!-- Вызываем функцию для отображения специализаций сразу -->
+        </div>
+
+        <div class="select-container">
+            <label>Выберите ФИО врача:</label>
+            <div class="doctor-buttons" id="doctorSelect"></div>
+        </div>
+
+        <div class="select-container hidden" id="dateSelect">
+            <label>Выберите дату:</label>
+            <div class="date-buttons">
+                <button onclick="selectDate(this)">19.02.2025 Ср</button>
+                <button onclick="selectDate(this)">20.02.2025 Чт</button>
+                <button onclick="selectDate(this)">21.02.2025 Пт</button>
+            </div>
+        </div>
+
+        <div class="select-container hidden" id="timeSelect">
+            <label>Выберите время:</label>
+            <div class="time-buttons"></div>
+        </div>
+
+        <button class="auth-button" onclick="authorizeAppointment()">Авторизоваться на прием</button>
+        <button class="back-button" onclick="goBack()">Назад</button>
+        <div class="error-message">Ошибка! Пожалуйста, заполните все поля.</div>
+    </div>
+
+    <div class="auth-container">
+        <h2>Авторизация с помощью штрих-кода</h2>
+        <p>Пожалуйста, поднесите карту "Электронный рецепт" к считывающему устройству.</p>
+        <input type="text" placeholder="Введите штрих-код">
+        <button onclick="showError()">Подтвердить</button>
+        <button class="back-button" onclick="goBack()">Назад</button>
+    </div>
+
+    <div class="scroll-buttons">
+        <button onclick="scrollUp()">↑</button>
+        <button onclick="scrollDown()">↓</button>
+    </div>
+</body>
+</html>
