@@ -3,7 +3,7 @@
 <head>
   <meta charset="koi8-r">
   <title>Электронная очередь</title>
-  <link rel="SHORTCUT ICON" href="/content/00/favicon.ico">
+  <link rel="SHORTCUT ICON" href="./content/00/favicon.ico">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link href="./styleo.css" rel="stylesheet" type="text/css">
 </head>
@@ -19,31 +19,13 @@
     </header>
     <main class="main">
       <div class="list main__list">
-        <button class="list__item" onclick="ochered_v01(1, 101);">Регистратура</button>
-        <button class="list__item" onclick="ochered_v01(2, 101);">Регистратура<BR>по льготе</button>
-        <button class="list__item" onclick="ochered_v01(3, 101);">Стоматология</button>
-        <form class="list__item_external" accept-charset="koi8-r" method="post" id="f_10_02_2_1" name="f_10_02_2_1" action="https://zeromis.tutmed.by/cgi-bin/is10_08" target="is10_08">
-          <div id="doctor" onclick="jsa_031(5,645,602)">
-            <span id="item__text">Запись на прием</span>
-            <div class="item__msg" id="access"></div>
-          </div>
-
-          <input type="hidden" name="sSd_" value="0">
-          <input type="hidden" name="svid_" value="0">
-          <input type="hidden" name="sgr_l" value="0">
-          <input type="hidden" name="sit_l" id="x0001" value="0">
-          <input type="hidden" name="stst_" value="0">
-          <input type="hidden" name="cod_e" value="0">
-          <input type="hidden" name="stat_e" value="0">
-          <input type="hidden" name="sfil_n" value="19">
-          <input type="hidden" name="sfrname_" value="is10_08">
-          <input type="hidden" name="sadd_" id="x0005" value="">
-          <input type="hidden" name="nAgain_" id="x0006" value="2">
-          <input type="hidden" name="sAdres_start" id="sAdres_start" value="">
-          <input type="hidden" name="s_print" value="MITSU_RP-809">
-          <input type="hidden" name="RaspToKab" value="1">
-          
-        </form>
+        <button type="button" class="list__item" onclick="ochered_v01(1, 101);">Регистратура</button>
+        <button type="button" class="list__item" onclick="ochered_v01(2, 101);">Регистратура<BR>по льготе</button>
+        <button type="button" class="list__item" onclick="ochered_v01(3, 101);">Стоматология</button>
+        <button type="button" class="list__item" id="doctor" onclick="jsa_031('f_10_02_2_1', 5, 530, 10)">
+          <span class="button__text">Запись на прием</span>
+          <span class="button__msg"></span>
+        </button>
       </div>
     </main>	
     <footer class="footer">
@@ -54,24 +36,30 @@
       <div class="bodytal" id="bodytal"></div>
       <div class="foottal" id="foottal"></div>
     </div>
+    <form class="block-request" method="post" id="f_10_02_2_1" name="f_10_02_2_1" action="https://zeromis.tutmed.by/cgi-bin/is10_08" target="is10_08" hidden>
+      <input type="hidden" name="sSd_" value="0">
+      <input type="hidden" name="svid_" value="0">
+      <input type="hidden" name="sgr_l" value="0">
+      <input type="hidden" name="sit_l" id="x0001" value="0">
+      <input type="hidden" name="stst_" value="0">
+      <input type="hidden" name="cod_e" value="0">
+      <input type="hidden" name="stat_e" value="0">
+      <input type="hidden" name="sfil_n" value="19">
+      <input type="hidden" name="sfrname_" value="is10_08">
+      <input type="hidden" name="sadd_" id="x0005" value="">
+      <input type="hidden" name="nAgain_" id="x0006" value="2">
+    </form>
   </div>
   <script>
-    document.getElementById("sAdres_start").value=document.location.href;
-    
-    window.name="is10_08";
-
     function show_r(nI_) {
-      ndop=document.getElementById(nI_).style.display;
+      ndop = document.getElementById(nI_).style.display;
       if (ndop=='') {
         document.getElementById(nI_).style.display = 'none';
         document.body.style.overflow = '';
-        boolLockBody_ = false;
         document.getElementById("bodytal").innerHTML ='';
       } else {
         document.getElementById(nI_).style.display = '';
         document.body.style.overflow = 'hidden';
-        boolLockBody_ = true;
-        
       }
     };
 
@@ -106,53 +94,17 @@
       return sResults_;
     };
 
-
-    function ochered(nI_, nK_) {
-      var sRes_ = '';
-      sRes_ = jsa_032('GET', 'http://127.0.0.1:32103/tcreate?q='+nI_+'&w='+nK_, 'application/json');
-    };
-
-    function ochered_old(nI_, nK_) {
-      var sRes_ = '';
-      sRes_ = jsa_032('GET', 'http://127.0.0.1:32103/tcreate?q='+nI_+'&w='+nK_, 'application/json');
-      show_r('dop_div');
-      const obj = JSON.parse(sRes_);
-      const obj1 = obj.stdout;
-      document.getElementById("bodytal").innerHTML = obj1[0];
-      document.getElementById("foottal").innerHTML = obj1[1];
-      setTimeout(function() {
-        show_r('dop_div');
-      }, 0);
-    };
-
-    function ochered1(nI_) {
-      var sRes_ = '';
-      sRes_ = jsa_032('GET','http://127.0.0.1:86/cgi-bin/is10_09?sSd_=0&svid_=1&sgr_l=360&stst_=0&sit_l=200&shead_=0&sgr_r=0&sfil_n=19&style_=1&sadd_=1,1,'+nI_+',MITSU_RP-809','','application/json');
-      show_r('dop_div');
-      const obj = JSON.parse(sRes_);
-      const obj1 = obj.stdout;
-      
-      document.getElementById("bodytal").innerHTML = obj1[0];
-      document.getElementById("foottal").innerHTML = obj1[1];
-      setTimeout(function() {
-        show_r('dop_div');
-      }, 4000);
-    };
-
     function ochered_v01(nI_, nK_){
       var butt_ = 'ochered'+nI_;
       var sRes_ = '';
       sRes_ = jsa_032('GET', 'http://127.0.0.1:32103/tcreate?q='+nI_+'&w='+nK_, 'application/json');
       show_r('dop_div');
-      console.log(sRes_.length);
       const obj = JSON.parse(sRes_);
       if (obj.stdout) {
           const obj1 = obj.stdout;
-          console.log(obj.stdout);
           document.getElementById("bodytal").innerHTML = obj1[0];
           document.getElementById("foottal").innerHTML = obj1[1];
       } else if (obj.stderr) {
-          console.log(obj.stderr)
           document.getElementById("bodytal").innerHTML = obj.stderr;
           document.getElementById("bodytal").innerHTML = "пп╠яп╟яп╦яп╣яя п╨ пп╢п╪п╦п╫п╦яяяп╟яп╬яя";
       } else {
@@ -164,70 +116,68 @@
       }, 2000);
     };
 
-    function jsa_031(nVid_, nGr_l, nNum_, sTarget_, sAddn_, sAction_) {
-      var sTmp =  document.f_10_02_2_1.target;
-      var sTmp1 = document.f_10_02_2_1.svid_.value;
-      var sTmp2 = document.f_10_02_2_1.sgr_l.value;
-      var sTmp3 = document.f_10_02_2_1.sit_l.value;
-      var sTmp4 = document.f_10_02_2_1.sadd_.value;
-      var sTmp5 = document.f_10_02_2_1.action;
-      var sTmp6 = document.f_10_02_2_1.sfrname_.value;
+    function jsa_031(name, nVid_, nGr_l, nNum_, sTarget_, sAddn_, sAction_) {
+      const form = document[name];
+      const temp = Object.assign(form);
+      form.svid_.value = nVid_;
+      form.sgr_l.value = nGr_l;
+      form.sit_l.value = nNum_;
       if ( sTarget_ !== undefined && sTarget_ !== '') {
-        document.f_10_02_2_1.target = sTarget_;
-        document.f_10_02_2_1.sfrname_.value = sTarget_;
+        form.target = sTarget_;
+        form.sfrname_.value = sTarget_;
       };
       if (sAction_ !== undefined && sAction_ !== '') {
-        document.f_10_02_2_1.action = sAction_;
+        form.action = sAction_;
       };
-      document.f_10_02_2_1.svid_.value = nVid_;
-      document.f_10_02_2_1.sgr_l.value = nGr_l;
-      document.f_10_02_2_1.sit_l.value = nNum_;
       if (sAddn_ !== undefined && sAddn_ !== '') {
-        document.f_10_02_2_1.sadd_.value = sAddn_;
+        form.sadd_.value = sAddn_;
       }
-      document.f_10_02_2_1.submit();
-      document.f_10_02_2_1.target = sTmp;
-      document.f_10_02_2_1.svid_.value = sTmp1;
-      document.f_10_02_2_1.sgr_l.value = sTmp2;
-      document.f_10_02_2_1.sit_l.value = sTmp3;
-      document.f_10_02_2_1.sadd_.value = sTmp4;
-      document.f_10_02_2_1.action = sTmp5;
-      document.f_10_02_2_1.sfrname_.value = sTmp6;
+      form.submit();
+      form = temp;
     }
 
+    function getTimeByFormat(hour, minute) {
+      const text = String(hour).padStart(2, '0') + ':' + String(minute).padStart(2, '0');
+      return text;
+    }
 
-    function formatTime(n) {
-      return (n < 10) ? '0' + n : n;
-    };
-    
-    const divDoctor = document.getElementById("doctor");
     const divTime = document.getElementById("time");
-    const divMsg = document.getElementById("access");
-    const itemText = document.getElementById("item__text");
-    const hourOpen = 13;
-    const minutOpen = 25;
-    divMsg.textContent = `откроется с ${formatTime(hourOpen)}:${formatTime(minutOpen)}`
     
-    function checkTimeOpenButton() {
-      var date = new Date();
-      var minute = date.getMinutes();
-      var hour = date.getHours();
-      var timeString = `${formatTime(hour)}:${formatTime(minute)}`;
-      divTime.innerText = timeString;
-      if (hour > hourOpen || (hour == hourOpen && minute >= minutOpen) ){
-        divDoctor.style.background = '#035720';
-        divDoctor.style.pointerEvents = "auto";
-        divMsg.classList.add('msg-hidden');
-        itemText.style.fontWeight = 'bold';
+    function updateClock(text) {
+      divTime.innerText = text;
+    }
+
+    const hourOpen = 11;
+    const minutOpen = 10;
+    const buttonDoctor = document.getElementById("doctor");
+    const buttonDoctorText = document.querySelector("#doctor > span.button__text");
+    const buttonDoctorMsg = document.querySelector("#doctor > span.button__msg");
+    buttonDoctorMsg.textContent = 'откроется с ' +  getTimeByFormat(hourOpen, minutOpen);
+
+    function updateButtonDoctor(text, hour, minute) {
+      if (hour > hourOpen || (hour == hourOpen && minute >= minutOpen)) {
+        buttonDoctor.style.background = '#035720';
+        buttonDoctor.style.pointerEvents = "auto";
+        buttonDoctorText.style.fontWeight = 'bold';
+        buttonDoctorMsg.classList.add('msg-hidden');
       } else {
-        divDoctor.style.background = 'gray';
-        divDoctor.style.pointerEvents = "none";
-        divMsg.classList.remove('msg-hidden');
-        itemText.style.fontWeight = 'normal';
+        buttonDoctor.style.background = 'gray';
+        buttonDoctor.style.pointerEvents = "none";
+        buttonDoctorText.style.fontWeight = 'normal';
+        buttonDoctorMsg.classList.remove('msg-hidden');
       }
     }
-    checkTimeOpenButton();
-    setInterval(checkTimeOpenButton, 3000);
+
+    function updateTime() {
+      const date = new Date();
+      const hour = date.getHours();
+      const minute = date.getMinutes();
+      const timeString = getTimeByFormat(hour, minute);
+      updateClock(timeString);
+      updateButtonDoctor(timeString, hour, minute);
+    }
+    updateTime();
+    setInterval(updateTime, 3000);
   </script>
 </body>
 </html>

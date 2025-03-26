@@ -28,6 +28,13 @@ html {
   font-family: "Roboto Condensed", sans-serif;
 }
 
+.block-request {
+  position: fixed;
+  z-index: -1;
+  top: 0px;
+  left: 0px;
+}
+
 .header {
   display: flex;
   justify-content: space-between;
@@ -53,7 +60,7 @@ html {
   align-items: center;
 }
 
-.list__item, .list__item_external {
+.list__item {
   display:flex;
   flex-direction: column;
   align-items:center;
@@ -78,31 +85,6 @@ html {
 
 .list__item:hover{
   cursor: pointer;
-}
-
-.list__item_external {
-  padding: 0px;
-}
-
-.list__item_external > div {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-  padding: 20px 30px;
-  border-radius: 10px;
-  cursor: pointer;
-}
-
-#doctor {
-  display: flex;
-  flex-direction: column;
-}
-
-#access {
-  font-size: 2.5rem;
 }
 
 .msg-hidden {
