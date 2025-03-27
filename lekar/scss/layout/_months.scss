@@ -1,0 +1,14 @@
+.months {
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.room__months {
+  display: none;
+}
+
+.room-active .room__months {
+  display: flex;
+}
