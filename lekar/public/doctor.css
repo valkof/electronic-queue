@@ -1,0 +1,239 @@
+* {
+  padding: 0px;
+  margin: 0px;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 10px;
+  height: 100vh;
+}
+
+body {
+  height: 100%;
+}
+
+#f_10_02_2_1 {
+  height: 100%;
+}
+
+#f_10_02_2_1 > div {
+  height: 100%;
+}
+
+body {
+  background-color: #c1c8cb;
+}
+
+.office__buttons {
+  display: none;
+}
+
+.buttons {
+  width: 100%;
+  height: 100%;
+}
+
+.button {
+  width: 100%;
+  height: 100%;
+  border: 3px solid #ffffff;
+  border-radius: 50px;
+  padding: 0px 20px;
+  font-size: 2.5rem;
+  overflow-wrap: break-word;
+  background-image: none;
+  background-color: #035720;
+  color: white;
+  font-family: monospace;
+  hyphens: auto;
+  word-break: auto-phrase;
+}
+.button:hover {
+  background-color: #035720;
+}
+
+.appointment-active .office__buttons {
+  display: block;
+}
+
+.month__button {
+  width: 150px;
+  height: 50px;
+}
+
+.appointment {
+  height: 100%;
+  padding: 30px;
+  display: grid;
+  grid-template-areas: "B B B   B B B   B B B   B B B" "C C C   A A A   A A A   A A A" "D D D   A A A   A A A   A A A" "D D D   E E E   E E E   E E E";
+  grid-template-columns: repeat(12, 8.3333%);
+  grid-template-rows: 25% 25% auto 7%;
+}
+
+.appointment-active {
+  grid-template-areas: "A A A   A A A   A A A   A A A" "A A A   A A A   A A A   A A A" "A A A   A A A   A A A   A A A" "D D D   E E E   E E E   E E E";
+}
+
+.offices {
+  grid-area: A;
+  display: block;
+}
+
+.appointment-active .offices {
+  display: grid;
+  grid-template: repeat(4, 25%)/repeat(4, 25%);
+  justify-items: center;
+  justify-content: center;
+  align-items: center;
+}
+
+.office {
+  display: none;
+  width: 20vw;
+  height: 20vh;
+}
+
+.appointment-active .office {
+  display: block;
+}
+
+.office-active {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.rooms {
+  display: none;
+}
+
+.office-active .rooms {
+  display: grid;
+  height: 100%;
+  grid-template: repeat(3, 33.3%)/repeat(3, 33.3%);
+}
+
+.office-active .rooms-active {
+  display: block;
+}
+
+.room {
+  padding: 10px;
+}
+
+.room__button {
+  display: flex;
+  flex-direction: column;
+  font-size: 1.5rem;
+  justify-content: space-between;
+  height: 100%;
+  background-color: white;
+  border-radius: 10px;
+}
+.room__button > span {
+  display: block;
+  border: 2px solid white;
+  border-radius: 10px;
+  flex-grow: 1;
+  font-size: 2.5rem;
+  padding: 10px;
+  background-color: #035720;
+  color: white;
+  font-family: monospace;
+  hyphens: auto;
+  word-break: auto-phrase;
+  overflow-wrap: break-word;
+}
+.room__button div {
+  display: flex;
+  gap: 5px 10px;
+  flex-wrap: wrap;
+  height: 45px;
+  border-width: 0px 2px 2px 2px;
+  border-color: white;
+  border-style: solid;
+  border-radius: 0px 0px 10px 10px;
+  padding: 0px 5px;
+  background-color: white;
+  justify-content: center;
+}
+
+.rooms-active .room {
+  display: none;
+}
+
+.rooms-active .room-active {
+  display: block;
+  height: 100%;
+}
+
+.room-active .room__button {
+  display: none;
+}
+
+.months {
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.room__months {
+  display: none;
+}
+
+.room-active .room__months {
+  display: flex;
+}
+
+.days {
+  display: none;
+}
+
+.room-active .days {
+  display: block;
+}
+
+.breadcrumb {
+  grid-area: B;
+  border: 2px solid black;
+  display: block;
+}
+.breadcrumb__buttons {
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+}
+
+.appointment-active .breadcrumb {
+  display: none;
+}
+
+.persona {
+  grid-area: C;
+  border: 2px solid black;
+  display: block;
+}
+
+.appointment-active .persona {
+  display: none;
+}
+
+.nav {
+  grid-area: D;
+  border: 2px solid black;
+}
+
+.header {
+  grid-area: E;
+  border: 2px solid black;
+}
+
+.display_block {
+  display: block;
+}
+
+.display_none {
+  display: none;
+}/*# sourceMappingURL=doctor.css.map */

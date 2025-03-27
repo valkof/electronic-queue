@@ -1,0 +1,20 @@
+.appointment {
+  height: 100%;
+  padding: 30px;
+  display: grid;
+  grid-template-areas:
+  "B B B   B B B   B B B   B B B"
+  "C C C   A A A   A A A   A A A"
+  "D D D   A A A   A A A   A A A"
+  "D D D   E E E   E E E   E E E";
+  grid-template-columns: repeat(12, 8.3333%);
+  grid-template-rows: 25% 25% auto 7%;
+}
+
+.appointment-active {
+  grid-template-areas:
+    "A A A   A A A   A A A   A A A"
+    "A A A   A A A   A A A   A A A"
+    "A A A   A A A   A A A   A A A"
+    "D D D   E E E   E E E   E E E";
+}

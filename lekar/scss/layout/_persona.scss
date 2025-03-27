@@ -1,0 +1,9 @@
+.persona {
+  grid-area: C;
+  border: 2px solid black;
+  display: block;
+}
+
+.appointment-active .persona {
+  display: none;
+}

@@ -1,0 +1,15 @@
+.breadcrumb {
+  grid-area: B;
+  border: 2px solid black;
+  display: block;
+
+  &__buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+  }
+}
+
+.appointment-active .breadcrumb {
+  display: none;
+}

@@ -1,0 +1,70 @@
+.rooms {
+  display: none;
+}
+
+.office-active .rooms {
+  display: grid;
+  height: 100%;
+  grid-template: repeat(3, 33.3%) / repeat(3, 33.3%);
+}
+
+.office-active .rooms-active {
+  display: block;
+}
+
+.room {
+  padding: 10px;
+}
+
+.room__button {
+  display: flex;
+  flex-direction: column;
+  font-size: 1.5rem;
+  justify-content: space-between;
+  height: 100%;
+  background-color: white;
+  border-radius: 10px;
+  
+  & > span {
+    display: block;
+    border: 2px solid white;
+    border-radius: 10px;
+    flex-grow: 1;
+    font-size: 2.5rem;
+    padding: 10px;
+    background-color: #035720;
+    color: white;
+    font-family: monospace;
+    hyphens: auto;
+    word-break: auto-phrase;
+    overflow-wrap: break-word;
+  }
+  
+  div {
+    display: flex;
+    gap: 5px 10px;
+    flex-wrap: wrap;
+    height: 45px;
+    border-width: 0px 2px 2px 2px;
+    border-color: white;
+    border-style: solid;
+    border-radius: 0px 0px 10px 10px;
+    padding: 0px 5px;
+    background-color: white;
+    justify-content: center;
+  }
+
+}
+
+.rooms-active .room {
+  display: none;
+}
+
+.rooms-active .room-active {
+  display: block;
+  height: 100%;
+}
+
+.room-active .room__button {
+  display: none;
+}

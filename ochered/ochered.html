@@ -23,6 +23,7 @@
         <button type="button" class="list__item" onclick="ochered_v01(2, 101);">Регистратура<BR>по льготе</button>
         <button type="button" class="list__item" onclick="ochered_v01(3, 101);">Стоматология</button>
         <button type="button" class="list__item" id="doctor" onclick="jsa_031('f_10_02_2_1', 5, 530, 10)">
+        <!-- <button type="button" class="list__item" id="doctor" onclick="jsa_031('f_10_02_2_1', 5, 645, 602)"> -->
           <span class="button__text">Запись на прием</span>
           <span class="button__msg"></span>
         </button>
@@ -36,7 +37,10 @@
       <div class="bodytal" id="bodytal"></div>
       <div class="foottal" id="foottal"></div>
     </div>
-    <form class="block-request" method="post" id="f_10_02_2_1" name="f_10_02_2_1" action="https://zeromis.tutmed.by/cgi-bin/is10_08" target="is10_08" hidden>
+    <!-- <form accept-charset="koi8-r" method="post" id="f_10_02_2_1" name="f_10_02_2_1" action="https://zeromis.tutmed.by/cgi-bin/is10_08?sabc_=ochered_185" target="is10_08"> -->
+  <!-- <form class="block-request" method="post" id="f_10_02_2_1" name="f_10_02_2_1" action="https://0.tutmed.by/cgi-bin/is10_08" target="is10_08" hidden> -->
+    <form accept-charset="koi8-r" method="post" id="f_10_02_2_1" name="f_10_02_2_1" action="https://zeromis.tutmed.by/cgi-bin/is10_08?sabc_=ochered_185" target="is10_08">
+    <!-- <form class="block-request" method="post" id="f_10_02_2_1" name="f_10_02_2_1" action="https://zeromis0.tutmed.by/cgi-bin/is10_08" target="is10_08" hidden> -->
       <input type="hidden" name="sSd_" value="0">
       <input type="hidden" name="svid_" value="0">
       <input type="hidden" name="sgr_l" value="0">
@@ -48,9 +52,16 @@
       <input type="hidden" name="sfrname_" value="is10_08">
       <input type="hidden" name="sadd_" id="x0005" value="">
       <input type="hidden" name="nAgain_" id="x0006" value="2">
+      <input type="hidden" name="sAdres_start" id="sAdres_start"  value="">
+      <input type="hidden" name="s_print" value="MITSU_RP-809">
+      <input type="hidden" name="RaspToKab" value="1">
     </form>
   </div>
   <script>
+    document.getElementById("sAdres_start").value=document.location.href;
+	
+    window.name="is10_08";
+
     function show_r(nI_) {
       ndop = document.getElementById(nI_).style.display;
       if (ndop=='') {
@@ -147,8 +158,8 @@
       divTime.innerText = text;
     }
 
-    const hourOpen = 11;
-    const minutOpen = 10;
+    const hourOpen = 0;
+    const minutOpen = 1;
     const buttonDoctor = document.getElementById("doctor");
     const buttonDoctorText = document.querySelector("#doctor > span.button__text");
     const buttonDoctorMsg = document.querySelector("#doctor > span.button__msg");
