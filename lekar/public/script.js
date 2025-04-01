@@ -2,10 +2,14 @@ const appointment = document.querySelector('.appointment');
 const offices = document.querySelector('.offices');
 const rooms = document.querySelectorAll('.room');
 const sections = document.querySelectorAll('.office');
+const months = document.querySelectorAll('.month__button');
 const breadcrumb = document.querySelector('.breadcrumb');
 const persona = document.querySelector('.persona');
 const breadcrumbButtonOffice = document.getElementById('breadcrumb-button-office');
 const breadcrumbButtonRoom = document.getElementById('breadcrumb-button-room');
+const breadcrumbButtonMonth = document.getElementById('breadcrumb-button-month');
+const breadcrumbButtonDay = document.getElementById('breadcrumb-button-day');
+const breadcrumbButtonTime = document.getElementById('breadcrumb-button-time');
 
 
 sections.forEach(section => {
@@ -43,4 +47,16 @@ rooms.forEach(room => {
     breadcrumbButtonRoom.onclick = button.onclick;
   })
 
+})
+
+months.forEach(month => {
+  month.addEventListener('click', () => {
+    months.forEach(elem => {
+      elem.classList.remove('month-active');
+    })
+    month.classList.add('month-active');
+
+    breadcrumbButtonMonth.innerHTML = month.value;
+    breadcrumbButtonMonth.onclick = month.onclick;
+  })
 })

@@ -1,0 +1,113 @@
+<!-- 1 -->
+<div id="day_menu" class="days__day_menu">
+
+    <iframe name="save_19" id="save_19" width=0 height=0 scrolling="yes" hidden></iframe>
+    
+    <input type="hidden" name="add_03" value="@D3003030000">
+    <input type="hidden" name="add_04" value="@D3003040000">
+    
+    <div class="days__wrapper">
+###<!-- 2 -->
+    </div>
+</div>
+<script language="JavaScript" type="text/JavaScript">
+    <!--
+    parent.document.getElementById('col_@D3003010000_@D3003060000').innerHTML = document.getElementById('day_menu').innerHTML;
+    //-->
+</script>
+###<!-- 3 -->
+        <div class="day days__day">
+            <div class="date day__date">
+                <span class="number day__number">@D3000026010</span>
+                <span class="week day__week">@D3000200000</span>
+            </div>
+            <div class="times day__times">
+###<!-- 4 -->
+                <input type="button" class="button" value="@D3000210000" onClick="this.style.visibility='hidden';jsa_031(5,530,12,'save_19','@D3000016010,@D3000046010,@D3000220000','is10_08');">
+###<!-- 5 -->
+            </div>
+        </div>
+###<!-- 6 -->
+<div id="day_menu" class="days__wrapper_error">
+    @D3000800000
+</div>
+<script language="JavaScript" type="text/JavaScript">
+    <!--
+    parent.document.getElementById('col_@D3003010000_@D3003060000').innerHTML = document.getElementById('day_menu').innerHTML;
+    //-->
+</script>
+
+#PROGRAM:
+LOCAL sTmp, nTmp, cSql, aTmp_ := {}, aDay_ := {'Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота'}, sMon_, nDay_
+? '5,530,11 =',TIME(),a003_,'<br>',aPar_
+* 01 Т130__01 журнала настройки 512090 или Т130__01 пациента
+* 02 t131__03 типа 31	или Т300__01 доктора
+
+DO WHILE .T.
+	a000_[80] := CT3_027_(2,a003_[03])
+	a000_[81] := CT3_027_(2,a003_[04])
+	a000_[82] := CT3_027_(2,a003_[05])
+	sTmp  := DTOS(a998_[01])
+	sMon_ := SUBSTR(sTmp,1,6)
+	nDay_ := VAL(SUBSTR(sTmp,7,2))
+	cSql = "SELECT "+;
+"T131__01,"+;	// ежемесячник
+"T134__03,"+;	// день расписания
+"T134__04,"+;	// время
+"T134__06 "+;	// номер строки
+"FROM T131,T134 WHERE "+;
+"T131__02="+a003_[01]+" AND T131__03="+a003_[02]+" AND T131__08=5102020 AND T131__97="+ZSTR(a999_[22])+" AND T131__98=0 AND "+;  // ежемесячники записи на прием
+"T134__01=T131__01 AND T134__02="+a003_[06]+" AND T134__14=1000 AND T134__97="+ZSTR(a999_[22])+" AND T134__98=0 "+;  // часы приема типа "для записи через инет" свободные
+"ORDER BY 1,2,3"
+* AND a2.T134__07 LIKE '___1%'
+*? '<br>1=',cSql
+*nTmp = SECONDS()
+	IF .NOT. CheckResult(CT12_219_(hPipe,cSql,aTmp_))
+		sRet_ = 'Int.err 7 1'
+		EXIT
+	ENDIF
+	nLen_ = LEN(aTmp_)
+*? SECONDS()-nTmp,nLen_,aTmp_
+	IF nLen_ = 0
+		a000_[80] := '<H4>Отсутствуют свободные записи на прием !</H4>'
+? AT0_001_(XP:PART[06])
+		EXIT
+	ENDIF
+? AT0_001_(XP:PART[01])
+	a000_[01] := 0
+	a000_[02] := 0
+	nI_ = 1
+	DO WHILE .T.
+/*
+		IF nI_ > nLen_ .OR. (sMon_ = a003_[02] .AND.  nDay_ > aTmp_[nI_+1])
+			IF nI_ > nLen_  // конец
+				EXIT
+			ENDIF
+			nI_ += 4
+			LOOP  // в текущем месяце пропускаем дни менее текущего
+		ENDIF
+*/
+		IF nI_ > nLen_ .OR. a000_[02] <> aTmp_[nI_+1]  // смена даты
+			IF a000_[02] > 0  // закрыть список кнопок
+? AT0_001_(XP:PART[05])
+				IF nI_ > nLen_  // конец
+					EXIT
+				ENDIF
+			ENDIF
+			a000_[01] := aTmp_[nI_]
+			a000_[02] := aTmp_[nI_+1]
+			a000_[22] := a003_[02]+NTOC(a000_[02],10,2,'0')
+			a000_[20] := aDay_[DOW(STOD(a000_[22]))]
+? AT0_001_(XP:PART[03])
+		ENDIF
+		a000_[03] := aTmp_[nI_+2]
+		a000_[04] := aTmp_[nI_+3]
+		a000_[21] := CT6_036_(0,a000_[03])
+? AT0_001_(XP:PART[04])
+		nI_ += 4
+	ENDDO
+? AT0_001_(XP:PART[02])
+	EXIT
+ENDDO
+		
+	
