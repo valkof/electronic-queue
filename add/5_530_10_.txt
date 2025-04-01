@@ -1,0 +1,231 @@
+<!-- 1 -->
+<link href="https://valkof.github.io/electronic-queue/lekar/public/doctor.css" rel="stylesheet" type="text/css">
+<script language="JavaScript" type="text/JavaScript">
+<!--
+
+document.documentElement.setAttribute('lang', 'ru');
+
+//function show_tr(sIn_) {
+	//const element = document.getElementById(sIn_);
+	// element.style.display = element.style.display == 'none' ? 'block' : 'none';
+	//element.style.display = 'block';
+//}
+
+function clearHTML(elementIdDays, elementIdRooms) {
+	const elementDays = document.getElementById(elementIdDays);
+	elementDays.innerHTML = '';
+	const elementRooms = document.getElementById(elementIdRooms);
+	elementRooms.classList.add('rooms-active');
+}
+
+function js_11_81_3() {
+ sTmp = document.f_10_02_2_1.snum_.value;
+ if (sTmp.length != 13) {
+  alert('Укажите свой личный номер');
+  document.f_10_02_2_1.snum_.focus();
+  return
+ }
+ sTmp1 = document.f_10_02_2_1.spin_.value;
+ if (sTmp1.length != 4) {
+  alert('Укажите свой пин-код');
+  document.f_10_02_2_1.spin_.focus();
+  return
+ }
+ jsa_031(5,530,13,'saveblank1','','is10_08');
+}
+
+function js_11_81_1(sIn_) {
+ if (document.f_10_02_2_1.num_130.value == 0) {
+  alert('Зарегистрируйтесь указав свой логин и ПИН');
+  document.f_10_02_2_1.snum_.focus();
+  return
+ }
+ jsa_031(5,530,11,'saveblank1',sIn_,'is10_08');
+}
+
+//-->
+</script>
+
+<div align="center" id="show_me" hidden>
+</div>
+
+<div class="appointment appointment-active">
+	<iframe name="saveblank1" id="saveblank1" width=0 scrolling="yes" height=0 hidden></iframe>
+	<div class="breadcrumb">
+		<div class="buttons breadcrumb__buttons">
+			<button type="button" id="breadcrumb-button-office" class="button breadcrumb__button" onclick=""></button>
+			<button type="button" id="breadcrumb-button-room" class="button breadcrumb__button" onclick=""></button>
+			<div class="button-set buttons__button-set">
+                <button type="button" id="breadcrumb-button-month" class="button breadcrumb__button" onclick=""></button>
+                <button type="button" id="breadcrumb-button-day" class="button breadcrumb__button" onclick=""></button>
+                <button type="button" id="breadcrumb-button-time" class="button breadcrumb__button" onclick=""></button>
+            </div>
+		</div>
+	</div>
+	<main class="offices appointment__offices" border="1">
+###<!-- 2 -->
+		<section class="office appointment__office">
+			<div class="buttons office__buttons">
+				<button type="button" class="button office__button">@D3000800000</button>
+			</div>
+			<div class="rooms office__rooms" id="tr_@D3000606010">
+###<!-- 3 -->
+				<div class="room office__room">	
+					<div class="room__button" onclick="clearHTML('col_@D3000606010_@D3000636010', 'tr_@D3000606010');">
+						<span>@D3000640000</span>
+						<div>@D3000700000</div>
+					</div>
+					<div id="but_@D3000606010_@D3000636010" class="months room__months">@D3000650000</div>
+					<div id="col_@D3000606010_@D3000636010" class="days room__days"></div>
+				</div>
+###<!-- 4 -->
+			</div>
+		</section>
+###<!-- 5 -->
+	</main>
+	<aside class="persona">
+		<div align="center" id="ask_me">
+			<input type="hidden" name="num_130" value="0">
+			<input type="hidden" name="num_331" value="0">
+			Ваш личный номер <input type="input" name="snum_" class="rgformtextfields150" value="2011902300806"> и пин-код <input type="input" name="spin_" class="rgformtextfields50" value="0444">
+			<input type="button" class="sheetbutton" value="зарегистрируйтесь" OnClick="js_11_81_3()">
+			
+			<button type="button" class="list__item" id="dtor" onclick="jsa_031(5,645,601,);">Карточка</button>
+			
+		</div>
+	</aside>
+	<nav class="nav">
+		<button>Назад</button>
+	</nav>
+	<header class="header">
+		<H4>Выберите кабинет</H4>
+	</header>
+</div>
+<script language="JavaScript" src="https://valkof.github.io/electronic-queue/lekar/public/script.js"></script>
+###<!-- 6 -->
+<input type="button" class="button month__button" value="@D3000150000" title="Запись на месяц" onClick="js_11_81_1('@D3000606010,@D3000166010,@D3000670000,@D3000680000,@D3000690000,@D3000636010');">
+###<!-- 7 -->
+<span class="month-text">@D3000150000</span>
+###<!-- 8 -->
+
+
+#PROGRAM:
+LOCAL sTmp, nTmp, cSql, aTmp_ := {}, sOut_ := "", aMon_ := {'Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'}, sMon_:=SUBSTR(DTOS(a998_[01]),1,6)
+*? '5,530,10 =',a003_,'<br>',aPar_
+
+DO WHILE .T.
+* ищем кеш готового расписания за 10 минут
+	sDat_ := DTOS(a998_[01])
+/*
+	sNam_f := ZSTR(a999_[22])+"_"+ATREPL(":",SUBSTR(TIME(),1,4),"")+".ras"
+*? '<br>110=', FILE(sDat_+"\"+sNam_f),sDat_+"\"+sNam_f,DIRECTORY()
+	IF FILE(sDat_+"\"+sNam_f)
+		sTmp = MEMOREAD(sDat_+"\"+sNam_f)
+*? '<br>111=', LEN(sTmp), 
+?? sTmp
+		EXIT
+	ENDIF
+*/
+	cSql = "SELECT "+;
+"T130__03,"+;	// отделение
+"T130__09,"+;	// подразделение
+"T130__01,"+;	// настройка
+"a1.T134__06,"+; // место оказания услуги
+"a1.T134__13,"+; // название места оказания
+"MIN(T131__03),"+;	// минимальное время
+"MAX(T131__03),"+;	// максимальное время
+"COUNT(*) "+;	// количество сеансов
+"FROM T130,T134 as a1,T131,T134 as a2 WHERE "+;
+"T130__04=51 AND T130__05=20 AND T130__07 LIKE '__1%' AND T130__10=1 AND T130__97="+ZSTR(a999_[22])+" AND T130__98=0 AND "+;  // договора учета
+"a1.T134__01=T130__15 AND a1.T134__14=31 AND a1.T134__97=T130__97 AND a1.T134__98=0 AND "+;  // места оказания услуг
+"T131__02=T130__01 AND T131__03>="+sMon_+" AND T131__08=5102020 AND T131__97=T130__97 AND T131__98=0 AND "+;  // ежемесячники записи на прием
+"a2.T134__01=T131__01 AND a2.T134__14=1000 AND a2.T134__97=T130__97 AND a2.T134__98=0 "+;  // часы приема типа "для записи через инет" свободные
+"GROUP BY 1,2,3,4,5 "+;
+"ORDER BY 1,4"
+* AND a2.T134__07 LIKE '___1%'
+*? '<br>1=',cSql
+*nTmp = SECONDS()
+	IF .NOT. CheckResult(CT12_219_(hPipe,cSql,aTmp_))
+		sRet_ = 'Int.err 7 1'
+		EXIT
+	ENDIF
+	nLen_ = LEN(aTmp_)
+*? SECONDS()-nTmp,nLen_,aTmp_
+	IF nLen_ = 0
+? '<H4>Отсутствуют свободные записи на прием !</H4>'
+		EXIT
+	ENDIF
+	aOut_  := {}
+	aOut_1 := {}
+	nLen_1 := 0
+	sJrn_:= ''
+	a000_[61] := 0
+	a000_[62] := 0
+	a000_[63] := aTmp_[04]
+	a000_[64] := aTmp_[05]
+	a000_[65] := ''
+	a000_[70] := ''
+sTmp := AT0_001_(XP:PART[01])
+sOut_ += sTmp
+? sTmp
+	FOR nI_ = 1 to nLen_ STEP 8
+		IF aTmp_[nI_] <> a000_[61] .OR. aTmp_[nI_+1] <> a000_[62] // новое отделение
+			IF a000_[61] > 0 // закрыть
+sTmp := AT0_001_(XP:PART[04])
+sOut_ += sTmp
+? sTmp
+			ENDIF
+			a000_[61] := aTmp_[nI_]
+			a000_[60] := aTmp_[nI_+2]
+			a000_[62] := aTmp_[nI_+1]
+			a000_[80] := AT2_101_("T104__03 FROM T104 WHERE T104__01="+ZSTR(a000_[61])+" AND T104__97="+ZSTR(a999_[22])+" AND T104__98=0",,4)
+			IF a000_[62] > 0
+				a000_[80] += ' '+AT2_101_("T104__03 FROM T104 WHERE T104__01="+ZSTR(a000_[62])+" AND T104__97="+ZSTR(a999_[22])+" AND T104__98=0",,4)
+			ENDIF
+			a000_[67] := CT3_027_(1,a000_[80])
+sTmp := AT0_001_(XP:PART[02])
+sOut_ += sTmp
+? sTmp
+		ENDIF
+		a000_[63] := aTmp_[nI_+3]
+		a000_[64] := aTmp_[nI_+4]
+		a000_[68] := CT3_027_(1,a000_[64])
+		sTmp := STR(aTmp_[nI_+5],6)
+		nTmp1 := VAL(SUBSTR(sTmp ,1,4))*100
+		nTmp := VAL(SUBSTR(sTmp ,5,2))
+		nLen_0 := VAL(SUBSTR(STR(aTmp_[nI_+6],6),5,2))
+		a000_[65] := ''
+		a000_[70] := ''
+		FOR nI_0 = nTmp to nLen_0
+			a000_[15] := aMon_[nI_0]
+			a000_[69] := CT3_027_(1,a000_[15])
+			a000_[16] := nTmp1+nI_0
+			a000_[65] += AT0_001_(XP:PART[06])
+			a000_[70] += AT0_001_(XP:PART[07])
+		NEXT
+		a000_[66] := ZSTR(aTmp_[nI_+7])
+sTmp := AT0_001_(XP:PART[03])
+sOut_ += sTmp
+? sTmp
+	NEXT
+sTmp := AT0_001_(XP:PART[04])
+sOut_ += sTmp
+? sTmp
+sTmp := AT0_001_(XP:PART[05])
+sOut_ += sTmp
+? sTmp
+	IF DIRCHANGE(sDat_) <> 0
+		nTmp := DIRMAKE(sDat_)
+		IF nTmp <> 0
+			sRet_ := 'Ошибка при создании директории (ERR: '+ZSTR(nTmp)+')!'
+		ENDIF
+		DIRCHANGE(sDat_)
+	ENDIF
+*? '<br>112=', FILE(sNam_f),sNam_f,DIRECTORY()
+*? 
+memowrite(sNam_f,sOut_) // записать текст в файл
+*? '<br>113=',FILE(sNam_f)
+	EXIT
+ENDDO
+		
+	

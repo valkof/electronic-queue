@@ -205,6 +205,12 @@ body {
   gap: 20px;
   justify-content: space-between;
 }
+.breadcrumb .buttons__button-set {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: space-between;
+}
 
 .appointment-active .breadcrumb {
   display: none;
