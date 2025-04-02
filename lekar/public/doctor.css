@@ -25,13 +25,16 @@ body {
   background-color: #c1c8cb;
 }
 
-.office__buttons {
-  display: none;
-}
-
 .buttons {
   width: 100%;
   height: 100%;
+}
+
+.office__buttons {
+  display: block;
+}
+.office.active .office__buttons {
+  display: none;
 }
 
 .button {
@@ -53,75 +56,77 @@ body {
   background-color: #035720;
 }
 
-.appointment-active .office__buttons {
-  display: block;
+.months__buttons {
+  width: 100%;
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  flex-wrap: wrap;
 }
-
-.month__button {
+.months__buttons .button {
   width: 150px;
   height: 50px;
+}
+.months.active .months__buttons {
+  display: none;
 }
 
 .appointment {
   height: 100%;
   padding: 30px;
   display: grid;
-  grid-template-areas: "B B B   B B B   B B B   B B B" "C C C   A A A   A A A   A A A" "D D D   A A A   A A A   A A A" "D D D   E E E   E E E   E E E";
+  grid-template-areas: "A A A   A A A   A A A   A A A" "A A A   A A A   A A A   A A A" "D D D   D D D   D D D   D D D";
   grid-template-columns: repeat(12, 8.3333%);
-  grid-template-rows: 25% 25% auto 7%;
+  grid-template-rows: 10% auto 7%;
 }
-
-.appointment-active {
-  grid-template-areas: "A A A   A A A   A A A   A A A" "A A A   A A A   A A A   A A A" "A A A   A A A   A A A   A A A" "D D D   E E E   E E E   E E E";
+.appointment.active {
+  grid-template-areas: "C C C   C C C   C C C   B B B" "A A A   A A A   A A A   B B B" "D D D   D D D   D D D   D D D";
 }
 
 .offices {
   grid-area: A;
-  display: block;
-}
-
-.appointment-active .offices {
   display: grid;
   grid-template: repeat(4, 25%)/repeat(4, 25%);
   justify-items: center;
   justify-content: center;
   align-items: center;
 }
+.appointment.active .offices {
+  display: block;
+}
 
 .office {
+  display: block;
+  width: 90%;
+  height: 90%;
+}
+.appointment.active .office {
   display: none;
-  width: 20vw;
-  height: 20vh;
 }
-
-.appointment-active .office {
-  display: block;
-}
-
-.office-active {
-  display: block;
+.office.active {
   width: 100%;
   height: 100%;
+}
+.appointment.active .office.active {
+  display: block;
 }
 
 .rooms {
   display: none;
 }
-
-.office-active .rooms {
+.office.active .rooms {
   display: grid;
   height: 100%;
   grid-template: repeat(3, 33.3%)/repeat(3, 33.3%);
 }
-
-.office-active .rooms-active {
+.office.active .rooms.active {
   display: block;
 }
 
 .room {
-  padding: 10px;
+  width: 90%;
+  height: 90%;
 }
-
 .room__button {
   display: flex;
   flex-direction: column;
@@ -130,6 +135,9 @@ body {
   height: 100%;
   background-color: white;
   border-radius: 10px;
+}
+.room.active .room__button {
+  display: none;
 }
 .room__button > span {
   display: block;
@@ -158,77 +166,154 @@ body {
   background-color: white;
   justify-content: center;
 }
-
-.rooms-active .room {
+.rooms.active .room {
   display: none;
 }
-
-.rooms-active .room-active {
-  display: block;
+.rooms.active .room.active {
+  display: flex;
+  width: 100%;
   height: 100%;
-}
-
-.room-active .room__button {
-  display: none;
+  flex-direction: column;
 }
 
 .months {
+  display: none;
+}
+.months .message {
+  display: none;
+  padding: 30px;
+}
+.months .message.active {
+  display: block;
+  font-size: 5rem;
+}
+.room.active .months {
   display: flex;
   gap: 30px;
   justify-content: center;
   flex-wrap: wrap;
 }
-
-.room__months {
-  display: none;
-}
-
-.room-active .room__months {
-  display: flex;
+.room.active .months.active {
+  display: block;
+  height: 100%;
 }
 
 .days {
   display: none;
 }
 
-.room-active .days {
+.months.active .days {
   display: block;
+  height: 100%;
+}
+
+.days__wrapper {
+  display: grid;
+  grid-template: repeat(5, 20%)/repeat(6, 16.77%);
+  justify-items: center;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.days__wrapper.active {
+  display: block;
+}
+
+.day {
+  display: flex;
+  justify-content: center;
+}
+
+.days__wrapper.active .day {
+  display: none;
+}
+
+.days__wrapper.active .day.active {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: left;
+}
+
+.date-och {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: center;
+  justify-content: center;
+  width: 170px;
+  height: 100px;
+  border: 3px solid #ffffff;
+  border-radius: 10px;
+  padding: 0px 10px;
+  font-size: 2.5rem;
+  background-image: none;
+  background-color: #035720;
+  color: white;
+  font-family: monospace;
+}
+
+.day-active .date-och {
+  height: 100%;
+}
+
+.times {
+  display: none;
+  padding: 10px;
+}
+
+.day-active .times {
+  display: flex;
+  gap: 5px 10px;
+  flex-wrap: wrap;
+  flex-grow: 1;
+  align-content: flex-start;
+  overflow: hidden;
+}
+
+.time {
+  width: 150px;
+  height: 60px;
 }
 
 .breadcrumb {
   grid-area: B;
   border: 2px solid black;
+  display: none;
+}
+.appointment.active .breadcrumb {
   display: block;
 }
 .breadcrumb__buttons {
   display: flex;
+  flex-direction: column;
   gap: 20px;
   justify-content: space-between;
 }
 .breadcrumb .buttons__button-set {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 10px;
   justify-content: space-between;
-}
-
-.appointment-active .breadcrumb {
-  display: none;
 }
 
 .persona {
   grid-area: C;
   border: 2px solid black;
-  display: block;
+  display: none;
 }
 
-.appointment-active .persona {
-  display: none;
+.appointment.active .persona {
+  display: block;
 }
 
 .nav {
   grid-area: D;
   border: 2px solid black;
+  display: flex;
+  flex-direction: row;
+  gap: 50px;
 }
 
 .header {

@@ -1,28 +1,33 @@
 .offices {
   grid-area: A;
-  display: block;
-}
-
-.appointment-active .offices {
   display: grid;
   grid-template: repeat(4, 25%) / repeat(4, 25%);
   justify-items: center;
   justify-content: center;
   align-items: center;
+
+  .appointment.active & {
+    display: block;
+  }
 }
+
+
 
 .office {
-  display: none;
-  width: 20vw;
-  height: 20vh;
-}
-
-.appointment-active .office {
   display: block;
-}
+  width: 90%;
+  height: 90%;
 
-.office-active {
-  display: block;
-  width: 100%;
-  height: 100%;
+  .appointment.active & {
+    display: none;
+  }
+
+  &.active {
+    width: 100%;
+    height: 100%;
+
+    .appointment.active & {
+      display: block;
+    }
+  }
 }

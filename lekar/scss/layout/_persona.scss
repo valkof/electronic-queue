@@ -1,9 +1,9 @@
 .persona {
   grid-area: C;
   border: 2px solid black;
-  display: block;
+  display: none;
 }
 
-.appointment-active .persona {
-  display: none;
+.appointment.active .persona {
+  display: block;
 }

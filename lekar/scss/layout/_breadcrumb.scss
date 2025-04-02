@@ -1,23 +1,28 @@
 .breadcrumb {
   grid-area: B;
   border: 2px solid black;
-  display: block;
+  display: none;
+
+  .appointment.active & {
+    display: block;
+  }
 
   &__buttons {
     display: flex;
+    flex-direction: column;
     gap: 20px;
     justify-content: space-between;
   }
 
   .buttons__button-set {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 10px;
     justify-content: space-between;
     
   }
 }
 
-.appointment-active .breadcrumb {
-  display: none;
-}
+// .appointment.active .breadcrumb {
+  
+// }

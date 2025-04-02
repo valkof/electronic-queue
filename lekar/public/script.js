@@ -1,62 +1,166 @@
 const appointment = document.querySelector('.appointment');
 const offices = document.querySelector('.offices');
-const rooms = document.querySelectorAll('.room');
-const sections = document.querySelectorAll('.office');
+const officeAll = document.querySelectorAll('.office');
+const roomsAll = document.querySelectorAll('.rooms');
+const monthsAll = document.querySelectorAll('.months');
+
 const months = document.querySelectorAll('.month__button');
 const breadcrumb = document.querySelector('.breadcrumb');
 const persona = document.querySelector('.persona');
+
+const buttonBack = document.getElementById('button-back');
+
 const breadcrumbButtonOffice = document.getElementById('breadcrumb-button-office');
 const breadcrumbButtonRoom = document.getElementById('breadcrumb-button-room');
 const breadcrumbButtonMonth = document.getElementById('breadcrumb-button-month');
 const breadcrumbButtonDay = document.getElementById('breadcrumb-button-day');
 const breadcrumbButtonTime = document.getElementById('breadcrumb-button-time');
+const breadcrumbButtonPrint = document.getElementById('breadcrumb-button-print');
 
 
-sections.forEach(section => {
-  const button = section.querySelector('.office__button');  
-  // const buttons = section.querySelector('.buttons');  
-  button.addEventListener('click', () => {
-    // Скрываем все кнопки и показываем активную
-    sections.forEach(office => {
-      office.classList.remove('office-active');
-    });
-    section.classList.add('office-active');
+const stackBack = [];
+
+function clearActive(element) {
+  const elementsSearch = element.querySelectorAll('.active');
+  elementsSearch.forEach(elementActive => elementActive.classList.remove('active'));
+};
+
+officeAll.forEach(office => {
+  const button = office.querySelector('.office__button');    
+  button.addEventListener('click', function() {
+    this.disabled = true;
+    // office.forEach(office => {
+    //   office.classList.remove('office-active');
+    // });
+    breadcrumbButtonOffice.innerHTML = this.innerHTML;
     
-    appointment.classList.remove('appointment-active');
-    // buttons.classList.add('display_none');
-    // breadcrumb.classList.add('display_block');
-    // persona.classList.add('display_block');
-    // offices.classList.add('display_block');
+    clearActive(office);
 
-    breadcrumbButtonOffice.innerHTML = button.innerHTML;
-    breadcrumbButtonOffice.onclick = button.onclick;
+    office.classList.add('active');
+    appointment.classList.add('active');
+
+    // breadcrumbButtonOffice.onclick = button.onclick;
+
+    stackBack.push(button);
+
+    buttonBack.value = 1;
+
+    this.disabled = false;
   });
 });
 
-rooms.forEach(room => {
-  const button = room.querySelector('.room__button');
-  const span = button.querySelector('span');
+roomsAll.forEach(rooms => {
+  const roomAll = rooms.querySelectorAll('.room');
+  roomAll.forEach(room => {
+    const button = room.querySelector('.room__button');
+    const span = button.querySelector('span');
 
-  button.addEventListener('click', () => {
-    rooms.forEach(elem => {
-      elem.classList.remove('room-active');
+    button.addEventListener('click', function() {
+      this.disabled = true;
+      // rooms.forEach(elem => {
+      //   elem.classList.remove('room-active');
+      // })
+      breadcrumbButtonRoom.innerHTML = span.innerHTML;
+      // breadcrumbButtonRoom.onclick = button.onclick;
+      clearActive(room);
+
+      room.classList.add('active');
+      rooms.classList.add('active');
+
+      stackBack.push(button);
+
+      buttonBack.value = 2;
+
+      this.disabled = false;
     })
-    room.classList.add('room-active');
-
-    breadcrumbButtonRoom.innerHTML = span.innerHTML;
-    breadcrumbButtonRoom.onclick = button.onclick;
   })
-
 })
 
-months.forEach(month => {
-  month.addEventListener('click', () => {
-    months.forEach(elem => {
-      elem.classList.remove('month-active');
-    })
-    month.classList.add('month-active');
+monthsAll.forEach(months => {
+  const message = months.querySelector('.message');
+  const days = months.querySelector('.days');
+  const monthButtons = months.querySelectorAll('.month__button');
+  monthButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      this.disabled = true;
 
-    breadcrumbButtonMonth.innerHTML = month.value;
-    breadcrumbButtonMonth.onclick = month.onclick;
+      if (document.f_10_02_2_1.num_130.value == 0) {
+        //alert('Зарегистрируйтесь указав свой логин и ПИН');
+        message.classList.add('active');
+        document.f_10_02_2_1.snum_.focus();
+        this.disabled = false;
+        return
+      };
+      message.classList.remove('active');
+
+      breadcrumbButtonMonth.innerHTML = button.value;
+
+      clearActive(months);
+
+      // monthButtons.classList.add('active');
+      months.classList.add('active');
+      days.innerHTML = '';  
+      
+      // breadcrumbButtonMonth.onclick = month.onclick;
+
+      stackBack.push(button);
+
+      buttonBack.value = 3;
+      
+      this.disabled = false;
+    })
+
   })
 })
+
+function dayActive(event) {
+  event.disabled = true;
+  const daysWrapper = document.querySelector('.days__wrapper');
+  const dayAll = daysWrapper.querySelectorAll('.day');
+  // dayAll.forEach(day => {
+  //   day.classList.remove('day-active');
+  // });
+  
+  const dayNumber = event.querySelector('.number').innerHTML;
+  const dayWeek = event.querySelector('.week').innerHTML;
+  breadcrumbButtonDay.innerHTML = dayNumber + ' ' + dayWeek;
+  // breadcrumbButtonDay.onclick = event.onclick;
+  
+  clearActive(daysWrapper);
+
+  event.parentElement.classList.add('active');
+  daysWrapper.classList.add('active');
+
+  stackBack.push(this);
+
+  buttonBack.value = 4;
+
+  event.disabled = false;
+}
+
+
+function couponGenerated(value, nVid_, nGr_l, nNum_, sTarget_, sAddn_, sAction_) {
+  breadcrumbButtonTime.innerHTML = value;
+  breadcrumbButtonPrint.onclick = () => {
+    jsa_031(nVid_, nGr_l, nNum_, sTarget_, sAddn_, sAction_);
+  }
+}
+
+function js_11_81_1(sIn_) {
+  if (document.f_10_02_2_1.num_130.value == 0) {
+   //alert('Зарегистрируйтесь указав свой логин и ПИН');
+   document.f_10_02_2_1.snum_.focus();
+   return
+  }
+  jsa_031(5,530,11,'saveblank1',sIn_,'is10_08');
+ }
+
+ function js_11_81_4() {
+  sTmp = document.f_10_02_2_1.snum_.value;
+  if (sTmp.length != 16) {
+    alert('Укажите номер карточки');
+    document.f_10_02_2_1.snum_.focus();
+    return
+  }
+  jsa_031(5,530,17,'saveblank1','','is10_08');
+ }
