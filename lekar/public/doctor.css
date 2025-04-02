@@ -66,13 +66,13 @@ body {
   height: 100%;
   padding: 30px;
   display: grid;
-  grid-template-areas: "B B B   B B B   B B B   B B B" "C C C   A A A   A A A   A A A" "D D D   A A A   A A A   A A A" "D D D   E E E   E E E   E E E";
+  grid-template-areas: "C C C   C C C   C C C   B B B" "A A A   A A A   A A A   B B B" "D D D   D D D   D D D   D D D";
   grid-template-columns: repeat(12, 8.3333%);
-  grid-template-rows: 25% 25% auto 7%;
+  grid-template-rows: 10% auto 7%;
 }
 
 .appointment-active {
-  grid-template-areas: "A A A   A A A   A A A   A A A" "A A A   A A A   A A A   A A A" "A A A   A A A   A A A   A A A" "D D D   E E E   E E E   E E E";
+  grid-template-areas: "A A A   A A A   A A A   A A A" "A A A   A A A   A A A   A A A" "D D D   D D D   D D D   D D D";
 }
 
 .offices {
@@ -164,8 +164,9 @@ body {
 }
 
 .rooms-active .room-active {
-  display: block;
+  display: flex;
   height: 100%;
+  flex-direction: column;
 }
 
 .room-active .room__button {
@@ -193,6 +194,77 @@ body {
 
 .room-active .days {
   display: block;
+  flex-grow: 1;
+}
+
+.days__wrapper {
+  display: grid;
+  grid-template: repeat(5, 20%)/repeat(6, 16.77%);
+  justify-items: center;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.days__wrapper-active {
+  display: block;
+}
+
+.day {
+  display: flex;
+  justify-content: center;
+}
+
+.days__wrapper-active .day {
+  display: none;
+}
+
+.days__wrapper-active .day-active {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: left;
+}
+
+.date-och {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: center;
+  justify-content: center;
+  width: 170px;
+  height: 100px;
+  border: 3px solid #ffffff;
+  border-radius: 10px;
+  padding: 0px 10px;
+  font-size: 2.5rem;
+  background-image: none;
+  background-color: #035720;
+  color: white;
+  font-family: monospace;
+}
+
+.day-active .date-och {
+  height: 100%;
+}
+
+.times {
+  display: none;
+  padding: 10px;
+}
+
+.day-active .times {
+  display: flex;
+  gap: 5px 10px;
+  flex-wrap: wrap;
+  flex-grow: 1;
+  align-content: flex-start;
+  overflow: hidden;
+}
+
+.time {
+  width: 150px;
+  height: 60px;
 }
 
 .breadcrumb {
@@ -202,12 +274,13 @@ body {
 }
 .breadcrumb__buttons {
   display: flex;
+  flex-direction: column;
   gap: 20px;
   justify-content: space-between;
 }
 .breadcrumb .buttons__button-set {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 10px;
   justify-content: space-between;
 }

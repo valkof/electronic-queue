@@ -56,10 +56,10 @@ function js_11_81_1(sIn_) {
 			<button type="button" id="breadcrumb-button-office" class="button breadcrumb__button" onclick=""></button>
 			<button type="button" id="breadcrumb-button-room" class="button breadcrumb__button" onclick=""></button>
 			<div class="button-set buttons__button-set">
-                <button type="button" id="breadcrumb-button-month" class="button breadcrumb__button" onclick=""></button>
-                <button type="button" id="breadcrumb-button-day" class="button breadcrumb__button" onclick=""></button>
-                <button type="button" id="breadcrumb-button-time" class="button breadcrumb__button" onclick=""></button>
-            </div>
+				<button type="button" id="breadcrumb-button-month" class="button breadcrumb__button" onclick=""></button>
+				<button type="button" id="breadcrumb-button-day" class="button breadcrumb__button" onclick=""></button>
+				<button type="button" id="breadcrumb-button-time" class="button breadcrumb__button" onclick=""></button>
+			</div>
 		</div>
 	</div>
 	<main class="offices appointment__offices" border="1">
@@ -87,7 +87,7 @@ function js_11_81_1(sIn_) {
 		<div align="center" id="ask_me">
 			<input type="hidden" name="num_130" value="0">
 			<input type="hidden" name="num_331" value="0">
-			Ваш личный номер <input type="input" name="snum_" class="rgformtextfields150" value="2011902300806"> и пин-код <input type="input" name="spin_" class="rgformtextfields50" value="0444">
+			Ваш личный номер <input type="input" name="snum_" class="rgformtextfields150" value="2011902300806"> и пин-код <input type="input" name="spin_" class="rgformtextfields50" value="5822">
 			<input type="button" class="sheetbutton" value="зарегистрируйтесь" OnClick="js_11_81_3()">
 			
 			<button type="button" class="list__item" id="dtor" onclick="jsa_031(5,645,601,);">Карточка</button>
