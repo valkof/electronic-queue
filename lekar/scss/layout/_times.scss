@@ -1,16 +1,17 @@
 .times {
   display: none;
   padding: 10px;
+
+  .day.active & {
+    display: flex;
+    gap: 5px 10px;
+    flex-wrap: wrap;
+    flex-grow: 1;
+    align-content: flex-start;
+    overflow: hidden;
+  }
 }
 
-.day-active .times {
-  display: flex;
-  gap: 5px 10px;
-  flex-wrap: wrap;
-  flex-grow: 1;
-  align-content: flex-start;
-  overflow: hidden;
-}
 
 .time {
   width: 150px;

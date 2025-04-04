@@ -20,47 +20,17 @@
 <script language="JavaScript" type="text/JavaScript">
 	<!--
 	parent.document.getElementById('col_@D3003010000_@D3003060000').innerHTML = document.getElementById('day_menu').innerHTML;
-    const daysWrappers = document.querySelectorAll('.days__wrapper');
-    const days = document.querySelectorAll('.day');
-    const breadcrumb = document.querySelector('.breadcrumb');
-    const breadcrumbButtonDay = document.getElementById('breadcrumb-button-day');
-    const breadcrumbButtonTime = document.getElementById('breadcrumb-button-time');
-    
-    daysWrappers.forEach(daysWrapper => {
-      const daysToWrapper = daysWrapper.querySelectorAll('.day');
-      daysToWrapper.forEach(dayToWrapper => {
-        const dateOch = dayToWrapper.querySelector('.date-och');
-            console.log(dateOch);
-        dateOch.addEventListener('click', () => {
-          //daysWrappers.forEach(divDaysWrapper => {
-        //    divDaysWrapper.classList.remove('days__wrapper-active');
-         // });
-          //days.forEach(day => {
-          //  day.classList.remove('day-active');
-          //});
-          dayToWrapper.classList.add('day-active');
-          daysWrapper.classList.add('days__wrapper-active');
-    
-    
-          const dayNumber = dateOch.querySelector('number').innerHTML;
-          const dayWeek = dateOch.querySelector('week').innerHTML;
-          breadcrumbButtonDay.innerHTML = dayNumber + ' ' + dayWeek;
-          breadcrumbButtonDay.onclick = dateOch.onclick;
-        });
-    
-      })
-    })
 	//-->
 </script>
 ###<!-- 3 -->
 		<div class="day days__day">
-		    	<div class="date-och day__date" onclick="">
+			<div class="date-och day__date" onclick="dayActive(this);">
 				<span class="number day__number">@D3000026010</span>
 				<span class="week day__week">@D3000200000</span>
 			</div>
 			<div class="times day__times">
 ###<!-- 4 -->
-				<input type="button" class="button" value="@D3000210000" onClick="this.style.visibility='hidden';jsa_031(5,530,12,'save_19','@D3000016010,@D3000046010,@D3000220000','is10_08');">
+				<input type="button" class="button time" value="@D3000210000" onClick="couponGenerated('@D3000210000',5,530,12,'save_19','@D3000016010,@D3000046010,@D3000220000','is10_08');">
 ###<!-- 5 -->
 			</div>
 		</div>

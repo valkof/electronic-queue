@@ -3,16 +3,16 @@
   padding: 30px;
   display: grid;
   grid-template-areas:
-  "C C C   C C C   C C C   B B B"
-  "A A A   A A A   A A A   B B B"
-  "D D D   D D D   D D D   D D D";
-  grid-template-columns: repeat(12, 8.3333%);
-  grid-template-rows: 10% auto 7%;
-}
-
-.appointment-active {
-  grid-template-areas:
     "A A A   A A A   A A A   A A A"
     "A A A   A A A   A A A   A A A"
     "D D D   D D D   D D D   D D D";
+  grid-template-columns: repeat(12, 8.3333%);
+  grid-template-rows: 10% auto 7%;
+  
+  &.active {
+    grid-template-areas:
+    "C C C   C C C   C C C   B B B"
+    "A A A   A A A   A A A   B B B"
+    "D D D   D D D   D D D   D D D";
+  }
 }

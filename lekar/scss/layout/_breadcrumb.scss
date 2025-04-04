@@ -1,7 +1,11 @@
 .breadcrumb {
   grid-area: B;
   border: 2px solid black;
-  display: block;
+  display: none;
+
+  .appointment.active & {
+    display: block;
+  }
 
   &__buttons {
     display: flex;
@@ -19,6 +23,6 @@
   }
 }
 
-.appointment-active .breadcrumb {
-  display: none;
-}
+// .appointment.active .breadcrumb {
+  
+// }

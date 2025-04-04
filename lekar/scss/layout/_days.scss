@@ -1,11 +1,13 @@
 .days {
   display: none;
+
+  .months.active & {
+    display: block;
+    height: 100%;
+  }
 }
 
-.room-active .days {
-  display: block;
-  flex-grow: 1;
-}
+
 
 .days__wrapper {
   display: grid;
@@ -14,11 +16,13 @@
   justify-content: center;
   align-items: center;
   height: 100%;
+
+  &.active {
+    display: block;
+  }
 }
 
-.days__wrapper-active {
-  display: block;
-}
+
 
 .day {
   // width: 170px;
@@ -33,15 +37,23 @@
   // font-family: monospace;
   display: flex;
   justify-content: center;
+
+  .days__wrapper.active & {
+    display: none;
+  };
+
+  .days__wrapper.active &.active {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    justify-content: left;
+  }
+
+  &.active .date-och {
+    display: none;
+  }
 }
 
-.days__wrapper-active .day {
-  display: none;
-};
 
-.days__wrapper-active .day-active {
-  display: flex;
-  width: 100%;
-  height: 100%;
-  justify-content: left;
-}
+
+

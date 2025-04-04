@@ -34,6 +34,16 @@ function js_11_81_3() {
  jsa_031(5,530,13,'saveblank1','','is10_08');
 }
 
+function js_11_81_4() {
+ sTmp = document.f_10_02_2_1.snum_.value;
+ if (sTmp.length != 16) {
+  alert('Укажите номер карточки');
+  document.f_10_02_2_1.snum_.focus();
+  return
+ }
+ jsa_031(5,530,17,'saveblank1','','is10_08');
+}
+
 function js_11_81_1(sIn_) {
  if (document.f_10_02_2_1.num_130.value == 0) {
   alert('Зарегистрируйтесь указав свой логин и ПИН');
@@ -43,23 +53,49 @@ function js_11_81_1(sIn_) {
  jsa_031(5,530,11,'saveblank1',sIn_,'is10_08');
 }
 
+//document.action = '';
+//document.onkeyup = (e) => {
+   // return false;
+	//if(e.keyCode === 13) {
+	  //  alert('ok 13');
+//js_11_81_4();
+  //  }
+//}
+
+function asd() {
+	alert('ok 13');
+}
+
+
+function sayHi() {
+  const el = document.querySelector("#focus_elem");
+  console.log('ok');
+  el.focus();
+}
+
+// setTimeout(sayHi, 3000);
+setInterval(() => sayHi(), 100);
+
+document.forms.f_10_02_2_1.addEventListener('submit', event => {
+	js_11_81_4();
+	event.preventDefault();  // Стоп! Прерываем действие по умолчанию.
+});
+
+
 //-->
 </script>
 
-<div align="center" id="show_me" hidden>
-</div>
-
 <div class="appointment appointment-active">
-	<iframe name="saveblank1" id="saveblank1" width=0 scrolling="yes" height=0 hidden></iframe>
+	<iframe name="saveblank1" id="saveblank1" width=900 scrolling="yes" height=300 hidden></iframe>
 	<div class="breadcrumb">
 		<div class="buttons breadcrumb__buttons">
+			<h2>Новый талон</h2>
 			<button type="button" id="breadcrumb-button-office" class="button breadcrumb__button" onclick=""></button>
 			<button type="button" id="breadcrumb-button-room" class="button breadcrumb__button" onclick=""></button>
-			<div class="button-set buttons__button-set">
-				<button type="button" id="breadcrumb-button-month" class="button breadcrumb__button" onclick=""></button>
-				<button type="button" id="breadcrumb-button-day" class="button breadcrumb__button" onclick=""></button>
-				<button type="button" id="breadcrumb-button-time" class="button breadcrumb__button" onclick=""></button>
-			</div>
+			<button type="button" id="breadcrumb-button-month" class="button breadcrumb__button" onclick=""></button>
+			<button type="button" id="breadcrumb-button-day" class="button breadcrumb__button" onclick=""></button>
+			<button type="button" id="breadcrumb-button-time" class="button breadcrumb__button" onclick=""></button>
+			<button type="button" id="breadcrumb-button-print" class="button breadcrumb__button" onclick="">ПЕЧАТЬ</button>
 		</div>
 	</div>
 	<main class="offices appointment__offices" border="1">
@@ -81,23 +117,21 @@ function js_11_81_1(sIn_) {
 ###<!-- 4 -->
 			</div>
 		</section>
-###<!-- 5 -->
+###<!-- 5 - регистрация через зеленую карточку value="9112420104267766" -->
 	</main>
 	<aside class="persona">
 		<div align="center" id="ask_me">
 			<input type="hidden" name="num_130" value="0">
 			<input type="hidden" name="num_331" value="0">
-			Ваш личный номер <input type="input" name="snum_" class="rgformtextfields150" value="2011902300806"> и пин-код <input type="input" name="spin_" class="rgformtextfields50" value="5822">
-			<input type="button" class="sheetbutton" value="зарегистрируйтесь" OnClick="js_11_81_3()">
-			
-			<button type="button" class="list__item" id="dtor" onclick="jsa_031(5,645,601,);">Карточка</button>
-			
+			Ваш номер на карточке <input type="text" id="focus_elem" name="snum_" class="rgformtextfields150" OnChange="js_11_81_4()">
+			<input type="button" class="sheetbutton" value="зарегистрируйтесь" OnClick="js_11_81_4()">
+	
 		</div>
 	</aside>
 	<nav class="nav">
-		<button>Назад</button>
+		<button type="button" onclick="asd();">Назад2</button>
 	</nav>
-	<header class="header">
+	<header class="header" hidden>
 		<H4>Выберите кабинет</H4>
 	</header>
 </div>
@@ -106,6 +140,27 @@ function js_11_81_1(sIn_) {
 <input type="button" class="button month__button" value="@D3000150000" title="Запись на месяц" onClick="js_11_81_1('@D3000606010,@D3000166010,@D3000670000,@D3000680000,@D3000690000,@D3000636010');">
 ###<!-- 7 -->
 <span class="month-text">@D3000150000</span>
+###<!-- old 5 - регистрация через логин и пин -->
+	</main>
+	<aside class="persona">
+		<div align="center" id="ask_me">
+			<input type="hidden" name="num_130" value="0">
+			<input type="hidden" name="num_331" value="0">
+			Ваш личный номер <input type="input" name="snum_" class="rgformtextfields150" value="2078500990136"> и пин-код <input type="input" name="spin_" class="rgformtextfields50" value="7874">
+			<input type="button" class="sheetbutton" value="зарегистрируйтесь" OnClick="js_11_81_3()">
+			
+			<button type="button" class="list__item" id="dtor" onclick="jsa_031(5,645,601,);">Карточка</button>
+			
+		</div>
+	</aside>
+	<nav class="nav">
+		<button type="button" onclick="asd();">Назад2</button>
+	</nav>
+	<header class="header" hidden>
+		<H4>Выберите кабинет</H4>
+	</header>
+</div>
+<script language="JavaScript" src="https://valkof.github.io/electronic-queue/lekar/public/script.js"></script>
 ###<!-- 8 -->
 
 

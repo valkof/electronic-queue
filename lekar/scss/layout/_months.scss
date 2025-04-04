@@ -1,14 +1,33 @@
 .months {
-  display: flex;
-  gap: 30px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.room__months {
   display: none;
+
+  .message {
+    display: none;
+    padding: 30px;
+
+    &.active {
+      display: block;
+      font-size: 5rem;
+    }
+  }
+
+  .room.active & {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .room.active &.active {
+    display: block;
+    height: 100%;
+  }
 }
 
-.room-active .room__months {
-  display: flex;
-}
+// .room__months {
+//   display: none;
+// }
+
+// .room.active .room__months {
+//   display: flex;
+// }
