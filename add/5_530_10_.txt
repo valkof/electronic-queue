@@ -6,19 +6,17 @@
 document.documentElement.setAttribute('lang', 'ru');
 
 //function show_tr(sIn_) {
-	//const element = document.getElementById(sIn_);
+    //const element = document.getElementById(sIn_);
 	// element.style.display = element.style.display == 'none' ? 'block' : 'none';
 	//element.style.display = 'block';
 //}
 
-function clearHTML(elementIdDays, elementIdRooms) {
-	const elementDays = document.getElementById(elementIdDays);
-	elementDays.innerHTML = '';
-	const elementRooms = document.getElementById(elementIdRooms);
-	elementRooms.classList.add('rooms-active');
-}
+//function clearHTML(elementIdDays) {
+//	const elementDays = document.getElementById(elementIdDays);
+//	elementDays.innerHTML = '';
+//}
 
-function js_11_81_3() {
+/*function js_11_81_3() {
  sTmp = document.f_10_02_2_1.snum_.value;
  if (sTmp.length != 13) {
   alert('Укажите свой личный номер');
@@ -32,34 +30,90 @@ function js_11_81_3() {
   return
  }
  jsa_031(5,530,13,'saveblank1','','is10_08');
-}
+}*/
 
-function js_11_81_1(sIn_) {
- if (document.f_10_02_2_1.num_130.value == 0) {
-  alert('Зарегистрируйтесь указав свой логин и ПИН');
+/*
+function js_11_81_4() {
+ sTmp = document.f_10_02_2_1.snum_.value;
+ if (sTmp.length != 16) {
+  alert('Укажите номер карточки');
   document.f_10_02_2_1.snum_.focus();
   return
  }
- jsa_031(5,530,11,'saveblank1',sIn_,'is10_08');
+ jsa_031(5,530,17,'saveblank1','','is10_08');
+}*/
+
+//function js_11_81_1(sIn_) {
+// if (document.f_10_02_2_1.num_130.value == 0) {
+  //alert('Зарегистрируйтесь указав свой логин и ПИН');
+//  document.f_10_02_2_1.snum_.focus();
+//  return
+// }
+// jsa_031(5,530,11,'saveblank1',sIn_,'is10_08');
+//}
+
+//document.action = '';
+//document.onkeyup = (e) => {
+   // return false;
+	//if(e.keyCode === 13) {
+	  //  alert('ok 13');
+//js_11_81_4();
+  //  }
+//}
+
+function asd() {
+	alert('ok 13');
 }
+
+
+function sayHi() {
+  const el = document.querySelector("#focus_elem");
+  console.log('ok');
+  el.focus();
+}
+
+// setTimeout(sayHi, 3000);
+//setInterval(() => sayHi(), 100);
+
+document.forms.f_10_02_2_1.addEventListener('submit', event => {
+	js_11_81_4();
+	event.preventDefault();  // Стоп! Прерываем действие по умолчанию.
+});
+
 
 //-->
 </script>
 
-<div align="center" id="show_me" hidden>
-</div>
-
-<div class="appointment appointment-active">
-	<iframe name="saveblank1" id="saveblank1" width=0 scrolling="yes" height=0 hidden></iframe>
+<div class="appointment step-1">
+    <div hidden>
+        <button type="button" id="button-start" onclick="openStartScreen(this);">Начальный экран</button>
+    </div>
 	<div class="breadcrumb">
 		<div class="buttons breadcrumb__buttons">
-			<button type="button" id="breadcrumb-button-office" class="button breadcrumb__button" onclick=""></button>
-			<button type="button" id="breadcrumb-button-room" class="button breadcrumb__button" onclick=""></button>
-			<div class="button-set buttons__button-set">
-				<button type="button" id="breadcrumb-button-month" class="button breadcrumb__button" onclick=""></button>
-				<button type="button" id="breadcrumb-button-day" class="button breadcrumb__button" onclick=""></button>
-				<button type="button" id="breadcrumb-button-time" class="button breadcrumb__button" onclick=""></button>
+			<h2>Новый талон</h2>
+			<div class="pattern-button">
+                <span class="pattern__title">Отделение</span>
+                <button type="button" id="breadcrumb-button-office" class="button breadcrumb__button" onclick=""></button>
 			</div>
+            <div class="pattern-button">
+                <span class="pattern__title">Кабинет / Врач</span>
+                <button type="button" id="breadcrumb-button-room" class="button breadcrumb__button" onclick=""></button>
+			</div>
+            <div class="pattern-button">
+                <span class="pattern__title">Месяц</span>
+                <button type="button" id="breadcrumb-button-month" class="button breadcrumb__button" onclick=""></button>
+			</div>
+            <div class="pattern-join">
+                <div class="pattern-button pattern-left">
+                    <span class="pattern__title">День</span>
+                    <button type="button" id="breadcrumb-button-day" class="button breadcrumb__button" onclick=""></button>
+    			</div>
+                <div class="pattern-button pattern-right">
+                    <span class="pattern__title">Время</span>
+                    <button type="button" id="breadcrumb-button-time" class="button breadcrumb__button" onclick=""></button>
+    			</div>
+            </div>
+            <button type="button" id="breadcrumb-button-print" class="button breadcrumb__button" onclick="openModalPrint();" value="0">ПЕЧАТЬ</button>
 		</div>
 	</div>
 	<main class="offices appointment__offices" border="1">
@@ -71,35 +125,59 @@ function js_11_81_1(sIn_) {
 			<div class="rooms office__rooms" id="tr_@D3000606010">
 ###<!-- 3 -->
 				<div class="room office__room">	
-					<div class="room__button" onclick="clearHTML('col_@D3000606010_@D3000636010', 'tr_@D3000606010');">
+					<div class="room__button">
 						<span>@D3000640000</span>
 						<div>@D3000700000</div>
 					</div>
-					<div id="but_@D3000606010_@D3000636010" class="months room__months">@D3000650000</div>
-					<div id="col_@D3000606010_@D3000636010" class="days room__days"></div>
+					<div id="but_@D3000606010_@D3000636010" class="months room__months">
+						<div class="months__buttons">
+							@D3000650000
+						</div>
+						<div class="message">
+							<p>Поднесите карту к считывателю</p>
+						</div>
+						<div id="col_@D3000606010_@D3000636010" class="days months__days"></div>
+					</div>
 				</div>
 ###<!-- 4 -->
 			</div>
 		</section>
-###<!-- 5 -->
+###<!-- 5 - регистрация через зеленую карточку value="9112420104267766" -->
 	</main>
 	<aside class="persona">
-		<div align="center" id="ask_me">
+        <iframe name="saveblank1" id="saveblank1" width=900 scrolling="yes" height=300 hidden></iframe>
+		<div id="ask_me" class="persona__auth">
+            <span>Здравствуйте. Поднесите карточку к считывателю:</span>
 			<input type="hidden" name="num_130" value="0">
 			<input type="hidden" name="num_331" value="0">
-			Ваш личный номер <input type="input" name="snum_" class="rgformtextfields150" value="2011902300806"> и пин-код <input type="input" name="spin_" class="rgformtextfields50" value="5822">
-			<input type="button" class="sheetbutton" value="зарегистрируйтесь" OnClick="js_11_81_3()">
-			
-			<button type="button" class="list__item" id="dtor" onclick="jsa_031(5,645,601,);">Карточка</button>
-			
+    		<div class="persona__input">
+                <input type="text" id="focus_elem" name="snum_" class="user-id" value="9112420104267766" OnChange="js_11_81_4()">
+    			<input type="button" value="зарегистрируйтесь" OnClick="js_11_81_4()">
+            </div>
 		</div>
 	</aside>
 	<nav class="nav">
-		<button>Назад</button>
+		<button type="button" class="button" onclick="">Выйти</button>
+		<button type="button" class="button" id="button-back" value="0" onclick="stepBack();">Назад</button>
+		<button type="button" class="button" onclick="newTicket();">Новый талон</button>
 	</nav>
-	<header class="header">
-		<H4>Выберите кабинет</H4>
-	</header>
+    <div id="modal__msg" hidden>
+        <div class="modal-content">
+    	    <p id="modal__msg-content"></p>
+            <div class="buttons modal__buttons">
+                <button type="button" class="button" onclick="newTicket();">OK</button>
+            </div>
+        </div>
+	</div>
+	<div id="modal__print" hidden>
+        <div class="modal-content">
+		    <p>Вы уверены?</p>
+            <div class="buttons modal__buttons">
+                <button type="button" class="button" id="print-no" onclick="closeModalPrint();">НЕТ</button>
+                <button type="button" class="button" id="print-yes" onclick="">ДА</button>
+            </div>
+        </div>
+	</div>
 </div>
 <script language="JavaScript" src="https://valkof.github.io/electronic-queue/lekar/public/script.js"></script>
 ###<!-- 6 -->

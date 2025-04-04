@@ -1,71 +1,79 @@
+@use "../abstract/variables" as *;
+
 .rooms {
   display: none;
-}
 
-.office-active .rooms {
-  display: grid;
-  height: 100%;
-  grid-template: repeat(3, 33.3%) / repeat(3, 33.3%);
-}
+  .office.active & {
+    display: grid;
+    height: 100%;
+    grid-template: repeat(3, 33.3%) / repeat(3, 33.3%);
+    justify-items: center;
+    justify-content: center;
+    align-items: center;
+  }
 
-.office-active .rooms-active {
-  display: block;
+  .office.active &.active {
+    display: block;
+  }
 }
 
 .room {
-  padding: 10px;
-}
+  width: 90%;
+  height: 90%;
 
-.room__button {
-  display: flex;
-  flex-direction: column;
-  font-size: 1.5rem;
-  justify-content: space-between;
-  height: 100%;
-  background-color: white;
-  border-radius: 10px;
-  
-  & > span {
-    display: block;
-    border: 2px solid white;
-    border-radius: 10px;
-    flex-grow: 1;
-    font-size: 2.5rem;
-    padding: 10px;
-    background-color: #035720;
-    color: white;
-    font-family: monospace;
-    hyphens: auto;
-    word-break: auto-phrase;
-    overflow-wrap: break-word;
-  }
-  
-  div {
+  &__button {
     display: flex;
-    gap: 5px 10px;
-    flex-wrap: wrap;
-    height: 45px;
-    border-width: 0px 2px 2px 2px;
-    border-color: white;
-    border-style: solid;
-    border-radius: 0px 0px 10px 10px;
-    padding: 0px 5px;
-    background-color: white;
-    justify-content: center;
+    flex-direction: column;
+    font-size: 1.5rem;
+    justify-content: space-between;
+    height: 100%;
+    background-color: $color-main;
+    border-radius: 10px;
+
+    .room.active & {
+      display: none;
+    }
+    
+    & > span {
+      display: block;
+      border: 2px solid $color-main;
+      border-radius: 10px;
+      flex-grow: 1;
+      font-size: 2.5rem;
+      padding: 10px;
+      background-color: $color-second;
+      color: $color-main;
+      font-family: monospace;
+      hyphens: auto;
+      word-break: auto-phrase;
+      overflow-wrap: break-word;
+    }
+    
+    div {
+      display: flex;
+      gap: 5px 10px;
+      flex-wrap: wrap;
+      height: 45px;
+      border-width: 0px 2px 2px 2px;
+      border-color: $color-main;
+      border-style: solid;
+      border-radius: 0px 0px 10px 10px;
+      padding: 0px 5px;
+      background-color: $color-main;
+      justify-content: center;
+    }
+  
+  }
+  
+  .rooms.active & {
+    display: none;
   }
 
-}
-
-.rooms-active .room {
-  display: none;
-}
-
-.rooms-active .room-active {
-  display: flex;
-  height: 100%;
-  flex-direction: column;
-}
-
-.room-active .room__button {
-  display: none;
+  .rooms.active &.active {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    padding: 20px;
+  }
 }

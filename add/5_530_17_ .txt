@@ -1,0 +1,162 @@
+<div id="rep_me" class="persona__auth">
+    <div>
+        <span>@D3000800000</span><span id="name-patient">@D3000810000</span>
+    </div>
+    <input type="hidden" name="num_130" value="@D3000010000">
+    <input type="hidden" name="num_331" value="@D3000020000">
+    <input type="button" value="показать записи на прием" OnClick="jsa_031(5,530,18,'saveblank1','','is10_08');" hidden>
+    <input type="button" value="скрыть" OnClick="document.getElementById('show_me').innerHTML ='';" hidden>
+    <input type="button" value="закончить сеанс" OnClick="document.f_10_02_2_1.submit();" hidden>
+    <div align="center" id="show_me"></div>
+</div>
+###
+
+#PROGRAM:
+LOCAL sTmp, nTmp, cSql, aTmp_ := {}, aTmp_1 := {}
+
+? '5,530,17 =',a003_,'<br>',aPar_
+
+DO WHILE .T.
+	a000_[80] = ALLTRIM(CT6_209_(aPar_,"snum_"))
+* выборка человека по номеру карточки
+	cSql = "SELECT T301__02 FROM T301 WHERE T301__01=440 AND T301__03="+SUBSTR(a000_[80],9)+" AND T301__09="+SUBSTR(a000_[80],1,8)+" AND T301__98=0"
+? '<br>1=',cSql
+	IF .NOT. CheckResult(CT12_209_(hPipe,cSql,aTmp_1))	
+		sRet_ = 'ОШИБКА: попробуйте еще раз! Возврат через 3 сек...'
+		EXIT
+	ENDIF
+	IF LEN(aTmp_1) = 0  // нет в базе данных
+		sRet_ = 'Карточка не зарегистрирована в системе, обратитесь в регистратуру.'
+		EXIT
+	ENDIF
+	cSql = "SELECT T130__01,T300__02 FROM T130,T300 WHERE T130__03="+aTmp_1[01]+" AND T130__04=310 AND T130__08="+a998_[18]+" AND T130__97="+ZSTR(a999_[22])+" AND T130__98=0 AND T300__01=T130__03 AND T300__98=0"
+? '<br>1.1=',cSql
+	IF .NOT. CheckResult(CT12_209_(hPipe,cSql,aTmp_))	
+		sRet_ = 'ОШИБКА: попробуйте еще раз! Возврат через 3 сек...'
+		EXIT
+	ENDIF
+	IF LEN(aTmp_) = 0  // нет в базе данных
+		sRet_ = 'Нет карточки пациента, обратитесь в регистратуру.'
+		EXIT
+	ENDIF
+	a000_[01]:= aTmp_[01]
+	aTmp_ := AT2_210_3(aTmp_[02],' ')
+	a000_[80] := "Здравствуйте, "
+    a000_[81] := aTmp_[01]+" "+aTmp_[02]+" "+aTmp_[03]
+* выборка МЭК пациента
+	cSql = "SELECT T331__01 FROM T330,T331 WHERE T330__03="+aTmp_1[01]+;
+" AND T330__04=320  AND T330__05=1 AND T330__98=0 AND T331__02=T330__01 AND T331__08=32000101 AND T331__98=0"
+? '<br>2=',cSql
+	aTmp_ := {}
+	IF .NOT. CheckResult(CT12_209_(hPipe,cSql,aTmp_))
+		sRet_ = 'Int.err 777 1'
+		EXIT
+	ENDIF
+*? aTmp
+	IF LEN(aTmp_) = 0
+		sRet_ = 'У Вас нет карточки МЭК. Обратитесь в регистратуру.'
+		EXIT
+	ENDIF
+	a000_[02] := aTmp_[01]
+? AT0_001_(XP:PART[01])
+
+	EXIT
+ENDDO
+
+? '<script language="JavaScript" type="text/JavaScript">'
+? '<!--'
+IF sRet_ = "0"
+? "parent.document.getElementById('ask_me').innerHTML = document.getElementById('rep_me').innerHTML;"
+ELSE
+		IF sRet_ = '1'
+? "alert('"+SUBSTR(sRet_,2)+"');"
+		ELSEIF sRet_ = '2'
+			sTmp1 = 'Для '+aTmp[02]+' зарезервирован прием на '+CT6_036_(0,VAL(sTim_))
+? '<p align="center" class="title"> '+sTmp1+'. '+a000_[12]+'</p>'
+		ELSEIF sRet_ = '3'
+? "alert('Это время уже занято ! Выберите новое...');"
+		ELSEIF sRet_ = '4'
+? "alert('Вы уже зарезервировали 3 приема к врачу..');"
+		ELSEIF sRet_ = '5'
+? "alert('Вы указали неверный ПИН код, осталось "+SUBSTR(sRet_,2)+" попыток');"
+		ELSEIF sRet_ = '6'
+? "alert('"+SUBSTR(sRet_,2)+"');"
+		ELSEIF sRet_ = '7'
+? "alert('Вы уже зарезервировали прием к этому врачу..');"
+		ELSE
+? "parent.document.getElementById('modal__msg-content').innerHTML = '"+SUBSTR(sRet_)+"';"
+? "parent.document.getElementById('modal__msg').classList.add('active');"
+		ENDIF
+	sRet_ = '0'
+ENDIF
+? '//-->'
+? '</script>'
+
+/*
+#PROGRAM:
+LOCAL cSql := ''
+? "5,530,17",a003_,aPar_
+
+DO WHILE .T.
+	a000_[80] := alltrim(CT6_209_(aPar_,'snum_'))  //номер штрихкода
+
+	a001_[01] := CT6_209_(aPar_,'sAdres_start')
+	a001_[04] := VAL(CT6_209_(aPar_,'RaspToKab'))
+
+	a000_[85] := CT6_209_(aPar_,"date_")
+	a000_[86] := CT6_209_(aPar_,"time_")
+	a000_[87] := CT6_209_(aPar_,"doct_")
+	a000_[89] := CT6_209_(aPar_,'s_print')
+	a000_[90] := ''
+	a000_[91] := 'jsa_031(5,645,609);'
+	IF a001_[04]>0
+		a000_[90] := 'document.f_10_02_2_1.submit();'
+		a000_[91] := 'jsa_031(5,645,611);'
+	ENDIF
+	IF a000_[80]=='0NO0' .OR. EMPTY(a000_[80])
+? AT0_001_(XP:PART[1])
+		EXIT
+	ENDIF
+*вход по штрих-коду	
+	IF LEN(a000_[80]) <> 16
+		cSql = "SELECT T301__02 FROM T301 WHERE T301__01=440 AND T301__03="+SUBSTR(a000_[80],9)+" AND T301__09="+SUBSTR(a000_[80],1,8)+" AND T301__98=0"
+		aTmp := {}
+		IF .NOT. CheckResult(CT12_219_(hPipe,cSql,aTmp))	
+			a000_[66]:= "<p>ОШИБКА:<br>Int.err - попробуйте еще раз! Возврат через 3 сек...</p>"
+? AT0_001_(XP:PART[02])	
+			EXIT
+		ENDIF
+		IF LEN(aTmp) = 0  // нет в базе данных
+			a000_[66]:= "<h3>Карточка не зарегистрирована в системе, обратитесь в регистратуру.</h3>"
+? AT0_001_(XP:PART[2])
+			EXIT
+		ENDIF
+		a000_[81] := zstr(aTmp[1])		//T300__01 пациента
+		cSql = "SELECT T130__01,T130__07 FROM T130 WHERE T130__03="+a000_[81]+" AND T130__04=310 AND T130__08="+a998_[18]+" AND T130__97="+ZSTR(a999_[22])+" AND T130__98=0"
+		
+		aTmp_ := {}
+		IF .NOT. CheckResult(CT12_219_(hPipe,cSql,aTmp_))	
+			a000_[66]:= "<p>ОШИБКА:<br>Int.err - попробуйте еще раз! Возврат через 3 сек...</p>"
+? AT0_001_(XP:PART[02])	
+			EXIT
+		ENDIF
+		IF LEN(aTmp_) = 0  // нет в базе данных
+			a000_[66]:= "<h3>Не заключён договор с пациентом, обратитесь в регистратуру.</h3>"
+? AT0_001_(XP:PART[2])
+			EXIT
+		ENDIF
+		a000_[82]:= aTmp_[1]
+		a000_[83]:= aTmp_[2]
+	ELSE
+		a000_[66]:='Не верен формат карты ?Электронный рецепт?'+a000_[80] //'<h3>Воспользуйтесь картой ?Электронный рецепт?.</h3>'
+? AT0_001_(XP:PART[2])
+? AT0_001_(XP:PART[1])
+		EXIT
+	ENDIF  
+? AT0_001_(XP:PART[3])
+	
+	EXIT
+ENDDO
+*/
+		
+	

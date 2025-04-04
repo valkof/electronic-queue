@@ -1,4 +1,5 @@
 @use "./base/reset";
+@use "./abstract/variables";
 @use "./base/base";
 @use "./components/buttons";
 @use "./layout/appointment";
@@ -12,4 +13,4 @@
 @use "./layout/persona";
 @use "./layout/nav";
 @use "./layout/header";
-@use "./layout/display";
+@use "./layout/modal";
