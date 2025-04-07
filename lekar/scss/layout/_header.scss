@@ -1,4 +1,6 @@
+@use "../abstract/variables" as *;
+
 .header {
   grid-area: E;
-  border: 2px solid black;
+  border: 2px solid $color-dark;
 }

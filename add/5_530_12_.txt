@@ -1,77 +1,29 @@
-<script type="text/javascript">
-	// var send_msg = ` @D3000550000 `;
-	var send = `%!PS-Adobe-2.0
-		 %%BoundingBox: 0 0 165 596
-		 %%HiResBoundingBox: 0.000000 0.000000 165.000000 596.000000
-		 %%EndComments
-		 %%EndProlog
-		 %%EndFeature
-		 %%EndSetup
-		 /cou /ERKurierKOI8RRegular findfont def
-		 /coub /ERKurierKOI8RBold findfont def
-		 /neworigin
-		 {0 596 translate -90 rotate} def
-		 neworigin
-		 newpath
-		 1 setlinewidth
-		 cou [6 0 0 12 0 0] makefont setfont
-		 1 145 moveto (11111111111 +375(162)53-79-39,) show
-		 1 135 moveto (+375(162)53-79-64, +375(162)53-79-94, +375(162)53-79-94		 ) show
-		 1 125 moveto (brestgp1.by													 ) show
-
-		 cou [8 0 0 13 0 0] makefont setfont
-		 1 113 moveto (2222222222222222:) show
-		 coub [12 0 0 18 0 0] makefont setfont
-		 100 113 moveto (1915 3333333333) show
-
-		 coub [12 0 0 18 0 0] makefont setfont
-		 1 98 moveto (4444444444 28.07.2023 555555555 19:15	) show
-		 1 82 moveto (666666666666: 7777777777.315) show
-		 1 66 moveto (								) show
-
-		 cou [8 0 0 13 0 0] makefont setfont
-		 1 54 moveto (888888888888 -99999999999999999) show
-		 1 44 moveto (											   ) show
-
-		 cou [5 0 0 8 0 0] makefont setfont
-		 1 38 moveto (-------------------------------------------------) show
-
-		 cou [8 0 0 13 0 0] makefont setfont
-		 1 31 moveto (1212121212 121212 1212121212) show
-		 1 21 moveto (15.07.1988  123123123123 26.04.2023 N 345345345345345) show
-		 1 11 moveto (											   ) show
-		 cou [5 0 0 8 0 0] makefont setfont
-		 1 5 moveto (55555555555555555555555555555555555555555555555555) show
-		 % 1 363 moveto 0 230 rlineto
-		 stroke
-
-		 showpage
-		 `;
-	var send_msg = unescape(encodeURIComponent(send));
-
-	function WebSocketTestDefprint() {
-		var ws = new WebSocket("ws://127.0.0.1:51678/?&command=gsprint&filename=talon.ps");
-		//var ws = new WebSocket("ws://10.0.5.128:51678/?&command=gsprint&filename=talon.ps");
-
-		ws.onopen = function () {
+<script language="JavaScript" type="text/JavaScript">
+send_msg = `@D3000550000`;
+function WebSocketTestGsprint() {  
+    	var ws = new WebSocket("ws://127.0.0.1:51678/?&command=gsprint&filename=talon.ps");
+		
+		ws.onopen = function() {
 			ws.send(send_msg);
-			console.log("Received:", send_msg); // Для отладки
+			console.log("Message sent:", send_msg);
 		};
-
-		ws.onmessage = function (evt) {
+		
+		ws.onmessage = function(evt) {
 			var received_msg = evt.data;
-			console.log("Received:", received_msg); // Для отладки
+			console.log("Received:", received_msg);
 		};
-
-		ws.onclose = function () {
+		
+		ws.onclose = function() {
 			console.log("WebSocket closed");
+			//parent.parent.document.f_10_02_2_1.submit();
 		};
-
-		ws.onerror = function (error) {
+		
+		ws.onerror = function(error) {
 			console.error("WebSocket Error:", error);
 		};
 	}
-</script>
+	</script>
+###
 
 #PROGRAM:
 LOCAL nDb_ := {0}, aTmp := {}, sTmp, nTmp, nI_1, nLen_1
@@ -84,6 +36,7 @@ PRIVATE a134_ := {}
 * 3 дата формата ГГГГММ
 
 DO WHILE .T.
+
 	add_03 = CT3_027_(2,CT6_209_(aPar_,"add_03"))
 	add_04 = CT3_027_(2,CT6_209_(aPar_,"add_04"))
 
@@ -155,7 +108,7 @@ DO WHILE .T.
 	ENDIF
 	a134_[06] := VAL(aTmp[01])+1
 	a134_[01] := VAL(sNum_331)
-	sTmp = AT2_102_(nDb_[1],1,"T334","134",'')
+*	sTmp = AT2_102_(nDb_[1],1,"T334","134",'')
 	IF sTmp != "0"
 		sRet_ = "AT2_102 1 " + sTmp
 		EXIT
@@ -165,24 +118,29 @@ DO WHILE .T.
 		sRet_ = "AT2_799 "+sTmp
 		EXIT
 	ENDIF
+
+    sTmp = AT0_210_(11,30,3,15,1)
+    IF SUBSTR(sTmp,1,1) <> '0'
+    	sRet_ = 'Int.err 1 '+sTmp
+		EXIT
+	ENDIF
+	sTxt_ = AT0_001_(SUBSTR(sTmp,2))
+	a000_[55] = base64encode(sTxt_)
+	a000_[55] = substr(a000_[55],1,Len(a000_[55])-1)
 	EXIT
 ENDDO
-AT0_025_3(nDb_)
-//sTxt_ = AT0_001_(SUBSTR(sTmp,2))
-sTxt_ = "`%!PS-Adobe-2.0"
-a000_[55] = base64encode(sTxt_)
-a000_[55] = substr(a000_[55],1,Len(a000_[55])-1)
 ? AT0_001_(XP:PART[01])
+AT0_025_3(nDb_)
 ? '<script language="JavaScript" type="text/JavaScript">'
 ? '<!--'
+? 'WebSocketTestGsprint();'
 IF sRet_ = "0"
-? "alert('Запись на прием выполнена');"
-? "WebSocketTestDefprint();"
+? "alert('Запись на прием выполнена1');"
 ELSE
 ? "alert('",sRet_,"');"
 	sRet_ = "0"
 ENDIF
-? "parent.parent.document.f_10_02_2_1.submit();"
+*? "parent.parent.document.f_10_02_2_1.submit();"
 ? '//-->'
 ? '</script>'
 		

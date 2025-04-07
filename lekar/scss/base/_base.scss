@@ -1,3 +1,6 @@
-body {
-  background-color: #c1c8cb;
+@use "../abstract/variables" as *;
+
+h2 {
+  color: $color-dark;
+  font-size: 3rem;
 }

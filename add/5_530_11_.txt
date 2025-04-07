@@ -2,8 +2,8 @@
 <script language="JavaScript" type="text/JavaScript">
     <!--
 	function dayActive() {
-        
-    };
+		
+	};
 	//-->
 </script>
 <div id="day_menu" class="days__day_menu">
@@ -30,9 +30,12 @@
 			</div>
 			<div class="times day__times">
 ###<!-- 4 -->
-				<input type="button" class="button time" value="@D3000210000" onClick="couponGenerated('@D3000210000',5,530,12,'save_19','@D3000016010,@D3000046010,@D3000220000','is10_08');">
+				<input type="button" class="button time" value="@D3000210000" onClick="timeActive(this);couponGenerated(5,530,12,'save_19','@D3000016010,@D3000046010,@D3000220000','is10_08');">
 ###<!-- 5 -->
 			</div>
+            <div class="message day__message">
+                <span>Талон готов к печати</span>
+            </div>
 		</div>
 ###<!-- 6 -->
 <div id="day_menu" class="days__wrapper_error">

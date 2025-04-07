@@ -8,7 +8,13 @@ const months = document.querySelectorAll('.month__button');
 const breadcrumb = document.querySelector('.breadcrumb');
 const persona = document.querySelector('.persona');
 
+const buttonStart = document.getElementById('button-start');
 const buttonBack = document.getElementById('button-back');
+
+const modalPrint = document.getElementById('modal__print');
+const buttonPrintOk = document.getElementById('print-yes');
+const modalMsg = document.getElementById('modal__msg');
+const modalText = document.getElementById('modal__msg-content');
 
 const breadcrumbButtonOffice = document.getElementById('breadcrumb-button-office');
 const breadcrumbButtonRoom = document.getElementById('breadcrumb-button-room');
@@ -16,36 +22,68 @@ const breadcrumbButtonMonth = document.getElementById('breadcrumb-button-month')
 const breadcrumbButtonDay = document.getElementById('breadcrumb-button-day');
 const breadcrumbButtonTime = document.getElementById('breadcrumb-button-time');
 const breadcrumbButtonPrint = document.getElementById('breadcrumb-button-print');
+const ticketElements = [buttonStart, breadcrumbButtonOffice, breadcrumbButtonRoom, breadcrumbButtonMonth, breadcrumbButtonDay, breadcrumbButtonTime];
 
+const ticket = [''];
+const stackBack = [buttonStart];
 
-const stackBack = [];
-const ticket = []
+function stepBack() {
+  ticket.pop();
+  ticket.pop();
+  stackBack.pop();
+  const element = stackBack.pop();
+  element.click();
+}
+
+function setTicketCaption() {
+  ticketElements.forEach((element, num) => {
+    element.innerHTML = ticket[num] || '';
+  })
+}
 
 function clearActive(element) {
   const elementsSearch = element.querySelectorAll('.active');
   elementsSearch.forEach(elementActive => elementActive.classList.remove('active'));
 };
 
+function openStartScreen(event) {
+  event.disabled = true;
+
+  ticket.push('');
+  setTicketCaption();
+
+  clearActive(appointment);
+  appointment.classList.remove('active');
+
+  stackBack.push(event);
+
+  buttonBack.value = 0;
+  breadcrumbButtonPrint.value = 0;
+
+  event.disabled = false;
+};
+
+function newTicket() {
+  document.f_10_02_2_1.submit();
+}
+
 officeAll.forEach(office => {
   const button = office.querySelector('.office__button');    
   button.addEventListener('click', function() {
     this.disabled = true;
-    // office.forEach(office => {
-    //   office.classList.remove('office-active');
-    // });
-    breadcrumbButtonOffice.innerHTML = this.innerHTML;
+
     ticket.push(this.innerHTML);
+    setTicketCaption();
     
     clearActive(office);
 
     office.classList.add('active');
     appointment.classList.add('active');
 
-    // breadcrumbButtonOffice.onclick = button.onclick;
-
     stackBack.push(button);
 
     buttonBack.value = 1;
+    breadcrumbButtonPrint.value = 0;
 
     this.disabled = false;
   });
@@ -59,12 +97,10 @@ roomsAll.forEach(rooms => {
 
     button.addEventListener('click', function() {
       this.disabled = true;
-      // rooms.forEach(elem => {
-      //   elem.classList.remove('room-active');
-      // })
-      breadcrumbButtonRoom.innerHTML = span.innerHTML;
+
       ticket.push(span.innerHTML);
-      // breadcrumbButtonRoom.onclick = button.onclick;
+      setTicketCaption();
+
       clearActive(room);
 
       room.classList.add('active');
@@ -73,6 +109,7 @@ roomsAll.forEach(rooms => {
       stackBack.push(button);
 
       buttonBack.value = 2;
+      breadcrumbButtonPrint.value = 0;
 
       this.disabled = false;
     })
@@ -96,20 +133,18 @@ monthsAll.forEach(months => {
       };
       message.classList.remove('active');
 
-      breadcrumbButtonMonth.innerHTML = button.value;
       ticket.push(button.value);
+      setTicketCaption();
 
       clearActive(months);
 
-      // monthButtons.classList.add('active');
       months.classList.add('active');
       days.innerHTML = '';  
-      
-      // breadcrumbButtonMonth.onclick = month.onclick;
 
       stackBack.push(button);
 
       buttonBack.value = 3;
+      breadcrumbButtonPrint.value = 0;
       
       this.disabled = false;
     })
@@ -119,17 +154,15 @@ monthsAll.forEach(months => {
 
 function dayActive(event) {
   event.disabled = true;
-  const daysWrapper = document.querySelector('.days__wrapper');
+  // const daysWrapper = document.querySelector('.days__wrapper');
+  const daysWrapper = event.parentElement.parentElement;
+  console.log(daysWrapper);
   const dayAll = daysWrapper.querySelectorAll('.day');
-  // dayAll.forEach(day => {
-  //   day.classList.remove('day-active');
-  // });
   
   const dayNumber = event.querySelector('.number').innerHTML;
   const dayWeek = event.querySelector('.week').innerHTML;
-  breadcrumbButtonDay.innerHTML = dayNumber + ' ' + dayWeek;
   ticket.push(dayNumber + ' ' + dayWeek);
-  // breadcrumbButtonDay.onclick = event.onclick;
+  setTicketCaption();
   
   clearActive(daysWrapper);
 
@@ -139,6 +172,7 @@ function dayActive(event) {
   stackBack.push(event);
 
   buttonBack.value = 4;
+  breadcrumbButtonPrint.value = 0;
 
   event.disabled = false;
 }
@@ -147,17 +181,9 @@ function timeActive(event) {
   event.disabled = true;
   const times = event.parentElement;
   const timeAll = times.querySelectorAll('.day');
-  console.log(times);
-  console.log(event);
 
-  // dayAll.forEach(day => {
-  //   day.classList.remove('day-active');
-  // });
-  
-  // const dayNumber = event.querySelector('.number').innerHTML;
-  // const dayWeek = event.querySelector('.week').innerHTML;
-  // breadcrumbButtonDay.innerHTML = dayNumber + ' ' + dayWeek;
-  // breadcrumbButtonDay.onclick = event.onclick;
+  ticket.push(event.value);
+  setTicketCaption();
   
   clearActive(times);
 
@@ -167,20 +193,33 @@ function timeActive(event) {
   stackBack.push(event);
 
   buttonBack.value = 5;
+  breadcrumbButtonPrint.value = 1;
 
   event.disabled = false;
 }
 
 
-function couponGenerated(value, nVid_, nGr_l, nNum_, sTarget_, sAddn_, sAction_) {
-  breadcrumbButtonTime.innerHTML = value;
-  ticket.push(value);
-  console.log(ticket);
-  console.log(stackBack);
-
-  breadcrumbButtonPrint.onclick = () => {
+function couponGenerated(nVid_, nGr_l, nNum_, sTarget_, sAddn_, sAction_) {
+  buttonPrintOk.onclick = function(event) {
+    event.target.disabled = true;
+    const fio = document.getElementById('name-patient');
+    ticket[0] = fio.innerHTML;
+    sAddn_ += ',' + ticket.join(','); 
+    console.log(sAddn_);
     jsa_031(nVid_, nGr_l, nNum_, sTarget_, sAddn_, sAction_);
   }
+}
+
+function openModalPrint() {
+  modalPrint.classList.add('active');
+};
+
+function closeModalPrint() {
+  modalPrint.classList.remove('active');
+};
+
+function openModalMsg() {
+  modalMsg.classList.add('active');
 }
 
 function js_11_81_1(sIn_) {

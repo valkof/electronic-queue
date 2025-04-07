@@ -10,10 +10,30 @@
     align-content: flex-start;
     overflow: hidden;
   }
+
+  &.active {
+    display: none;
+  }
 }
 
 
 .time {
   width: 150px;
   height: 60px;
+
+  .times.active & {
+    display: none;
+  }
+}
+
+.day__message {
+  display: none;
+
+  .times.active + & {
+    display: flex;
+    justify-content: center;
+    font-size: 6rem;
+    width: 100%;
+    align-items: center;
+  }
 }

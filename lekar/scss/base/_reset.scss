@@ -1,7 +1,14 @@
+@use "../abstract/variables" as *;
+
 * {
   padding: 0px;
   margin: 0px;
   box-sizing: border-box;
+  cursor: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 html {
@@ -11,6 +18,11 @@ html {
 
 body {
   height: 100%;
+  color: $color-dark;
+  font-family: monospace;
+  hyphens: auto;
+  word-break: auto-phrase;
+  overflow-wrap: break-word;
 }
 
 #f_10_02_2_1 {
@@ -19,5 +31,12 @@ body {
 
 #f_10_02_2_1 > div {
   height: 100%;
+}
+
+button {
+  background: none;
+  margin: 0px;
+  padding: 0px;
+  display: block;
 }
 

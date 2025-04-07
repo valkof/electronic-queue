@@ -1,7 +1,10 @@
+@use "../abstract/variables" as *;
+
 .nav {
   grid-area: D;
-  border: 2px solid black;
+  // border: 2px solid $color-dark;
   display: flex;
   flex-direction: row;
   gap: 50px;
+  padding: 25px 10px 0px 10px;
 }

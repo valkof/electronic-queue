@@ -2,6 +2,7 @@
   box-sizing: border-box;
   margin: 0px;
   padding: 0px;
+  cursor: none;
 }
 
 html {
@@ -83,9 +84,9 @@ html {
   color: white;
 }	
 
-.list__item:hover{
+/* .list__item:hover{
   cursor: pointer;
-}
+} */
 
 .msg-hidden {
   display: none;

@@ -1,13 +1,16 @@
+@use "../abstract/variables" as *;
+
 .appointment {
   height: 100%;
   padding: 30px;
   display: grid;
+  background-color: $color-light;
   grid-template-areas:
     "A A A   A A A   A A A   A A A"
     "A A A   A A A   A A A   A A A"
     "D D D   D D D   D D D   D D D";
   grid-template-columns: repeat(12, 8.3333%);
-  grid-template-rows: 10% auto 7%;
+  grid-template-rows: 10% auto 10%;
   
   &.active {
     grid-template-areas:
