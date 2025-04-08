@@ -6,7 +6,7 @@
 document.documentElement.setAttribute('lang', 'ru');
 
 //function show_tr(sIn_) {
-    //const element = document.getElementById(sIn_);
+	//const element = document.getElementById(sIn_);
 	// element.style.display = element.style.display == 'none' ? 'block' : 'none';
 	//element.style.display = 'block';
 //}
@@ -85,35 +85,36 @@ document.forms.f_10_02_2_1.addEventListener('submit', event => {
 </script>
 
 <div class="appointment step-1">
-    <div hidden>
-        <button type="button" id="button-start" onclick="openStartScreen(this);">Начальный экран</button>
-    </div>
+	<div hidden>
+		<button type="button" id="button-start" onclick="openStartScreen(this);">Начальный экран</button>
+	</div>
+	<iframe name="saveblank1" id="saveblank1" width=900 scrolling="yes" height=300 hidden></iframe>
 	<div class="breadcrumb">
 		<div class="buttons breadcrumb__buttons">
 			<h2>Новый талон</h2>
 			<div class="pattern-button">
-                <span class="pattern__title">Отделение</span>
-                <button type="button" id="breadcrumb-button-office" class="button breadcrumb__button" onclick=""></button>
+				<span class="pattern__title">Отделение</span>
+				<button type="button" id="breadcrumb-button-office" class="button breadcrumb__button" onclick=""></button>
 			</div>
-            <div class="pattern-button">
-                <span class="pattern__title">Кабинет / Врач</span>
-                <button type="button" id="breadcrumb-button-room" class="button breadcrumb__button" onclick=""></button>
+			<div class="pattern-button">
+				<span class="pattern__title">Кабинет / Врач</span>
+				<button type="button" id="breadcrumb-button-room" class="button breadcrumb__button" onclick=""></button>
 			</div>
-            <div class="pattern-button">
-                <span class="pattern__title">Месяц</span>
-                <button type="button" id="breadcrumb-button-month" class="button breadcrumb__button" onclick=""></button>
+			<div class="pattern-button">
+				<span class="pattern__title">Месяц</span>
+				<button type="button" id="breadcrumb-button-month" class="button breadcrumb__button" onclick=""></button>
 			</div>
-            <div class="pattern-join">
-                <div class="pattern-button pattern-left">
-                    <span class="pattern__title">День</span>
-                    <button type="button" id="breadcrumb-button-day" class="button breadcrumb__button" onclick=""></button>
-    			</div>
-                <div class="pattern-button pattern-right">
-                    <span class="pattern__title">Время</span>
-                    <button type="button" id="breadcrumb-button-time" class="button breadcrumb__button" onclick=""></button>
-    			</div>
-            </div>
-            <button type="button" id="breadcrumb-button-print" class="button breadcrumb__button" onclick="openModalPrint();" value="0">ПЕЧАТЬ</button>
+			<div class="pattern-join">
+				<div class="pattern-button pattern-left">
+					<span class="pattern__title">День</span>
+					<button type="button" id="breadcrumb-button-day" class="button breadcrumb__button" onclick=""></button>
+				</div>
+				<div class="pattern-button pattern-right">
+					<span class="pattern__title">Время</span>
+					<button type="button" id="breadcrumb-button-time" class="button breadcrumb__button" onclick=""></button>
+				</div>
+			</div>
+			<button type="button" id="breadcrumb-button-print" class="button breadcrumb__button" onclick="openModalPrint();" value="0">ПЕЧАТЬ</button>
 		</div>
 	</div>
 	<main class="offices appointment__offices" border="1">
@@ -145,15 +146,12 @@ document.forms.f_10_02_2_1.addEventListener('submit', event => {
 ###<!-- 5 - регистрация через зеленую карточку value="9112420104267766" -->
 	</main>
 	<aside class="persona">
-        <iframe name="saveblank1" id="saveblank1" width=900 scrolling="yes" height=300 hidden></iframe>
-		<div id="ask_me" class="persona__auth">
-            <span>Здравствуйте. Поднесите карточку к считывателю:</span>
+		<div align="center" id="ask_me">
 			<input type="hidden" name="num_130" value="0">
 			<input type="hidden" name="num_331" value="0">
-    		<div class="persona__input">
-                <input type="text" id="focus_elem" name="snum_" class="user-id" value="9112420104267766" OnChange="js_11_81_4()">
-    			<input type="button" value="зарегистрируйтесь" OnClick="js_11_81_4()">
-            </div>
+			Ваш номер на карточке <input type="text" id="focus_elem" name="snum_" class="rgformtextfields150" value="9112420104267766" OnChange="js_11_81_4()">
+			<input type="button" class="sheetbutton" value="зарегистрируйтесь" OnClick="js_11_81_4()">
+	
 		</div>
 	</aside>
 	<nav class="nav">
@@ -161,22 +159,25 @@ document.forms.f_10_02_2_1.addEventListener('submit', event => {
 		<button type="button" class="button" id="button-back" value="0" onclick="stepBack();">Назад</button>
 		<button type="button" class="button" onclick="newTicket();">Новый талон</button>
 	</nav>
-    <div id="modal__msg" hidden>
-        <div class="modal-content">
-    	    <p id="modal__msg-content"></p>
-            <div class="buttons modal__buttons">
-                <button type="button" class="button" onclick="newTicket();">OK</button>
-            </div>
-        </div>
+	<header class="header" hidden>
+		<H4>Выберите кабинет</H4>
+	</header>
+	<div id="modal__print">
+		<div class="modal-content">
+			<p>Вы уверены?</p>
+			<div class="modal__buttons">
+				<button type="button" class="button" id="print-no" onclick="closeModalPrint();">НЕТ</buttton>
+				<button type="button" class="button" id="print-yes" onclick="">ДА</buttton>
+			</div>
+		</div>
 	</div>
-	<div id="modal__print" hidden>
-        <div class="modal-content">
-		    <p>Вы уверены?</p>
-            <div class="buttons modal__buttons">
-                <button type="button" class="button" id="print-no" onclick="closeModalPrint();">НЕТ</button>
-                <button type="button" class="button" id="print-yes" onclick="">ДА</button>
-            </div>
-        </div>
+	<div id="modal__msg">
+		<div class="modal-content">
+			<p id="modal__msg-content"></p>
+			<div class="modal__buttons">
+				<button type="button" class="button" onclick="newTicket();">ОК</buttton>
+			</div>
+		</div>
 	</div>
 </div>
 <script language="JavaScript" src="https://valkof.github.io/electronic-queue/lekar/public/script.js"></script>

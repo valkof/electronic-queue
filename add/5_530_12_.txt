@@ -1,7 +1,7 @@
 <script language="JavaScript" type="text/JavaScript">
 send_msg = `@D3000550000`;
 function WebSocketTestGsprint() {  
-    	var ws = new WebSocket("ws://127.0.0.1:51678/?&command=gsprint&filename=talon.ps");
+		var ws = new WebSocket("ws://127.0.0.1:51678/?&command=gsprint&filename=talon.ps");
 		
 		ws.onopen = function() {
 			ws.send(send_msg);
@@ -119,9 +119,9 @@ DO WHILE .T.
 		EXIT
 	ENDIF
 
-    sTmp = AT0_210_(11,30,3,15,1)
-    IF SUBSTR(sTmp,1,1) <> '0'
-    	sRet_ = 'Int.err 1 '+sTmp
+	sTmp = AT0_210_(11,30,530,12,1)
+	IF SUBSTR(sTmp,1,1) <> '0'
+		sRet_ = 'Int.err 1 '+sTmp
 		EXIT
 	ENDIF
 	sTxt_ = AT0_001_(SUBSTR(sTmp,2))
