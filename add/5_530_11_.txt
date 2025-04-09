@@ -23,7 +23,7 @@
 	//-->
 </script>
 ###<!-- 3 -->
-		<div class="day days__day">
+		<div class="day days__day" style="grid-column: @D3000236010;">
 			<div class="date-och day__date" onclick="dayActive(this);">
 				<span class="number day__number">@D3000026010</span>
 				<span class="week day__week">@D3000200000</span>
@@ -43,12 +43,19 @@
 	parent.document.getElementById('col_@D3003010000_@D3003060000').innerHTML = document.getElementById('day_menu').innerHTML;
 	//-->
 </script>
+###<!-- 7 -->
+		<div class="day days__day imaginary" style="grid-column: @D3000236010;">
+			<div class="date-och day__date" onclick="">
+				<span class="number day__number">@D3000026010</span>
+				<span class="week day__week">@D3000200000</span>
+			</div>
+		</div>
 
 #PROGRAM:
-LOCAL sTmp, nTmp, cSql, aTmp_ := {}, aDay_ := {'Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота'}, sMon_, nDay_
+LOCAL sTmp, nTmp, cSql, aTmp_ := {}, aDay_ := {'Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота'}, aDayWeek_ := {7, 1, 2, 3, 4, 5, 6}, sMon_, nDay_
 ? '5,530,11 =',TIME(),a003_,'<br>',aPar_
 * 01 Т130__01 журнала настройки 512090 или Т130__01 пациента
-* 02 t131__03 типа 31	или Т300__01 доктора
+* 02 t131__03 ГГГГММ
 
 DO WHILE .T.
 	a000_[80] := CT3_027_(2,a003_[03])
@@ -84,6 +91,8 @@ DO WHILE .T.
 	a000_[01] := 0
 	a000_[02] := 0
 	nI_ = 1
+	nDay := 1
+	maxDay := DAY(EOM(STOD(a003_[02] + '01')))
 	DO WHILE .T.
 /*
 		IF nI_ > nLen_ .OR. (sMon_ = a003_[02] .AND.  nDay_ > aTmp_[nI_+1])
@@ -98,14 +107,33 @@ DO WHILE .T.
 			IF a000_[02] > 0  // закрыть список кнопок
 ? AT0_001_(XP:PART[05])
 				IF nI_ > nLen_  // конец
+					// создать недостающие дни месяца
+					DO WHILE nDay <= maxDay
+						a000_[02] := nDay
+						a000_[22] := a003_[02]+NTOC(nDay,10,2,'0')
+						a000_[23] := aDayWeek_[DOW(STOD(a000_[22]))]
+						a000_[20] := aDay_[DOW(STOD(a000_[22]))]
+? AT0_001_(XP:PART[07])
+						nDay += 1
+					ENDDO
 					EXIT
 				ENDIF
 			ENDIF
+			DO WHILE nDay < aTmp_[nI_+1]
+				a000_[02] := nDay
+				a000_[22] := a003_[02]+NTOC(nDay,10,2,'0')
+				a000_[23] := aDayWeek_[DOW(STOD(a000_[22]))]
+				a000_[20] := aDay_[DOW(STOD(a000_[22]))]
+? AT0_001_(XP:PART[07])
+				nDay += 1
+			ENDDO
 			a000_[01] := aTmp_[nI_]
 			a000_[02] := aTmp_[nI_+1]
 			a000_[22] := a003_[02]+NTOC(a000_[02],10,2,'0')
+			a000_[23] := aDayWeek_[DOW(STOD(a000_[22]))]
 			a000_[20] := aDay_[DOW(STOD(a000_[22]))]
 ? AT0_001_(XP:PART[03])
+			nDay += 1
 		ENDIF
 		a000_[03] := aTmp_[nI_+2]
 		a000_[04] := aTmp_[nI_+3]

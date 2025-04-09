@@ -99,9 +99,11 @@ h2 {
 
 #breadcrumb-button-print[value="0"] {
   pointer-events: none;
-  color: #367330;
-  background-color: #f7f7f9;
-  border-color: #83aaa9;
+  opacity: 0.2;
+}
+
+#button-exit {
+  background-color: #db4343;
 }
 
 .appointment {
@@ -192,6 +194,7 @@ h2 {
   hyphens: auto;
   word-break: auto-phrase;
   overflow-wrap: break-word;
+  overflow: hidden;
 }
 .room__button div {
   display: flex;

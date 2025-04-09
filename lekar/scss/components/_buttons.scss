@@ -65,7 +65,12 @@
 
 #breadcrumb-button-print[value="0"] {
   pointer-events: none;
-  color: $color-second;
-  background-color: $color-main;
-  border-color: $color-light;
+  // color: $color-second;
+  // background-color: $color-main;
+  // border-color: $color-light;
+  opacity: 0.2;
+}
+
+#button-exit {
+  background-color: $color-exit;
 }
