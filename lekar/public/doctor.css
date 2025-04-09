@@ -85,8 +85,8 @@ h2 {
   flex-wrap: wrap;
 }
 .months__buttons .button {
-  width: 150px;
-  height: 50px;
+  width: 200px;
+  height: 70px;
 }
 .months.active .months__buttons {
   display: none;
@@ -370,7 +370,7 @@ h2 {
 }
 .pattern-button .button {
   border-color: #83aaa9;
-  color: #367330;
+  color: #1b351a;
   background-color: #f7f7f9;
   border-radius: 0px 10px 10px 10px;
   height: 100px;
@@ -390,7 +390,7 @@ h2 {
   text-align: left;
   position: relative;
   top: 2px;
-  width: 230px;
+  width: 260px;
   text-align: left;
 }
 
