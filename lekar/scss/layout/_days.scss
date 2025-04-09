@@ -11,11 +11,11 @@
 
 .days__wrapper {
   display: grid;
-  grid-template: repeat(5, 20%) / repeat(6, 16.77%);
+  grid-template: repeat(6, 16.74%) / repeat(6, 16.74%);
   justify-items: center;
-  justify-content: center;
   align-items: center;
   height: 100%;
+  overflow: hidden;
 
   &.active {
     display: block;
@@ -29,6 +29,10 @@
   justify-content: center;
   width: 95%;
   height: 95%;
+
+  &.imaginary {
+    opacity: 0.1;
+  }
 
   .days__wrapper.active & {
     display: none;
