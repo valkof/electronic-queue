@@ -57,9 +57,10 @@
 
 #button-back[value="0"] {
   pointer-events: none;
-  color: $color-second;
-  background-color: $color-main;
-  border-color: $color-midle;
+  // color: $color-second;
+  // background-color: $color-main;
+  // border-color: $color-midle;
+  opacity: 0.2;
 }
 
 #breadcrumb-button-print[value="0"] {
