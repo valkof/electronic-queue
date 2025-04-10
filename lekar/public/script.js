@@ -7,14 +7,19 @@ const monthsAll = document.querySelectorAll('.months');
 const months = document.querySelectorAll('.month__button');
 const breadcrumb = document.querySelector('.breadcrumb');
 const persona = document.querySelector('.persona');
+const userId = document.getElementById("user-id");
 
 const buttonStart = document.getElementById('button-start');
 const buttonBack = document.getElementById('button-back');
+const currentTime = document.getElementById('current-time');
+const currentDate = document.getElementById('current-date');
+const buttonNewTicket = document.getElementById('button-new-ticket');
 
 const modalPrint = document.getElementById('modal__print');
 const buttonPrintOk = document.getElementById('print-yes');
 const modalMsg = document.getElementById('modal__msg');
 const modalText = document.getElementById('modal__msg-content');
+const modalContinue = document.getElementById('modal__continue');
 
 const breadcrumbButtonOffice = document.getElementById('breadcrumb-button-office');
 const breadcrumbButtonRoom = document.getElementById('breadcrumb-button-room');
@@ -24,8 +29,50 @@ const breadcrumbButtonTime = document.getElementById('breadcrumb-button-time');
 const breadcrumbButtonPrint = document.getElementById('breadcrumb-button-print');
 const ticketElements = [buttonStart, breadcrumbButtonOffice, breadcrumbButtonRoom, breadcrumbButtonMonth, breadcrumbButtonDay, breadcrumbButtonTime];
 
+let timerSeance = 0;
+let timerSeanceMax = 35;
 const ticket = [''];
 const stackBack = [buttonStart];
+
+document.documentElement.setAttribute('lang', 'ru');
+
+function focusOnUserId() {
+  console.log('ok');
+  userId.focus();
+};
+
+const focusId = setInterval(focusOnUserId, 500);
+
+function currentDateTime() {
+  const datetime = new Date();
+  const date = datetime.toLocaleDateString('ru', {
+    month: "long",
+    day: "2-digit"
+  });
+  const time = datetime.toLocaleTimeString('ru', {
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+  currentTime.innerText = time;
+  currentDate.innerText = date;
+  timerSeance += 5;  // создать функцию
+  // if (timerSeance == timerSeanceMax) {
+  //   modalContinue.classList.add('active');
+  // }
+};
+
+currentDateTime();
+setInterval(currentDateTime, 5000);
+
+document.forms.f_10_02_2_1.addEventListener('submit', event => {
+	js_11_81_4();
+  clearInterval(focusId);
+  const message = document.querySelector('.message.active');
+  if (message) message.classList.remove('active');
+  console.log('я выполнилась и удалилась');
+  buttonNewTicket.value = 1;
+	event.preventDefault();
+}, {once: true});
 
 function stepBack() {
   ticket.pop();
@@ -203,7 +250,7 @@ function couponGenerated(nVid_, nGr_l, nNum_, sTarget_, sAddn_, sAction_) {
   buttonPrintOk.onclick = function(event) {
     event.target.disabled = true;
     const fio = document.getElementById('name-patient');
-    ticket[0] = fio.innerHTML;
+    ticket[0] = fio.value;
     sAddn_ += ',' + ticket.join(','); 
     console.log(sAddn_);
     jsa_031(nVid_, nGr_l, nNum_, sTarget_, sAddn_, sAction_);
@@ -221,6 +268,10 @@ function closeModalPrint() {
 function openModalMsg() {
   modalMsg.classList.add('active');
 }
+
+function closeModalContinue() {
+
+};
 
 function js_11_81_1(sIn_) {
   if (document.f_10_02_2_1.num_130.value == 0) {

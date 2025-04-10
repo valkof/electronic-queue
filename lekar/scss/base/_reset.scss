@@ -4,7 +4,7 @@
   padding: 0px;
   margin: 0px;
   box-sizing: border-box;
-  cursor: none;
+  // cursor: none;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -23,6 +23,11 @@ body {
   hyphens: auto;
   word-break: auto-phrase;
   overflow-wrap: break-word;
+}
+
+p {
+  color: $color-dark;
+  font-family: monospace;
 }
 
 #f_10_02_2_1 {

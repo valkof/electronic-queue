@@ -2,7 +2,6 @@
   padding: 0px;
   margin: 0px;
   box-sizing: border-box;
-  cursor: none;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -21,6 +20,11 @@ body {
   hyphens: auto;
   word-break: auto-phrase;
   overflow-wrap: break-word;
+}
+
+p {
+  color: #1b351a;
+  font-family: monospace;
 }
 
 #f_10_02_2_1 {
@@ -106,6 +110,11 @@ h2 {
   background-color: #db4343;
 }
 
+#button-new-ticket[value="0"] {
+  pointer-events: none;
+  opacity: 0.2;
+}
+
 .appointment {
   height: 100%;
   padding: 30px;
@@ -172,7 +181,7 @@ h2 {
 .room__button {
   display: flex;
   flex-direction: column;
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   justify-content: space-between;
   height: 100%;
   background-color: #f7f7f9;
@@ -198,9 +207,9 @@ h2 {
 }
 .room__button div {
   display: flex;
-  gap: 5px 10px;
+  gap: 0px 10px;
   flex-wrap: wrap;
-  height: 45px;
+  height: 55px;
   border-width: 0px 2px 2px 2px;
   border-color: #f7f7f9;
   border-style: solid;
@@ -226,6 +235,10 @@ h2 {
 .months .message {
   display: none;
   padding: 30px;
+}
+.months .message img {
+  box-shadow: 0px 0px 30px 10px;
+  border-radius: 25px;
 }
 .months .message.active {
   display: block;
@@ -333,8 +346,13 @@ h2 {
 .day__message {
   display: none;
 }
+.day__message p {
+  font-family: monospace;
+  color: #1b351a;
+}
 .times.active + .day__message {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   font-size: 6rem;
   width: 100%;
@@ -445,25 +463,31 @@ h2 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: white;
+  background-color: #f7f7f9;
   margin: 10px;
   border-radius: 20px;
   box-shadow: 0px 0px 30px 10px;
 }
 
-.user-id {
-  width: 300px;
-}
-
-input[type=text] {
-  display: block;
-}
-
 .persona__input {
   display: flex;
+  align-items: baseline;
+}
+.persona__input .user-id {
+  width: 250px;
+  font-size: 2rem;
+  border: none;
 }
 .persona__input input {
   display: block;
+  box-shadow: none;
+}
+.persona__input input:focus {
+  box-shadow: none;
+}
+.persona__input input.button {
+  width: 150px;
+  display: none;
 }
 
 .nav {
@@ -473,13 +497,27 @@ input[type=text] {
   gap: 50px;
   padding: 25px 10px 0px 10px;
 }
+.nav__datetime {
+  width: 230px;
+  background-color: #f7f7f9;
+  display: flex;
+  flex-direction: column;
+  font-size: 3rem;
+  scale: 1.2;
+  position: relative;
+  height: 80px;
+  top: -10px;
+  border-radius: 20px;
+  color: #1b351a;
+  box-shadow: 0px 0px 10px 3px;
+}
 
 .header {
   grid-area: E;
   border: 2px solid #1b351a;
 }
 
-#modal__print, #modal__msg {
+#modal__print, #modal__msg, #modal__continue {
   display: none;
   position: fixed;
   z-index: 1;
@@ -489,7 +527,7 @@ input[type=text] {
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.4);
 }
-#modal__print.active, #modal__msg.active {
+#modal__print.active, #modal__msg.active, #modal__continue.active {
   display: block;
 }
 

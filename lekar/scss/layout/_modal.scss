@@ -1,6 +1,6 @@
 @use "../abstract/variables" as *;
 
-#modal__print, #modal__msg {
+#modal__print, #modal__msg, #modal__continue {
   display: none;
   position: fixed; 
   z-index: 1;
