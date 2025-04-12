@@ -47,6 +47,20 @@ h2 {
   font-size: 3rem;
 }
 
+.protect {
+  display: none;
+  position: fixed;
+  z-index: 100;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0);
+}
+.protect.active {
+  display: block;
+}
+
 .buttons {
   width: 100%;
   height: 100%;
@@ -76,6 +90,9 @@ h2 {
 }
 .button:hover {
   background-color: #367330;
+}
+.button.mute {
+  opacity: 0.2;
 }
 .nav .button {
   width: 230px;
@@ -120,12 +137,12 @@ h2 {
   padding: 30px;
   display: grid;
   background-color: #83aaa9;
-  grid-template-areas: "A A A   A A A   A A A   A A A" "A A A   A A A   A A A   A A A" "D D D   D D D   D D D   D D D";
+  grid-template-areas: "A A A   A A A   A A A   A A A" "A A A   A A A   A A A   A A A" "D D D   D D D   D D D   E E E";
   grid-template-columns: repeat(12, 8.3333%);
   grid-template-rows: 10% auto 10%;
 }
 .appointment.active {
-  grid-template-areas: "C C C   C C C   C C C   B B B" "A A A   A A A   A A A   B B B" "D D D   D D D   D D D   D D D";
+  grid-template-areas: "C C C   C C C   C C C   B B B" "A A A   A A A   A A A   B B B" "D D D   D D D   D D D   E E E";
 }
 
 .offices {
@@ -204,6 +221,7 @@ h2 {
   word-break: auto-phrase;
   overflow-wrap: break-word;
   overflow: hidden;
+  height: 100px;
 }
 .room__button div {
   display: flex;
@@ -239,10 +257,14 @@ h2 {
 .months .message img {
   box-shadow: 0px 0px 30px 10px;
   border-radius: 25px;
+  width: 300px;
 }
 .months .message.active {
-  display: block;
+  flex-direction: column;
+  display: flex;
   font-size: 5rem;
+  align-items: center;
+  gap: 50px;
 }
 .room.active .months {
   display: flex;
@@ -452,6 +474,7 @@ h2 {
 .persona {
   grid-area: C;
   display: none;
+  position: relative;
 }
 .persona__auth {
   display: flex;
@@ -490,6 +513,31 @@ h2 {
   display: none;
 }
 
+.organization {
+  position: absolute;
+  top: -20px;
+  left: 20px;
+  background-color: #367330;
+  border: 3px solid #83aaa9;
+  border-radius: 20px;
+  font-size: 2rem;
+  color: #f7f7f9;
+  padding: 2px 20px;
+}
+
+.datetime {
+  grid-area: E;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin: 10px;
+  background-color: #f7f7f9;
+  display: flex;
+  font-size: 3rem;
+  border-radius: 20px;
+  box-shadow: 0px 0px 30px 10px;
+}
+
 .nav {
   grid-area: D;
   display: flex;
@@ -497,27 +545,13 @@ h2 {
   gap: 50px;
   padding: 25px 10px 0px 10px;
 }
-.nav__datetime {
-  width: 230px;
-  background-color: #f7f7f9;
-  display: flex;
-  flex-direction: column;
-  font-size: 3rem;
-  scale: 1.2;
-  position: relative;
-  height: 80px;
-  top: -10px;
-  border-radius: 20px;
-  color: #1b351a;
-  box-shadow: 0px 0px 10px 3px;
-}
 
 .header {
   grid-area: E;
   border: 2px solid #1b351a;
 }
 
-#modal__print, #modal__msg, #modal__continue {
+.modal {
   display: none;
   position: fixed;
   z-index: 1;
@@ -527,11 +561,11 @@ h2 {
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.4);
 }
-#modal__print.active, #modal__msg.active, #modal__continue.active {
+.modal.active {
   display: block;
 }
 
-.modal-content {
+.modal__content {
   background-color: #fff;
   margin: 300px auto;
   padding: 20px;
@@ -545,10 +579,17 @@ h2 {
 }
 
 .modal__buttons {
-  display: flex;
+  display: none;
   justify-content: space-around;
 }
+.modal__buttons.active {
+  display: flex;
+}
 .modal__buttons .button {
+  display: none;
   width: 250px;
   height: 80px;
+}
+.modal__buttons .button.active {
+  display: block;
 }/*# sourceMappingURL=doctor.css.map */

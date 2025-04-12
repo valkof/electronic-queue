@@ -3,6 +3,7 @@
 .persona {
   grid-area: C;
   display: none;
+  position: relative;
 
   &__auth {
     display: flex;
@@ -44,4 +45,16 @@
         display: none;
       }
     }
+}
+
+.organization {
+  position: absolute;
+  top: -20px;
+  left: 20px;
+  background-color: $color-second;
+  border: 3px solid $color-light;
+  border-radius: 20px;
+  font-size: 2rem;
+  color: $color-main;
+  padding: 2px 20px;
 }

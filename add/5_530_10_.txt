@@ -3,88 +3,11 @@
 <script language="JavaScript" type="text/JavaScript">
 <!--
 
-document.documentElement.setAttribute('lang', 'ru');
-
-//function show_tr(sIn_) {
-	//const element = document.getElementById(sIn_);
-	// element.style.display = element.style.display == 'none' ? 'block' : 'none';
-	//element.style.display = 'block';
-//}
-
-//function clearHTML(elementIdDays) {
-//	const elementDays = document.getElementById(elementIdDays);
-//	elementDays.innerHTML = '';
-//}
-
-/*function js_11_81_3() {
- sTmp = document.f_10_02_2_1.snum_.value;
- if (sTmp.length != 13) {
-  alert('Укажите свой личный номер');
-  document.f_10_02_2_1.snum_.focus();
-  return
- }
- sTmp1 = document.f_10_02_2_1.spin_.value;
- if (sTmp1.length != 4) {
-  alert('Укажите свой пин-код');
-  document.f_10_02_2_1.spin_.focus();
-  return
- }
- jsa_031(5,530,13,'saveblank1','','is10_08');
-}*/
-
-/*
-function js_11_81_4() {
- sTmp = document.f_10_02_2_1.snum_.value;
- if (sTmp.length != 16) {
-  alert('Укажите номер карточки');
-  document.f_10_02_2_1.snum_.focus();
-  return
- }
- jsa_031(5,530,17,'saveblank1','','is10_08');
-}*/
-
-//function js_11_81_1(sIn_) {
-// if (document.f_10_02_2_1.num_130.value == 0) {
-  //alert('Зарегистрируйтесь указав свой логин и ПИН');
-//  document.f_10_02_2_1.snum_.focus();
-//  return
-// }
-// jsa_031(5,530,11,'saveblank1',sIn_,'is10_08');
-//}
-
-//document.action = '';
-//document.onkeyup = (e) => {
-   // return false;
-	//if(e.keyCode === 13) {
-	  //  alert('ok 13');
-//js_11_81_4();
-  //  }
-//}
-
-function asd() {
-	alert('ok 13');
-}
-
-
-function sayHi() {
-  const el = document.querySelector("#focus_elem");
-  console.log('ok');
-  el.focus();
-}
-
-// setTimeout(sayHi, 3000);
-//setInterval(() => sayHi(), 100);
-
-document.forms.f_10_02_2_1.addEventListener('submit', event => {
-	js_11_81_4();
-	event.preventDefault();  // Стоп! Прерываем действие по умолчанию.
-});
-
 
 //-->
 </script>
 
-<div class="appointment step-1">
+<div class="appointment">
 	<div hidden>
 		<button type="button" id="button-start" onclick="openStartScreen(this);">Начальный экран</button>
 	</div>
@@ -136,6 +59,7 @@ document.forms.f_10_02_2_1.addEventListener('submit', event => {
 						</div>
 						<div class="message">
 							<p>Поднесите карту к считывателю</p>
+                            <img src="http://localhost:8090/ochered/card.jpg" alt="электронный рецепт">
 						</div>
 						<div id="col_@D3000606010_@D3000636010" class="days months__days"></div>
 					</div>
@@ -146,41 +70,42 @@ document.forms.f_10_02_2_1.addEventListener('submit', event => {
 ###<!-- 5 - регистрация через зеленую карточку value="9112420104267766" -->
 	</main>
 	<aside class="persona">
-		<div align="center" id="ask_me">
+		<div id="ask_me" class="persona__auth">
 			<input type="hidden" name="num_130" value="0">
 			<input type="hidden" name="num_331" value="0">
-			Ваш номер на карточке <input type="text" id="focus_elem" name="snum_" class="rgformtextfields150" value="9112420104267766" OnChange="js_11_81_4()">
-			<input type="button" class="sheetbutton" value="зарегистрируйтесь" OnClick="js_11_81_4()">
-	
+			<div class="persona__input">
+				<span>Ваш номер на карточке:</span>
+				<input type="text" id="user-id" name="snum_" class="user-id" value="9112420104267766" OnChange="js_11_81_4()">
+				<input type="button" class="button" value="войти" OnClick="document.forms.f_10_02_2_1.submit();">
+			</div>
 		</div>
 	</aside>
 	<nav class="nav">
-		<button type="button" class="button" id="button-exit" onclick="">Выйти</button>
+		<button type="button" class="button" id="button-exit" onclick="exitToOchered();">Выйти</button>
 		<button type="button" class="button" id="button-back" value="0" onclick="stepBack();">Назад</button>
-		<button type="button" class="button" onclick="newTicket();">Новый талон</button>
+		<button type="button" class="button" id="button-new-ticket" onclick="newTicket();">Новый талон</button>
 	</nav>
+	<div class="datetime">
+		<span id="current-time"></span>
+		<span id="current-date"></span>
+	</div>
 	<header class="header" hidden>
 		<H4>Выберите кабинет</H4>
 	</header>
-	<div id="modal__print">
-		<div class="modal-content">
-			<p>Вы уверены?</p>
-			<div class="modal__buttons">
-				<button type="button" class="button" id="print-no" onclick="closeModalPrint();">НЕТ</buttton>
-				<button type="button" class="button" id="print-yes" onclick="">ДА</buttton>
+	<div id="modal" class="modal">
+		<div class="modal__content">
+			<p id="modal-message" class="modal__message"></p>
+			<div id="modal-buttons" class="modal__buttons">
+				<button type="button" class="button" id="modal-no" onclick="">НЕТ</buttton>
+				<button type="button" class="button" id="modal-yes" onclick="">ДА</buttton>
+				<button type="button" class="button" id="modal-ok" onclick="">ОК</buttton>
 			</div>
 		</div>
 	</div>
-	<div id="modal__msg">
-		<div class="modal-content">
-			<p id="modal__msg-content"></p>
-			<div class="modal__buttons">
-				<button type="button" class="button" onclick="newTicket();">ОК</buttton>
-			</div>
-		</div>
-	</div>
+    <div id="protect" class="protect">
+    </div>
 </div>
-<script language="JavaScript" src="https://valkof.github.io/electronic-queue/lekar/public/script.js"></script>
+<script charset="koi8-r" src="https://valkof.github.io/electronic-queue/lekar/public/script.js"></script>
 ###<!-- 6 -->
 <input type="button" class="button month__button" value="@D3000150000" title="Запись на месяц" onClick="js_11_81_1('@D3000606010,@D3000166010,@D3000670000,@D3000680000,@D3000690000,@D3000636010');">
 ###<!-- 7 -->

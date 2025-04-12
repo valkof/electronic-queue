@@ -131,21 +131,20 @@
     function jsa_031(name, nVid_, nGr_l, nNum_, sTarget_, sAddn_, sAction_) {
       const form = document[name];
       const temp = Object.assign(form);
-      form.svid_.value = nVid_;
-      form.sgr_l.value = nGr_l;
-      form.sit_l.value = nNum_;
+      temp.svid_.value = nVid_;
+      temp.sgr_l.value = nGr_l;
+      temp.sit_l.value = nNum_;
       if ( sTarget_ !== undefined && sTarget_ !== '') {
-        form.target = sTarget_;
-        form.sfrname_.value = sTarget_;
+        temp.target = sTarget_;
+        temp.sfrname_.value = sTarget_;
       };
       if (sAction_ !== undefined && sAction_ !== '') {
-        form.action = sAction_;
+        temp.action = sAction_;
       };
       if (sAddn_ !== undefined && sAddn_ !== '') {
-        form.sadd_.value = sAddn_;
+        temp.sadd_.value = sAddn_;
       }
-      form.submit();
-      form = temp;
+      temp.submit();
     }
 
     function getTimeByFormat(hour, minute) {

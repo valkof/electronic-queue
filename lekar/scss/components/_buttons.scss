@@ -32,6 +32,10 @@
     background-color: $color-second;
   }
 
+  &.mute {
+    opacity: 0.2;
+  }
+
   .nav & {
     width: 230px;
   }

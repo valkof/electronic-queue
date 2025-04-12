@@ -15,11 +15,15 @@ const currentTime = document.getElementById('current-time');
 const currentDate = document.getElementById('current-date');
 const buttonNewTicket = document.getElementById('button-new-ticket');
 
-const modalPrint = document.getElementById('modal__print');
-const buttonPrintOk = document.getElementById('print-yes');
-const modalMsg = document.getElementById('modal__msg');
-const modalText = document.getElementById('modal__msg-content');
-const modalContinue = document.getElementById('modal__continue');
+const modalWindow = document.getElementById('modal');
+const modalMsg = document.getElementById('modal-message');
+const modalButtons = document.getElementById('modal-buttons');
+const modalOk = document.getElementById('modal-ok');
+const modalYes = document.getElementById('modal-yes');
+const modalNo = document.getElementById('modal-no');
+const protect = document.getElementById('protect');
+// const modalText = document.getElementById('modal-message');
+// const modalContinue = document.getElementById('modal__continue');
 
 const breadcrumbButtonOffice = document.getElementById('breadcrumb-button-office');
 const breadcrumbButtonRoom = document.getElementById('breadcrumb-button-room');
@@ -29,8 +33,11 @@ const breadcrumbButtonTime = document.getElementById('breadcrumb-button-time');
 const breadcrumbButtonPrint = document.getElementById('breadcrumb-button-print');
 const ticketElements = [buttonStart, breadcrumbButtonOffice, breadcrumbButtonRoom, breadcrumbButtonMonth, breadcrumbButtonDay, breadcrumbButtonTime];
 
-let timerSeance = 0;
-let timerSeanceMax = 35;
+let funPrintTiket = () => {};
+
+const timerSeanceMax = 20000;
+const timerDialogMax = 10000;
+const timerMessageMax = 5000;
 const ticket = [''];
 const stackBack = [buttonStart];
 
@@ -42,6 +49,31 @@ function focusOnUserId() {
 };
 
 const focusId = setInterval(focusOnUserId, 500);
+
+function openDialogTimeoutSeance() {
+  console.log('open');
+  appointment.removeEventListener('click', installTimerSeance);
+  timeoutID = setTimeout(exitToOchered, timerDialogMax);
+  openModalContent('Необходимо ещё время?', null, () => {
+    installTimerSeance();
+    appointment.addEventListener('click', installTimerSeance);
+    modalWindow.classList.remove('active');
+    protect.classList.remove('active');
+  }, () => {
+    exitToOchered();
+  })
+}
+
+let timeoutID = setTimeout(openDialogTimeoutSeance, timerSeanceMax);
+
+function installTimerSeance() {
+  clearTimeout(timeoutID);
+  timeoutID = setTimeout(openDialogTimeoutSeance, timerSeanceMax);
+  console.log(timeoutID);
+};
+
+appointment.addEventListener('click', installTimerSeance);
+
 
 function currentDateTime() {
   const datetime = new Date();
@@ -55,10 +87,6 @@ function currentDateTime() {
   });
   currentTime.innerText = time;
   currentDate.innerText = date;
-  timerSeance += 5;  // создать функцию
-  // if (timerSeance == timerSeanceMax) {
-  //   modalContinue.classList.add('active');
-  // }
 };
 
 currentDateTime();
@@ -91,6 +119,11 @@ function setTicketCaption() {
 function clearActive(element) {
   const elementsSearch = element.querySelectorAll('.active');
   elementsSearch.forEach(elementActive => elementActive.classList.remove('active'));
+};
+
+function clearMute(element) {
+  const elementsSearch = element.querySelectorAll('.mute');
+  elementsSearch.forEach(elementActive => elementActive.classList.remove('mute'));
 };
 
 function openStartScreen(event) {
@@ -247,8 +280,7 @@ function timeActive(event) {
 
 
 function couponGenerated(nVid_, nGr_l, nNum_, sTarget_, sAddn_, sAction_) {
-  buttonPrintOk.onclick = function(event) {
-    event.target.disabled = true;
+  funPrintTiket = function() {
     const fio = document.getElementById('name-patient');
     ticket[0] = fio.value;
     sAddn_ += ',' + ticket.join(','); 
@@ -257,20 +289,73 @@ function couponGenerated(nVid_, nGr_l, nNum_, sTarget_, sAddn_, sAction_) {
   }
 }
 
-function openModalPrint() {
-  modalPrint.classList.add('active');
-};
-
-function closeModalPrint() {
-  modalPrint.classList.remove('active');
-};
-
-function openModalMsg() {
-  modalMsg.classList.add('active');
+function openModalContent(message, funOk, funYes, funNo) {
+  clearActive(modalWindow);
+  clearMute(modalWindow);
+  [modalOk.disabled, modalYes.disabled, modalNo.disabled] = [false, false, false];
+  modalMsg.innerHTML = message;
+  if (funOk || funYes || funNo) {
+    modalButtons.classList.add('active');
+  };
+  if (funOk) {
+    modalOk.classList.add('active');
+    modalOk.onclick = function() {
+      [modalOk.disabled, modalYes.disabled, modalNo.disabled] = [true, true, true];
+      protect.classList.add('active');
+      modalOk.classList.add('mute');
+      funOk();
+    }
+  };
+  if (funYes) {
+    modalYes.classList.add('active');
+    modalYes.onclick = function() {
+      [modalOk.disabled, modalYes.disabled, modalNo.disabled] = [true, true, true];
+      protect.classList.add('active');
+      modalYes.classList.add('mute');
+      funYes();
+    }
+  };
+  if (funNo) {
+    modalNo.classList.add('active');
+    modalNo.onclick = function() {
+      [modalOk.disabled, modalYes.disabled, modalNo.disabled] = [true, true, true];
+      protect.classList.add('active');
+      modalNo.classList.add('mute');
+      funNo();
+    }
+  };
+  modalWindow.classList.add('active');
 }
 
-function closeModalContinue() {
+function openModalPrint() {
+  openModalContent('Вы уверены?', null, () => {
+    appointment.removeEventListener('click', installTimerSeance);
+    clearTimeout(timeoutID);
+    funPrintTiket();
+  }, () => {
+    protect.classList.remove('active');
+    modalWindow.classList.remove('active');
+  });
+};
 
+function openModalTakeToTiket() {
+  timeoutID = setTimeout(exitToOchered, timerMessageMax);
+  openModalContent('Заберите талон.', null, null, null);
+};
+
+function openModalAuth(message) {
+  appointment.removeEventListener('click', installTimerSeance);
+  clearTimeout(timeoutID);
+  timeoutID = setTimeout(exitToOchered, timerDialogMax);
+  openModalContent(message, () => {
+    exitToOchered();
+  }, null, null);
+};
+
+function exitToOchered() {
+  document.forms.f_10_02_2_1.action = 'http://localhost:86/ochered/ochered.html';
+  document.forms.f_10_02_2_1.target = '_self';
+  document.forms.f_10_02_2_1.submit();
 };
 
 function js_11_81_1(sIn_) {

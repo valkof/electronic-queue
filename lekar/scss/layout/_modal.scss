@@ -1,6 +1,6 @@
 @use "../abstract/variables" as *;
 
-#modal__print, #modal__msg, #modal__continue {
+.modal {
   display: none;
   position: fixed; 
   z-index: 1;
@@ -15,7 +15,7 @@
   }
 }
 
-.modal-content {
+.modal__content {
   background-color: #fff;
   margin: 300px auto; 
   padding: 20px;
@@ -29,11 +29,20 @@
  }
 
 .modal__buttons {
-  display: flex;
+  display: none;
   justify-content: space-around;
 
+  &.active {
+    display: flex;
+  }
+
   .button {
+    display: none;
     width: 250px;
     height: 80px;
+    
+    &.active {
+      display: block;
+    }
   }
 }

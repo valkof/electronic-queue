@@ -15,11 +15,12 @@ function WebSocketTestGsprint() {
 		
 		ws.onclose = function() {
 			console.log("WebSocket closed");
-			//parent.parent.document.f_10_02_2_1.submit();
+			parent.parent.openModalTakeToTiket();
 		};
 		
 		ws.onerror = function(error) {
 			console.error("WebSocket Error:", error);
+            // parent.parent.openModalTakeToTiket();
 		};
 	}
 	</script>
@@ -133,9 +134,9 @@ ENDDO
 AT0_025_3(nDb_)
 ? '<script language="JavaScript" type="text/JavaScript">'
 ? '<!--'
-? 'WebSocketTestGsprint();'
 IF sRet_ = "0"
-? "alert('Запись на прием выполнена1');"
+? 'WebSocketTestGsprint();'
+? "console.log('Запись на прием выполнена');"
 ELSE
 ? "alert('",sRet_,"');"
 	sRet_ = "0"
