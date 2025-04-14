@@ -1,0 +1,7 @@
+[2025-02-14 09:54:53,831](tnext) {"stdout": null, "stderr": "\u041e\u0448\u0438\u0431\u043a\u0430: \u041f\u0440\u043e\u0431\u043b\u0435\u043c\u0430 \u0432 \u043e\u043f\u0438\u0441\u0430\u043d\u0438\u0438 \u043e\u0447\u0435\u0440\u0435\u0434\u0438 \u0438\u043b\u0438 \u0440\u0430\u0431\u043e\u0447\u0435\u0433\u043e \u043c\u0435\u0441\u0442\u0430. "}
+[2025-02-14 09:55:06,199](run_tvsrv) Ошибка Инфотабло: возможно нет связи? HTTPConnectionPool(host='127.0.0.1', port=32109): Max retries exceeded with url: /ticket?p=7&t=%D0%A01 (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f5f6a6b4a30>: Failed to establish a new connection: [Errno 111] Connection refused')). 
+[2025-02-14 09:55:08,206](run_ledsrv) Ошибка Табло: возможно нет связи? timed out. 
+[2025-02-14 09:55:14,713](run_tvsrv) Ошибка Инфотабло: возможно нет связи? HTTPConnectionPool(host='127.0.0.1', port=32109): Max retries exceeded with url: /ticket?p=7&t=%D0%A02 (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f5f6a64f790>: Failed to establish a new connection: [Errno 111] Connection refused')). 
+[2025-02-14 09:55:16,717](run_ledsrv) Ошибка Табло: возможно нет связи? timed out. 
+[2025-02-14 09:56:48,441](main) srv13 is already running. Shutdown...
+[2025-02-14 09:56:48,441](main) Filepid(/run/user/1000/srv13.pid) read error!

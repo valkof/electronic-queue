@@ -1,0 +1,8 @@
+[2025-02-10 22:11:34,245](db_execute_all_trans) SQL: Error: unrecognized token: "{"
+[2025-02-10 22:12:34,440](db_execute_all_trans) SQL: Error: unrecognized token: "{"
+[2025-02-10 22:13:40,381](db_execute_all_trans) SQL: Error: unrecognized token: "{"
+[2025-02-10 22:14:15,616](db_execute_all_trans) SQL: Error: unrecognized token: "{"
+[2025-02-10 22:14:43,460](db_execute_all_trans) SQL: Error: unrecognized token: "{"
+[2025-02-10 22:16:51,377](db_execute_all_trans) SQL: Error: unrecognized token: "{"
+[2025-02-10 22:17:10,928](db_execute_all_trans) SQL: Error: unrecognized token: "{"
+[2025-02-10 22:18:00,607](db_execute_all_trans) SQL: Error: unrecognized token: "{"

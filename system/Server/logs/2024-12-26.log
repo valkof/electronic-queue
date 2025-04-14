@@ -1,0 +1,11 @@
+[2024-12-26 00:21:30,600](db_execute) SQL: Error: expected str, bytes or os.PathLike object, not SqLite
+[2024-12-26 00:24:43,849](db_execute) SQL: Error: expected str, bytes or os.PathLike object, not SqLite
+[2024-12-26 00:25:48,973](db_execute) SQL: Error: expected str, bytes or os.PathLike object, not SqLite
+[2024-12-26 00:26:00,802](db_execute) SQL: Error: expected str, bytes or os.PathLike object, not SqLite
+[2024-12-26 00:26:12,307](db_execute) SQL: Error: expected str, bytes or os.PathLike object, not SqLite
+[2024-12-26 00:32:59,294](db_execute_rowid) SQL: Error: table ticket has 10 columns but 8 values were supplied
+[2024-12-26 01:42:58,258](db_execute_trans) SQL: Error: table ticket has 10 columns but 8 values were supplied
+[2024-12-26 01:43:58,215](db_execute_trans) SQL: Error: table ticket has 10 columns but 8 values were supplied
+[2024-12-26 01:44:47,251](db_execute_trans) SQL: Error: table ticket has 10 columns but 8 values were supplied
+[2024-12-26 01:45:02,035](db_execute_trans) SQL: Error: table ticket has 10 columns but 8 values were supplied
+[2024-12-26 01:45:28,749](db_execute_trans) SQL: Error: table ticket has 10 columns but 8 values were supplied

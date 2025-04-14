@@ -1,0 +1,40 @@
+{
+    "host": {
+        "id": "101",
+        "name": "Киоск 101",
+        "bind": "127.0.0.1",
+        "port": "32103",
+        "username": "",
+        "password": ""
+    },
+    "queue" : {
+          "1": {
+              "name": "Регистратура",
+              "driver": "eq",
+              "url": "http://127.0.0.1:32107/",
+              "auth": ["eq01", "e******1"],
+              "timeout": 2,
+              "template": "template\/1.ps",
+              "printcommand": "lpr"
+          },
+          "2": {
+              "name": "Справки",
+              "driver": "eq",
+              "url": "http://127.0.0.1:32107/",
+              "auth": ["eq01", "e******1"],
+              "timeout": 2,
+              "template": "template\/2.ps",
+              "printcommand": "lpr"
+          },
+          "3": {
+              "name": "Флюорография",
+              "driver": "eq",
+              "url": "http://127.0.0.1:32107/",
+              "auth": ["eq01", "e******1"],
+              "timeout": 2,
+              "template": "template\/3.ps",
+              "printcommand": "lpr"
+          }
+    }
+
+}

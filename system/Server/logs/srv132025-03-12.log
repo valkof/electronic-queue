@@ -1,0 +1,6 @@
+[2025-03-12 12:21:29,194](main) srv13 is already running. Shutdown...
+[2025-03-12 12:21:29,194](main) Filepid(/run/user/1000/srv13.pid) read error!
+[2025-03-12 14:54:29,478](main) srv13 is already running. Shutdown...
+[2025-03-12 14:54:29,478](main) Filepid(/run/user/1000/srv13.pid) read error!
+[2025-03-12 14:56:04,229](main) Filepid(/run/user/1000/srv13.pid) exists, but the process is not started! Delete filepid
+[2025-03-12 15:59:31,800](main) Filepid(/run/user/1000/srv13.pid) exists, but the process is not started! Delete filepid
