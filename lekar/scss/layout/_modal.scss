@@ -26,7 +26,11 @@
   justify-content: space-between;
   gap: 30px;
   border-radius: 20px;
- }
+}
+
+.modal__message {
+  font-size: 5rem;
+}
 
 .modal__buttons {
   display: none;
