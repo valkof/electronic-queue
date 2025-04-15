@@ -33,6 +33,12 @@
 				<input type="button" class="button time" value="@D3000210000" onClick="timeActive(this);couponGenerated(5,530,12,'save_19','@D3000016010,@D3000046010,@D3000220000','is10_08');">
 ###<!-- 5 -->
 			</div>
+			<div class="day__message">
+				<p>Проверьте информацию справа</p>
+				<p>и</p>
+				<p>нажмите кнопку</p>
+				<p>ЗАПИСАТЬСЯ</p>
+			</div>
 		</div>
 ###<!-- 6 -->
 <div id="day_menu" class="days__wrapper_error">

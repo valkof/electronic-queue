@@ -121,8 +121,6 @@ class RunMedia:
                 # Читаем параметры Табло
                 led_ip = tuple(v.dL[i]['led_ip'])
                 timeout = v.dL[i]['led_timeout']
-                print()
-                print(timeout)
                 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 s.settimeout(timeout)
                 s.connect(led_ip)
@@ -194,9 +192,7 @@ class WORKER:
                 break
         if self.wplace is not None:
             # номер окна существует, возвращаем данные об окне
-            # s = SqLite(v.sD, {'w': self.wplace})
             self.r['stdout'] = v.dW[self.wplace]
-                # print("self.r['stdout'] = ", json.dumps(self.r['stdout']))
         else:
             # недостаточно или неверные параметры запроса
             self.r['stderr'] = 'Ошибка: отсутствует рабочее место. '
@@ -284,6 +280,49 @@ class WORKER:
             self.r['stderr'] = 'Ошибка: Проблема в описании очереди или рабочего места. '
             log.debug(json.dumps(self.r))
         return self.r
+
+    def tnexts(self):
+        # вызвать талон следующий
+        self.query = self.params.query
+        self.dQuery = parse_qs(self.query)
+        self.queues = None
+        self.wplace = None
+        for key, value in self.dQuery.items():
+            if key == 'qq':
+                # запрос по номеру очереди "tnext?q=3"
+                self.queues = value[0]
+                # continue
+            elif key == 'w':
+                # читаем номер окна
+                self.wplace = value[0] if check_exist_wplace(value[0]) is not None else None
+                # continue
+            else:
+                # запрос с плохими реквизитами, далее вернем ошибку
+                self.wplace = None
+                break
+        if (self.wplace is not None and self.queues is not None):
+            # номер окна и очереди актуален, формируем запрос на следующего посетителя
+            s = SqLite(v.sD, {'qq': self.queues, 'w': self.wplace})
+            ret = s.ticket_nexts()
+            if ret[0] is not None:
+                # Очередь не пустая, получили номер в ret[0][1]
+                # Отправляем на проигрывание
+                self.r['stderr'] = RunMedia(self.wplace,
+                                            ret[0][0],
+                                            v.dW[self.wplace]).start_media()
+                if len(self.r['stderr']) == 0:
+                    self.r['stderr'] = None
+                self.r['stdout'] = ret[0][0]
+            else:
+                # возвращаем сообщение о пустой очереди
+                self.r['stdout'] = None
+                self.r['stderr'] = "Очередь пуста! "
+        else:
+            # недостаточно или неверные параметры запроса
+            self.r['stderr'] = 'Ошибка: Не выбрана очередь. '
+            log.debug(json.dumps(self.r))
+        return self.r
+
 
     def tnextbyname(self):
         # вызвать талон следующий по его имени
@@ -571,7 +610,6 @@ class WORKER:
             elif key == 'd':
                 # читаем описание оператора к талону
                 self.description = unquote(value[0])
-                print(self.description)
                 # continue
             else:
                 pass
@@ -641,7 +679,6 @@ class WORKER:
                 pass
         if self.queue is not None:
             # Номер очереди присутствует
-            print(self.queue)
             s = SqLite(v.sD, {'q': self.queue})
             ret = s.ticket_list_queue()
             print("ret = s.ticket_list_queue=", ret)
@@ -672,7 +709,6 @@ class WORKER:
                 pass
         if self.queues is not None:
             # Список очередей не пуст
-            print(self.queues)
             s = SqLite(v.sD, params='', dparams={'qq': self.queues})
             ret = s.ticket_list_queues()
             print("ret = s.ticket_list_queues=", ret)
@@ -825,7 +861,7 @@ def main():
     # "XDG_RUNTIME_DIR" - каталог в котором будем
     # сохранять PID-процесса
     if "XDG_RUNTIME_DIR" not in os.environ:
-        filePid = os.path.join("/var/run/", procname+'.pid')
+        filePid = os.path.join(procname+'.pid')
     else:
         filePid = os.path.join(os.environ["XDG_RUNTIME_DIR"], procname+'.pid')
 

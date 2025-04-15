@@ -1,0 +1,4 @@
+requests
+pillow
+customtkinter
+psutil

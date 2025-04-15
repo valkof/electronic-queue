@@ -1,13 +1,14 @@
 <div id="rep_me" class="persona__auth">
 	<div>
-		<span>@D3000800000</span><span id="name-patient">@D3000810000</span>
+		<span>Здравствуйте, @D3000800000</span>
 	</div>
 	<input type="hidden" name="num_130" value="@D3000010000">
 	<input type="hidden" name="num_331" value="@D3000020000">
+	<input type="hidden" id="name-patient" value="@D3000810000">
 	<input type="button" value="показать записи на прием" OnClick="jsa_031(5,530,18,'saveblank1','','is10_08');" hidden>
 	<input type="button" value="скрыть" OnClick="document.getElementById('show_me').innerHTML ='';" hidden>
 	<input type="button" value="закончить сеанс" OnClick="document.f_10_02_2_1.submit();" hidden>
-	<div align="center" id="show_me"></div>
+	<div align="center" id="show_me" hidden></div>
 </div>
 ###
 
@@ -32,7 +33,7 @@ DO WHILE .T.
 	cSql = "SELECT T130__01,T300__02 FROM T130,T300 WHERE T130__03="+aTmp_1[01]+" AND T130__04=310 AND T130__08="+a998_[18]+" AND T130__97="+ZSTR(a999_[22])+" AND T130__98=0 AND T300__01=T130__03 AND T300__98=0"
 ? '<br>1.1=',cSql
 	IF .NOT. CheckResult(CT12_209_(hPipe,cSql,aTmp_))	
-		sRet_ = 'ОШИБКА: попробуйте еще раз! Возврат через 3 сек...'
+		sRet_ = 'ОШИБКА: попробуйте еще раз! '
 		EXIT
 	ENDIF
 	IF LEN(aTmp_) = 0  // нет в базе данных
@@ -41,7 +42,7 @@ DO WHILE .T.
 	ENDIF
 	a000_[01]:= aTmp_[01]
 	aTmp_ := AT2_210_3(aTmp_[02],' ')
-	a000_[80] := "Здравствуйте, "
+	a000_[80] := aTmp_[02]+" "+aTmp_[03]
 	a000_[81] := aTmp_[01]+" "+aTmp_[02]+" "+aTmp_[03]
 * выборка МЭК пациента
 	cSql = "SELECT T331__01 FROM T330,T331 WHERE T330__03="+aTmp_1[01]+;
@@ -84,8 +85,7 @@ ELSE
 		ELSEIF sRet_ = '7'
 ? "alert('Вы уже зарезервировали прием к этому врачу..');"
 		ELSE
-? "parent.document.getElementById('modal__msg-content').innerHTML = '"+SUBSTR(sRet_)+"';"
-? "parent.document.getElementById('modal__msg').classList.add('active');"
+? "parent.openModalAuth('"+SUBSTR(sRet_)+"');"
 		ENDIF
 	sRet_ = '0'
 ENDIF

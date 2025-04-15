@@ -20,7 +20,7 @@ function WebSocketTestGsprint() {
 		
 		ws.onerror = function(error) {
 			console.error("WebSocket Error:", error);
-            // parent.parent.openModalTakeToTiket();
+			// parent.parent.openModalTakeToTiket();
 		};
 	}
 	</script>
