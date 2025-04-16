@@ -1,6 +1,6 @@
 {
     "eq_wplace": "8",
-    "eq_url": "http://10.0.5.128:32107/",
+    "eq_url": "http://10.0.5.195:32107/",
     "eq_auth": [
         "eq01",
         "e******1"
@@ -11,7 +11,7 @@
         "winfo_x": 213,
         "winfo_y": 316,
         "mode": "Dark",
-        "theme": "green",
-        "scaling": 1.2
+        "theme": "blue",
+        "scaling": 1.0
     }
 }

@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import os
+import platform
 import sys
 import json
 from os import path
@@ -248,10 +249,28 @@ def main():
     # Идентификатор основного сервиса
     # "XDG_RUNTIME_DIR" - каталог в котором будем
     # сохранять PID-процесса
-    if "XDG_RUNTIME_DIR" not in os.environ:
-        filePid = os.path.join("/var/run/", procname+'.pid')
+     # Идентификатор основного сервиса в зависимости от ОС
+    osplatform = platform.system()
+    if osplatform == 'Windows':
+        filePid = os.path.join(path_def,procname+'.pid')  # Запишем PID в каталог сервера
+    elif osplatform == 'Linux':
+        # "XDG_RUNTIME_DIR" - каталог в котором будем
+        # сохранять PID-процесса
+        if "XDG_RUNTIME_DIR" not in os.environ:
+            filePid = os.path.join("/var/run/", procname+'.pid')
+        else:
+            filePid = os.path.join(os.environ["XDG_RUNTIME_DIR"], procname+'.pid')
     else:
-        filePid = os.path.join(os.environ["XDG_RUNTIME_DIR"], procname+'.pid')
+        err = "Невозможно определить ОС: " + osplatform
+        log.debug(err)
+        sys.exit(0)
+
+
+
+    # if "XDG_RUNTIME_DIR" not in os.environ:
+    #     filePid = os.path.join("/var/run/", procname+'.pid')
+    # else:
+    #     filePid = os.path.join(os.environ["XDG_RUNTIME_DIR"], procname+'.pid')
 
 
     procname_running = False  # по-умолчанию личым, что процесс не запущен

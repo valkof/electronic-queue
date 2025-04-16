@@ -216,7 +216,7 @@ class EqWin(ctk.CTk):
                 self.ticket = r['stdout']
                 self.bmain_curr.after(v.dH["ui"]["timeout_next"]*1000, self.btn_timeout_next)
         self.lmain_tick.configure(text=self.ticket)
-        self.title("Следующий в очередь " + v.dW['queue'][0] + '. ' + v.dE[ v.dW['queue'][0] ]['name'])
+        # self.title("Следующий в очередь " + v.dW['queue'][0] + '. ' + v.dE[ v.dW['queue'][0] ]['name'])
         self.mess = r['stderr']
         self.eq_mess_w()
         # self.stop_thread()
@@ -246,7 +246,7 @@ class EqWin(ctk.CTk):
                 self.ticket = r['stdout']
                 self.bmain_curr.after(v.dH["ui"]["timeout_next"]*1000, self.btn_timeout_next)
         self.lmain_tick.configure(text=self.ticket)
-        self.title("Следующий в очередь " + v.dW['queue'][0] + '. ' + v.dE[ v.dW['queue'][0] ]['name'])
+        # self.title("Следующий в очередь " + v.dW['queue'][0] + '. ' + v.dE[ v.dW['queue'][0] ]['name'])
         self.mess = r['stderr']
         self.eq_mess_w()
         # self.stop_thread()
@@ -273,7 +273,7 @@ class EqWin(ctk.CTk):
                 self.ticket = r['stdout']
                 self.bmain_curr.after(v.dH["ui"]["timeout_next"]*1000, self.btn_timeout_curr)
         self.lmain_tick.configure(text=self.ticket)
-        self.title("Повтор вызова в очередь " + v.dW['queue'][0] + '. ' + v.dE[ v.dW['queue'][0] ]['name'])
+        # self.title("Повтор вызова в очередь " + v.dW['queue'][0] + '. ' + v.dE[ v.dW['queue'][0] ]['name'])
         self.mess = r['stderr']
         self.eq_mess_w()
 
@@ -307,7 +307,7 @@ class EqWin(ctk.CTk):
                 self.bmain_notshow.configure(state=tk.NORMAL)
                 self.bmain_end.configure(state=tk.NORMAL)
         self.lmain_tick.configure(text=self.ticket)
-        self.title("Не явился в очередь " + v.dW['queue'][0] + '. ' + v.dE[ v.dW['queue'][0]]['name'])
+        # self.title("Не явился в очередь " + v.dW['queue'][0] + '. ' + v.dE[ v.dW['queue'][0]]['name'])
         self.mess = r['stderr']
         self.eq_mess_w()
         self.curr_time = datetime.datetime.now()
@@ -336,7 +336,7 @@ class EqWin(ctk.CTk):
                 self.bmain_notshow.configure(state=tk.NORMAL)
                 self.bmain_end.configure(state=tk.NORMAL)
         self.lmain_tick.configure(text=self.ticket)
-        self.title("Завершен вызов в очередь " + v.dW['queue'][0] + '. ' + v.dE[ v.dW['queue'][0] ]['name'])
+        # self.title("Завершен вызов в очередь " + v.dW['queue'][0] + '. ' + v.dE[ v.dW['queue'][0] ]['name'])
         self.mess = r['stderr']
         self.eq_mess_w()
         self.curr_time = datetime.datetime.now()
@@ -437,7 +437,7 @@ class EqWin(ctk.CTk):
                 self.bmain_next.configure(state=tk.NORMAL)
             else:
                 self.mess = r['stderr']
-        self.title("Отложить талон для рабочего места " + v.dH['eq_wplace'] + '. ')
+        # self.title("Отложить талон для рабочего места " + v.dH['eq_wplace'] + '. ')
         self.destroy_frame_children(self.f_work)
         self.eq_mess_w()
         self.curr_time = datetime.datetime.now()
@@ -491,7 +491,7 @@ class EqWin(ctk.CTk):
                     self.bw_descr.grid(row=row+i, column=1)  #, padx=(3, 3), pady=(3, 3), ipadx=0)
                     self.bw_descr._text_label.configure(wraplength=400)
                 self.mess = r['stderr']
-        self.title("Список отложенных талонов на рабочем месте " + v.dH['eq_wplace'] + '. ')
+        # self.title("Список отложенных талонов на рабочем месте " + v.dH['eq_wplace'] + '. ')
         self.eq_mess_w()
 
     def eq_queueslist_w(self):
@@ -541,7 +541,7 @@ class EqWin(ctk.CTk):
                     self.bw_descr.grid(row=row+i, column=1)  #, padx=(3, 3), pady=(3, 3), ipadx=0)
                     self.bw_descr._text_label.configure(wraplength=400)
                 self.mess = r['stderr']
-        self.title("Список отложенных талонов на рабочем месте " + v.dH['eq_wplace'] + '. ')
+        # self.title("Список отложенных талонов на рабочем месте " + v.dH['eq_wplace'] + '. ')
         self.eq_mess_w()
 
     def eq_queuelist(self, queue_id, tick_name=''):
@@ -570,7 +570,7 @@ class EqWin(ctk.CTk):
                 self.mess += r['stderr']
         self.lmain_tick.configure(text=self.ticket)
         self.f_mess.grid_remove()
-        self.title("Вызов талона из очереди " + queue + '. ')
+        # self.title("Вызов талона из очереди " + queue + '. ')
         self.destroy_frame_children(self.f_work)
         self.eq_mess_w()
 ########## Расширенное меню, команда Список отложенных ##########

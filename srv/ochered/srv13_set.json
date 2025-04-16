@@ -32,12 +32,12 @@
         },
         "8": {
             "name": "Окно 3, регистратура",
-            "tvsrv": [],
+            "tvsrv": ["1"],
             "ausrv": ["1"],
             "au_prefix": "talon_nomer",
             "au_place": "okno_nomer,3",
             "ledsrv": [],
-            "queue": ["2", "3"]
+            "queue": ["1", "3"]
         }
     },
 
