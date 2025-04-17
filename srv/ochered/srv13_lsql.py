@@ -433,7 +433,7 @@ if __name__ == '__main__':
     #ret = s.ticket_list_queues()
     # s = SqLite(v.sD)
     # ret = s.db_create()
-    s = SqLite(v.sD, params={'w': '7', 'p': 'S', 'q': '1'})
+    s = SqLite(v.sD, params={'w': '7', 'p': 'Б', 'q': '3'})
     ret = s.ticket_create()
     print("ret=", ret)
     print("typeret=", type(ret))
