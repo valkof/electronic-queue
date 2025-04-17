@@ -31,19 +31,19 @@ def prefix2queue(prefix):
 
 def check_exist_queue(queue):
     # есть ли очередь? и вернуть префикс
-    for i in v.dE:
-        if i == queue:
-            return v.dE.get(i)['prefix']
-    return None
+    if queue in v.dE:
+        return v.dE.get(queue)['prefix']
+    else:
+        return None
 
 
 def check_exist_wplace(wplace):
     # есть ли рабочее место?
-    for i in v.dW:
-        if i == wplace:
-            return wplace
-    return None
-
+    if wplace in v.dW:
+        return wplace
+    else:
+        return None
+    
 
 class RunMedia:
     def __init__(self, wplace, ticket, dwplace):
