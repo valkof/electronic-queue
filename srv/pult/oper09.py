@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+import math
 from oper09_vars import V
 import requests
 import json
@@ -26,7 +27,7 @@ print(v.dW)
 # v.dE[v.dH['eq_wplace']] = {"name": "Отложенные"}
 print(v.dE)
 queue = v.dW['queue'][0]
-first_run_app = True
+# first_run_app = True
 dLenQueue = {}
 queues = []
 # список очередей по которым делаем запрос о количестве талонов
@@ -48,10 +49,11 @@ class EqWin(ctk.CTk):
         self.ticket = "----"
         self.mess = None
         self.curr_time = datetime.datetime.now()
+        self.router_pages = []
         # configure window
         self.title("_")
         self.geometry("540")
-        self.resizable(width=False, height=False)
+        self.resizable(False, False)
 
         # configure grid layout (4x4)
         #self.grid_columnconfigure(1, weight=1)
@@ -63,14 +65,31 @@ class EqWin(ctk.CTk):
         # create sidebar frame with widgets
         # self.sidebar_frame = customtkinter.CTkFrame(self, width=140, corner_radius=0)
 
+
+        ########## Виджеты талона ##########
+        self.f_ticket = ctk.CTkFrame(self, corner_radius=0)
+        self.f_ticket.grid(row=0, column=0, sticky="nsew", rowspan=2)
+
+        self.lmain_tick = ctk.CTkLabel(self.f_ticket, text="???",
+                                       font=ctk.CTkFont(size=24, weight="bold"),
+                                       width=80)
+        self.lmain_tick.grid(row=0, column=0, padx=(3, 3), pady=(3, 3), ipadx=0)
+
+        self.bqueue_work = ctk.CTkButton(self.f_ticket, text=". . .",
+                                       font=ctk.CTkFont(weight="normal"),
+                                       width=80, command=self.eq_work_w)
+        self.bqueue_work.grid(row=1, column=0, padx=(3, 3), pady=(3, 3), ipadx=0)
+        ########## Виджеты талона ##########
+
         ########## Основное меню, виджеты ##########
         self.f_main = ctk.CTkFrame(self, corner_radius=0)
-        self.f_main.grid(row=0, column=0, sticky="nsew")
+        self.f_main.grid(row=0, column=1, sticky="nsew")
 
         self.bmain_next = ctk.CTkButton(self.f_main, text="➜ Следующий",
                                         font=ctk.CTkFont(weight="bold"),
                                         width=110, command=self.eq_nexts_w)
         self.bmain_next.grid(row=0, column=0, padx=(3, 3), pady=(3, 3), ipadx=0)
+        self.bmain_next.grid_remove()
 
         self.bmain_curr = ctk.CTkButton(self.f_main, text="⟳ Повторить",
                                         font=ctk.CTkFont(weight="bold"),
@@ -82,21 +101,16 @@ class EqWin(ctk.CTk):
                                            width=110, command=self.eq_notshow_w)
         self.bmain_notshow.grid(row=0, column=2, padx=(3, 3), pady=(3, 3), ipadx=0)
 
-        self.bmain_end = ctk.CTkButton(self.f_main, text="✔ Завершить",
+        self.bmain_end = ctk.CTkButton(self.f_main, text="✔ Обслужен",
                                        font=ctk.CTkFont(weight="bold"),
                                        width=110, command=self.eq_end_w)
-        self.bmain_end.grid(row=0, column=3, padx=(3, 3), pady=(3, 3), ipadx=0)
-
-        self.lmain_tick = ctk.CTkLabel(self.f_main, text="----",
-                                       font=ctk.CTkFont(size=24, weight="bold"),
-                                       width=80)
-        self.lmain_tick.grid(row=0, column=4, padx=(3, 3), pady=(0, 0), ipadx=0)
+        self.bmain_end.grid(row=0, column=0, padx=(3, 3), pady=(3, 3), ipadx=0)
 ########## Основное меню, виджеты ##########
 
 
 ########## Меню очереди, виджеты ##########
         self.f_queue = ctk.CTkFrame(self, corner_radius=0)
-        self.f_queue.grid(row=1, column=0, sticky="nsew")
+        self.f_queue.grid(row=1, column=1, sticky="nsew")
         column = 0
         self.bqueue_ = {}
         self.lqueue_ = {}
@@ -104,19 +118,19 @@ class EqWin(ctk.CTk):
             self.bqueue_[key] = ctk.CTkButton(self.f_queue,
                                               text=v.dE[key]["shortname"],
                                               font=ctk.CTkFont(weight="normal"),
-                                              width=100,
+                                              width=110,
                                               anchor="w",
                                               command=functools.partial(self.set_queues_w,
                                                                         key)
                                               )
-            self.bqueue_[key].grid(row=1, column=column, padx=(15, 0),
-                                       pady=(0, 0), ipadx=3, sticky='w')
+            self.bqueue_[key].grid(row=1, column=column, padx=(3, 3),
+                                       pady=(3, 3), ipadx=0, sticky='w')
 
             self.lqueue_[key] = ctk.CTkLabel(self.f_queue, text=str(dLenQueue[key]),
                                              font=ctk.CTkFont(weight="normal"),
                                              width=20
                                              )
-            self.lqueue_[key].grid(row=1, column=column, padx=(3, 5), pady=(3, 3), ipadx=0, ipady=0, sticky="e")
+            self.lqueue_[key].grid(row=1, column=column, padx=(3, 10), pady=(3, 3), ipadx=0, ipady=0, sticky="e")
             column += 1
 
         def setLenQueue():
@@ -130,16 +144,11 @@ class EqWin(ctk.CTk):
                     pass
             self.after(v.dH["ui"]["timeout_check"]*1000, setLenQueue)
         setLenQueue()
-
-        self.bqueue_work = ctk.CTkButton(self.f_queue, text="⟠",
-                                       font=ctk.CTkFont(weight="normal"),
-                                       width=30, command=self.eq_work_w)
-        self.bqueue_work.grid(row=1, column=column, padx=(15, 3), pady=(3, 3), ipadx=0)
 ########## Меню очереди, виджеты ##########
 
 ########## Сообщения, виджеты##########
         self.f_mess = ctk.CTkFrame(self, corner_radius=0)
-        self.f_mess.grid(row=2, column=0, sticky="nsew")
+        self.f_mess.grid(row=2, column=0, columnspan=2, sticky="nsew")
         # self.lmess_mess = ctk.CTkLabel(self.f_mess, text="----", width=570)
         # self.lmess_mess.grid(row=1, column=0, padx=(3, 3), pady=(3, 3), ipadx=0 )
         self.bmess_mess = ctk.CTkButton(self.f_mess,
@@ -149,24 +158,87 @@ class EqWin(ctk.CTk):
                                         hover_color="white",
                                         text_color_disabled="red",
                                         state=tk.DISABLED)
-        self.bmess_mess.grid(row=2, column=0, padx=(3, 3), pady=(3, 3), ipadx=0 )
+        self.bmess_mess.grid(row=0, column=0, padx=(3, 3), pady=(3, 3), ipadx=0 )
         self.bmess_mess._text_label.configure(wraplength=570)
         self.f_mess.grid_remove()
 ########## Сообщения, виджеты##########
 
 ########## Рабочий фрейм ##########
         self.f_work = ctk.CTkFrame(self, corner_radius=0)
-        self.f_work.grid(row=4, column=0, sticky="nsew")
+        self.f_work.grid(row=4, column=0, sticky="nsew", columnspan=2)
+        self.router_pages.append(self.f_work)
         self.f_work.grid_remove()
 ##########  Рабочий фрейм ##########
 
+##########  Фрейм дополнительных функций к текущему талону ##########
+        self.f_cur_ticket = ctk.CTkFrame(self, corner_radius=0)
+        self.f_cur_ticket.grid(row=5, column=0, sticky="nsew", columnspan=2)
+        ctk.CTkLabel(self.f_cur_ticket, text="● Отложить талон", text_color="white").grid(row=0, column=0, padx=(5, 5), pady=(2, 2), sticky="w")
+        
+        f_aside_ticket = ctk.CTkFrame(self.f_cur_ticket, corner_radius=0, fg_color="transparent")
+        f_aside_ticket.grid(row=1, column=0, padx=(5, 5), pady=(2, 2), sticky="nsew")
+        
+        self.text_aside_ticket = ctk.CTkEntry(f_aside_ticket, placeholder_text="Описание талона", width=290)
+        self.text_aside_ticket.grid(row=0, column=0, padx=(3, 3), pady=(3, 3), sticky="nsew")
+
+        self.but_aside_ticket = ctk.CTkButton(f_aside_ticket, fg_color="transparent",
+                                            text="Отложить талон", width=120,
+                                            border_width=2, text_color=("gray10", "#DCE4EE"),
+                                            command=self.eq_asidecurr)
+        self.but_aside_ticket.grid(row=0, column=2, padx=(3, 3), pady=(3, 3), sticky="nsw")
+        
+        ctk.CTkLabel(self.f_cur_ticket, text="● Перевести талон в другую очередь", text_color="white").grid(row=2, column=0, padx=(5, 5), pady=(2, 2), sticky="w")
+
+        f_redir_ticket = ctk.CTkFrame(self.f_cur_ticket, corner_radius=0, fg_color="transparent")
+        f_redir_ticket.grid(row=3, column=0, padx=(5, 5), pady=(2, 2), sticky="nsew")
+        f_redir_ticket.columnconfigure(0, weight=1, minsize=380)
+        f_redir_ticket.columnconfigure(1, weight=1, minsize=120)
+
+        f_redir_list = ctk.CTkFrame(f_redir_ticket, corner_radius=0, fg_color="transparent")
+        f_redir_list.grid(row=0, column=0, padx=(5, 5), pady=(2, 2), sticky="nsew")
+
+        radio_queue = ctk.StringVar()
+        nomer_el = 0
+        for id, value in v.dE.items():
+            row = math.floor(nomer_el / 3) 
+            col = nomer_el % 3
+            radio_elem = ctk.CTkRadioButton(f_redir_list, text=v.dE[id]["shortname"], value=id, variable=radio_queue, border_width_checked=12, border_width_unchecked=1, fg_color="white", width=90)
+            if nomer_el == 0:
+                radio_elem._check_state = True
+            radio_elem.grid(column=col, row=row, pady=(3, 3))
+            nomer_el += 1
+        radio_queue.set(1)
+
+        self.but_redir_ticket = ctk.CTkButton(f_redir_ticket, fg_color="transparent",
+                                            text="Перевести талон", width=100,
+                                            border_width=2, text_color=("gray10", "#DCE4EE"),
+                                            command=self.eq_asidecurr)
+        self.but_redir_ticket.grid(row=0, column=1, padx=(3, 3), pady=(3, 3), sticky="ew")
+
+        self.router_pages.append(self.f_cur_ticket)
+        self.f_cur_ticket.grid_remove()
+##########  Фрейм дополнительных функций к текущему талону ##########
+
 ########## Запуска пульта проверка на наличие открытого талона ###########
-        global first_run_app
-        if first_run_app:
-            self.eq_curr_w()
-            first_run_app = False
-            self.set_queues_w(queue)
+        # global first_run_app
+        # if first_run_app:
+        self.eq_curr_w()
+            # first_run_app = False
+        self.set_queues_w(queue)
 ########## Запуска пульта проверка на наличие открытого талона ##########
+
+########## Роутер ##########
+    def router(self, page):
+        open_page = True
+        if page in self.grid_slaves():
+            open_page = False
+        for element in self.router_pages:
+            element.grid_remove()
+        if page and open_page:
+            page.grid()
+
+    
+########## Роутер ##########
 
 ##########   Основное меню, команды обновления фреймов ##########
     def eq_mess_w(self):
@@ -177,15 +249,15 @@ class EqWin(ctk.CTk):
             self.f_mess.grid_remove()
 
     def eq_work_w(self):
-        self.destroy_frame_children(self.f_work)
-        if self.extmenu:
-            self.f_mess.grid_remove()
-            self.extmenu = False
-        elif self.ticket and self.ticket != '----':  # есть номер талона
-            self.extmenu = True
+        # self.destroy_frame_children(self.f_work)
+        # if self.extmenu:
+        #     self.f_mess.grid_remove()
+        #     self.extmenu = False
+        if self.ticket and self.ticket != '???':  # есть номер талона
+            # self.extmenu = True
             self.eq_asidecurr_w()
         else:  # нет выбранного талона
-            self.extmenu = True
+            # self.extmenu = True
             self.eq_queueslist_w()
 
     def eq_frame_forget(self):
@@ -226,7 +298,7 @@ class EqWin(ctk.CTk):
         self.bmain_end.configure(state=tk.NORMAL)
 
     def eq_nexts_w(self):
-        self.f_work.grid_remove()
+        # self.f_work.grid_remove()
         self.bmain_next.configure(state=tk.DISABLED)
         self.bmain_curr.configure(state=tk.DISABLED)
         self.bmain_notshow.configure(state=tk.DISABLED)
@@ -240,15 +312,18 @@ class EqWin(ctk.CTk):
             r['stderr'] = str(e) + ". "
         finally:
             if r['stdout'] is None:
-                self.ticket = '----'
+                self.ticket = '???'
                 self.bmain_next.configure(state=tk.NORMAL)
             else:
                 self.ticket = r['stdout']
                 self.bmain_curr.after(v.dH["ui"]["timeout_next"]*1000, self.btn_timeout_next)
+                self.bmain_next.grid_remove()
+                self.bmain_end.grid()
         self.lmain_tick.configure(text=self.ticket)
         # self.title("Следующий в очередь " + v.dW['queue'][0] + '. ' + v.dE[ v.dW['queue'][0] ]['name'])
         self.mess = r['stderr']
-        self.eq_mess_w()
+        self.router(self.f_mess)
+        # self.eq_mess_w()
         # self.stop_thread()
 ########## Основное меню, команда Следующий ##########
 
@@ -267,8 +342,10 @@ class EqWin(ctk.CTk):
             r['stderr'] = str(e) + ". "
         finally:
             if r['stdout'] is None:
-                self.ticket = '----'
+                self.ticket = '???'
                 self.bmain_next.configure(state=tk.NORMAL)
+                self.bmain_end.grid_remove()
+                self.bmain_next.grid()
             else:
                 self.ticket = r['stdout']
                 self.bmain_curr.after(v.dH["ui"]["timeout_next"]*1000, self.btn_timeout_curr)
@@ -298,8 +375,10 @@ class EqWin(ctk.CTk):
             r['stderr'] = str(e) + ". "
         finally:
             if r['stdout'] is None and r['stderr'] is None:
-                self.ticket = '----'
+                self.ticket = '???'
                 self.bmain_next.configure(state=tk.NORMAL)
+                self.bmain_end.grid_remove()
+                self.bmain_next.grid()
                 #self.bmain_end.configure(state=tk.DISABLED)
             else:
                 self.ticket = '----'
@@ -328,8 +407,10 @@ class EqWin(ctk.CTk):
             r['stderr'] = str(e) + ". "
         finally:
             if r['stdout'] is None and r['stderr'] is None:
-                self.ticket = '----'
+                self.ticket = '???'
                 self.bmain_next.configure(state=tk.NORMAL)
+                self.bmain_end.grid_remove()
+                self.bmain_next.grid()
             else:
                 self.ticket = '----'
                 self.bmain_curr.configure(state=tk.NORMAL)
@@ -400,22 +481,24 @@ class EqWin(ctk.CTk):
 
 ########## Расширенное меню, команда Отложить ##########
     def eq_asidecurr_w(self):
-        self.f_mess.grid_remove()
-        self.f_work.grid(row=4, column=0, sticky="nsew")
-        if self.ticket and self.ticket != '----':
-            self.ew_aside = ctk.CTkEntry(self.f_work, placeholder_text="Описание талона", width=400)
-            self.ew_aside.grid(row=5, column=0, columnspan=3, padx=(3, 3), pady=(3, 3), sticky="nsew")
+        # self.f_mess.grid_remove()
+        # self.f_work.grid(row=4, column=0, sticky="nsew")
+        # self.f_work.grid()
+        if self.ticket and self.ticket != '???':
+            self.router(self.f_cur_ticket)
+            # self.ew_aside = ctk.CTkEntry(self.f_work, placeholder_text="Описание талона", width=400)
+            # self.ew_aside.grid(row=5, column=0, columnspan=3, padx=(3, 3), pady=(3, 3), sticky="nsew")
 
-            self.bw_aside = ctk.CTkButton(self.f_work, fg_color="transparent",
-                                               text="Отложить талон", width=120,
-                                               border_width=2, text_color=("gray10", "#DCE4EE"),
-                                               command=self.eq_asidecurr)
-            self.bw_aside.grid(row=5, column=3, padx=(3, 3), pady=(3, 3),
-                               sticky="nsew")
-        else:
-            self.destroy_frame_children(self.f_work)
-            self.mess = "Нет талона для операции отложить"
-            self.eq_mess_w()
+            # self.bw_aside = ctk.CTkButton(self.f_work, fg_color="transparent",
+            #                                    text="Отложить талон", width=120,
+            #                                    border_width=2, text_color=("gray10", "#DCE4EE"),
+            #                                    command=self.eq_asidecurr)
+            # self.bw_aside.grid(row=5, column=3, padx=(3, 3), pady=(3, 3),
+            #                    sticky="nsew")
+        # else:
+        #     self.destroy_frame_children(self.f_work)
+        #     self.mess = "Нет талона для операции отложить"
+        #     self.eq_mess_w()
 
     def eq_asidecurr(self):
         self.bmain_next.configure(state=tk.DISABLED)
@@ -424,22 +507,24 @@ class EqWin(ctk.CTk):
         self.bmain_end.configure(state=tk.DISABLED)
         r = {'stdout': None, 'stderr': None}
         try:
-            path = 'taside?w=' + v.dH['eq_wplace'] + '&o=0' + '&d=' + quote_plus(self.ew_aside.get())
+            path = 'taside?w=' + v.dH['eq_wplace'] + '&o=0' + '&d=' + quote_plus(self.text_aside_ticket.get())
             r = self.get_request(path)
         except Exception as e:
             r['stderr'] = str(e) + ". "
         finally:
-            self.destroy_frame_children(self.f_work)
+            # self.destroy_frame_children(self.f_work)
             if r['stderr'] is None:
                 self.mess = "Талон " + self.ticket + " отложен."
-                self.ticket = '----'
+                self.ticket = '???'
                 self.lmain_tick.configure(text=self.ticket)
                 self.bmain_next.configure(state=tk.NORMAL)
             else:
                 self.mess = r['stderr']
         # self.title("Отложить талон для рабочего места " + v.dH['eq_wplace'] + '. ')
-        self.destroy_frame_children(self.f_work)
-        self.eq_mess_w()
+        # self.destroy_frame_children(self.f_work)
+        # self.eq_mess_w()
+        self.router(self.f_mess)
+        self.text_aside_ticket.delete(0, "end")
         self.curr_time = datetime.datetime.now()
 ########## Расширенное меню, команда Отложить ##########
 
