@@ -45,71 +45,60 @@ class EqWin(ctk.CTk):
     def __init__(self):
         super().__init__()
 
-        self.extmenu = False
-        self.ticket = "----"
-        self.mess = None
+        # self.extmenu = False
+        # self.ticket = "----"
+        # self.mess = None
         self.curr_time = datetime.datetime.now()
         self.router_pages = []
         # configure window
-        self.title("_")
-        self.geometry("540")
+        self.title("Пульт оператора")
+        self.geometry("600")
+        self.columnconfigure(index=0, weight=1)
+        self.columnconfigure(index=1, weight=3)
         self.resizable(False, False)
-
-        # configure grid layout (4x4)
-        #self.grid_columnconfigure(1, weight=1)
-        #self.grid_columnconfigure((2, 3), weight=0)
-        #self.grid_rowconfigure((0, 1, 2), weight=1)
-        #self.grid_columnconfigure(0, weight=1)
-        #self.grid_columnconfigure(2, weight=1)
-        # self.grid_rowconfigure(1, weight=1)
-        # create sidebar frame with widgets
-        # self.sidebar_frame = customtkinter.CTkFrame(self, width=140, corner_radius=0)
 
 
         ########## Виджеты талона ##########
-        self.f_ticket = ctk.CTkFrame(self, corner_radius=0)
-        self.f_ticket.grid(row=0, column=0, sticky="nsew", rowspan=2)
+        self.f_ticket = ctk.CTkFrame(self, corner_radius=0, border_width=1, border_color="green")
+        self.f_ticket.grid(row=0, column=0, sticky="ew", rowspan=2)
 
-        self.lmain_tick = ctk.CTkLabel(self.f_ticket, text="???",
-                                       font=ctk.CTkFont(size=24, weight="bold"),
-                                       width=80)
-        self.lmain_tick.grid(row=0, column=0, padx=(3, 3), pady=(3, 3), ipadx=0)
+        self.lmain_tick = ctk.CTkLabel(self.f_ticket, text="???", font=ctk.CTkFont(size=24, weight="bold"))
+        self.lmain_tick.grid(row=0, column=0, padx=(3, 3), pady=(3, 3), ipadx=0, sticky="ew")
 
-        self.bqueue_work = ctk.CTkButton(self.f_ticket, text=". . .",
-                                       font=ctk.CTkFont(weight="normal"),
-                                       width=80, command=self.eq_work_w)
-        self.bqueue_work.grid(row=1, column=0, padx=(3, 3), pady=(3, 3), ipadx=0)
+        self.b_adv_opt = ctk.CTkButton(self.f_ticket, text=". . .", font=ctk.CTkFont(weight="normal"),
+                                       command=self.open_adv_opt)
+        self.b_adv_opt.grid(row=1, column=0, padx=(3, 3), pady=(3, 3), ipadx=0, sticky="ew")
         ########## Виджеты талона ##########
 
         ########## Основное меню, виджеты ##########
-        self.f_main = ctk.CTkFrame(self, corner_radius=0)
-        self.f_main.grid(row=0, column=1, sticky="nsew")
+        self.f_main = ctk.CTkFrame(self, corner_radius=0, border_width=1, border_color="green")
+        self.f_main.grid(row=0, column=1, sticky="ew")
 
         self.bmain_next = ctk.CTkButton(self.f_main, text="➜ Следующий",
                                         font=ctk.CTkFont(weight="bold"),
-                                        width=110, command=self.eq_nexts_w)
+                                        command=self.eq_nexts_w)
         self.bmain_next.grid(row=0, column=0, padx=(3, 3), pady=(3, 3), ipadx=0)
         self.bmain_next.grid_remove()
 
         self.bmain_curr = ctk.CTkButton(self.f_main, text="⟳ Повторить",
                                         font=ctk.CTkFont(weight="bold"),
-                                        width=110, command=self.eq_curr_w)
+                                        command=self.eq_curr_w)
         self.bmain_curr.grid(row=0, column=1, padx=(3, 3), pady=(3, 3), ipadx=0)
 
         self.bmain_notshow = ctk.CTkButton(self.f_main, text="✖ Не явился",
                                            font=ctk.CTkFont(weight="bold"),
-                                           width=110, command=self.eq_notshow_w)
+                                           command=self.eq_notshow_w)
         self.bmain_notshow.grid(row=0, column=2, padx=(3, 3), pady=(3, 3), ipadx=0)
 
         self.bmain_end = ctk.CTkButton(self.f_main, text="✔ Обслужен",
                                        font=ctk.CTkFont(weight="bold"),
-                                       width=110, command=self.eq_end_w)
+                                       command=self.eq_end_w)
         self.bmain_end.grid(row=0, column=0, padx=(3, 3), pady=(3, 3), ipadx=0)
 ########## Основное меню, виджеты ##########
 
 
 ########## Меню очереди, виджеты ##########
-        self.f_queue = ctk.CTkFrame(self, corner_radius=0)
+        self.f_queue = ctk.CTkFrame(self, corner_radius=0, border_width=1, border_color="green")
         self.f_queue.grid(row=1, column=1, sticky="nsew")
         column = 0
         self.bqueue_ = {}
@@ -147,20 +136,10 @@ class EqWin(ctk.CTk):
 ########## Меню очереди, виджеты ##########
 
 ########## Сообщения, виджеты##########
-        self.f_mess = ctk.CTkFrame(self, corner_radius=0)
+        self.f_mess = ctk.CTkFrame(self, corner_radius=0, width=570, height=50)
         self.f_mess.grid(row=2, column=0, columnspan=2, sticky="nsew")
-        # self.lmess_mess = ctk.CTkLabel(self.f_mess, text="----", width=570)
-        # self.lmess_mess.grid(row=1, column=0, padx=(3, 3), pady=(3, 3), ipadx=0 )
-        self.bmess_mess = ctk.CTkButton(self.f_mess,
-                                        text=' ',
-                                        border_width=0, corner_radius=0,
-                                        fg_color="transparent",
-                                        hover_color="white",
-                                        text_color_disabled="red",
-                                        state=tk.DISABLED)
-        self.bmess_mess.grid(row=0, column=0, padx=(3, 3), pady=(3, 3), ipadx=0 )
-        self.bmess_mess._text_label.configure(wraplength=570)
-        self.f_mess.grid_remove()
+        self.lmess = ctk.CTkLabel(self.f_mess, text="", width=570, text_color="red")
+        self.lmess.grid(row=0, column=0, padx=(3, 3), pady=(3, 3), ipadx=0)
 ########## Сообщения, виджеты##########
 
 ########## Рабочий фрейм ##########
@@ -237,18 +216,19 @@ class EqWin(ctk.CTk):
         if page and open_page:
             page.grid()
 
-    
+    def show_message(self, message):
+        self.mess
 ########## Роутер ##########
 
 ##########   Основное меню, команды обновления фреймов ##########
     def eq_mess_w(self):
         if self.mess:
-            self.bmess_mess.configure(text=self.mess)
+            # self.bmess_mess.configure(text=self.mess)
             self.f_mess.grid(row=2, column=0, sticky="nsew")
-        else:
-            self.f_mess.grid_remove()
+        # else:
+        #     self.f_mess.grid_remove()
 
-    def eq_work_w(self):
+    def open_adv_opt(self):
         # self.destroy_frame_children(self.f_work)
         # if self.extmenu:
         #     self.f_mess.grid_remove()
@@ -262,7 +242,7 @@ class EqWin(ctk.CTk):
 
     def eq_frame_forget(self):
         self.f_work.grid_forget()
-        self.f_mess.grid_forget()
+        # self.f_mess.grid_forget()
 
 
 ##########   Основное меню, команды обновления фреймов ##########
@@ -322,7 +302,7 @@ class EqWin(ctk.CTk):
         self.lmain_tick.configure(text=self.ticket)
         # self.title("Следующий в очередь " + v.dW['queue'][0] + '. ' + v.dE[ v.dW['queue'][0] ]['name'])
         self.mess = r['stderr']
-        self.router(self.f_mess)
+        self.router()
         # self.eq_mess_w()
         # self.stop_thread()
 ########## Основное меню, команда Следующий ##########
@@ -427,7 +407,7 @@ class EqWin(ctk.CTk):
     def set_queue_w(self, queue_id):
         # Установка одной очереди
         self.destroy_frame_children(self.f_work)
-        self.f_mess.grid_remove()
+        # self.f_mess.grid_remove()
         #self.destroy_frame_children(self.f_mess)
         global queue
         queue = queue_id
@@ -446,7 +426,7 @@ class EqWin(ctk.CTk):
     def set_queues_w(self, queue_id):
         # установка списка очередей
         self.destroy_frame_children(self.f_work)
-        self.f_mess.grid_remove()
+        # self.f_mess.grid_remove()
         #self.destroy_frame_children(self.f_mess)
         global queue, queues
         queue = queue_id
@@ -523,7 +503,7 @@ class EqWin(ctk.CTk):
         # self.title("Отложить талон для рабочего места " + v.dH['eq_wplace'] + '. ')
         # self.destroy_frame_children(self.f_work)
         # self.eq_mess_w()
-        self.router(self.f_mess)
+        self.router()
         self.text_aside_ticket.delete(0, "end")
         self.curr_time = datetime.datetime.now()
 ########## Расширенное меню, команда Отложить ##########
@@ -531,7 +511,7 @@ class EqWin(ctk.CTk):
 ########## Расширенное меню, команда Список отложенных ##########
     def eq_queuelist_w(self):
         self.destroy_frame_children(self.f_work)
-        self.f_mess.grid_remove()
+        # self.f_mess.grid_remove()
         self.f_work.grid(row=4, column=0, sticky="nsew")
         # self.f_work.grid(row=4, column=0)  #, sticky="nsew")
         r = {'stdout': None, 'stderr': None}
@@ -581,7 +561,7 @@ class EqWin(ctk.CTk):
 
     def eq_queueslist_w(self):
         self.destroy_frame_children(self.f_work)
-        self.f_mess.grid_remove()
+        # self.f_mess.grid_remove()
         self.f_work.grid(row=4, column=0, sticky="nsew")
         # self.f_work.grid(row=4, column=0)  #, sticky="nsew")
         r = {'stdout': None, 'stderr': None}
@@ -654,7 +634,7 @@ class EqWin(ctk.CTk):
             if r['stderr'] is not None:
                 self.mess += r['stderr']
         self.lmain_tick.configure(text=self.ticket)
-        self.f_mess.grid_remove()
+        # self.f_mess.grid_remove()
         # self.title("Вызов талона из очереди " + queue + '. ')
         self.destroy_frame_children(self.f_work)
         self.eq_mess_w()
@@ -712,4 +692,5 @@ class EqWin(ctk.CTk):
 
 if __name__ == "__main__":
     app = EqWin()
+    app.wm_attributes("-topmost", True)
     app.mainloop()
