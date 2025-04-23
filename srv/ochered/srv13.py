@@ -634,6 +634,51 @@ class WORKER:
             self.r['stderr'] = 'Ошибка: в запросе остутствует рабочее место, номер очереди или значение сдвига. '
             log.debug(json.dumps(self.r))
         return self.r
+    
+    def tchange(self):
+        # переместить талон в другую очередь
+        self.query = self.params.query
+        self.dQuery = parse_qs(self.query)
+        self.wplace = None
+        self.queue = None
+        self.offset = None
+        for key, value in self.dQuery.items():
+            if key == 'w':
+                # читаем номер окна
+                self.wplace = value[0] if check_exist_wplace(value[0]) is not None else None
+                # continue
+            elif key == 'o':
+                # читаем насколько сдвинем в очереди текущий талон
+                self.offset = int(value[0])
+                # continue
+            elif key == 'q':
+                # читаем номер очереди
+                self.queue = value[0]
+                # continue
+            else:
+                pass
+        if self.wplace is not None and self.offset is not None and self.queue is not None:
+            # номер окна и очереди и сдвига актуален, формируем запрос
+            # на текущий номер талона
+            s = SqLite(v.sD, {'w': self.wplace})
+            ret = s.ticket_current()
+            print("ret = s.ticket_current()=", ret)
+            if ret[0] is not None:
+                # номер окна и очереди актуален, формируем запрос
+                # перемещение посетителя
+                s = SqLite(v.sD, {'w': self.wplace, 'q': self.queue, 'o': self.offset, 't': ret[0][0], 'v': ret[0][1]})
+                print(s)
+                ret = s.ticket_move_to_queue()
+                print("ret = s.ticket_move_to_queue()=", ret)
+            else:
+                # возвращаем сообщение о пустой очереди
+                self.r['stdout'] = None
+                self.r['stderr'] = "Не выбран талон для перемещения! "
+        else:
+            # недостаточно или неверные параметры запроса
+            self.r['stderr'] = 'Ошибка: в запросе остутствует рабочее место, номер очереди или значение сдвига. '
+            log.debug(json.dumps(self.r))
+        return self.r
 
     def tlist_kiosk(self):
         # Список талонов в личной очереди

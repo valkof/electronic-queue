@@ -1,0 +1,2 @@
+[2025-04-22 18:05:46,765](main) Filepid(srv13.pid) exists, but the process is not started! Delete filepid
+[2025-04-23 01:51:36,234](tcurr) {"stdout": null, "stderr": "\u041e\u0448\u0438\u0431\u043a\u0430: \u043e\u0441\u0442\u0443\u0442\u0441\u0442\u0432\u0443\u0435\u0442 \u0440\u0430\u0431\u043e\u0447\u0435\u0435 \u043c\u0435\u0441\u0442\u043e. "}

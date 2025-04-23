@@ -1,4 +1,6 @@
 import sqlite3
+
+import requests
 from logger import get_logger
 
 log = get_logger(__name__)
@@ -295,6 +297,46 @@ class SqLite:
         if ret[0] is not None:
             ret = (None,  ret[1])
         return ret
+    
+    def ticket_move_to_queue(self):
+        query_list = list()
+        query_list.append("BEGIN TRANSACTION;")
+        query_list.append('''
+            WITH new AS (
+                SELECT COALESCE(
+                    (SELECT tick_id
+                    FROM ticket
+                    WHERE queue_id=:q AND tick_kiosk>=date('now', 'localtime')
+                        AND tick_start=0
+                        AND tick_stop=0 AND place_id=0
+                    ORDER BY 1
+                    LIMIT :o, 1),
+                    (SELECT MAX(tick_id)
+                    FROM ticket
+                    WHERE queue_id=:q AND tick_kiosk>=date('now', 'localtime')
+                        AND tick_start=0 AND tick_stop=0 AND place_id=0),
+                    (SELECT MAX(tick_id)
+                    FROM ticket
+                    WHERE queue_id=:q
+                        AND tick_kiosk>=date('now', 'localtime')),
+                    1
+                ) tick_id
+            )
+            INSERT INTO ticket
+            SELECT :q, new.tick_id, :t, :w, datetime(:v), 0, 0, 0, 0, ''
+            FROM new;
+            ''')
+        query_list.append('''
+            UPDATE ticket SET tick_stop=datetime('now','localtime'), status=2
+            WHERE tick_kiosk>=date('now', 'localtime')
+                AND tick_start>=date('now', 'localtime')
+                AND tick_stop=0 AND place_id=:w;
+            ''')
+        ret = SqLite.db_execute_trans(self.dbname, query_list, self.params)
+        print(self.params)
+        if ret[0] is not None:
+            ret = (None,  ret[1])
+        return ret
 
     def ticket_notshowing(self):
         query_list = list()
@@ -433,10 +475,19 @@ if __name__ == '__main__':
     #ret = s.ticket_list_queues()
     # s = SqLite(v.sD)
     # ret = s.db_create()
-    s = SqLite(v.sD, params={'w': '7', 'p': 'Б', 'q': '3'})
+    s = SqLite(v.sD, params={'w': '6', 'p': 'Б', 'q': '3'})
     ret = s.ticket_create()
     print("ret=", ret)
-    print("typeret=", type(ret))
+    # print("typeret=", type(ret))
+    # s = SqLite(v.sD, {'w': '8'})
+    # ret = s.ticket_current()
+    # print("ret=", ret)
+    # req = requests.get(url='http://192.168.100.8:32107/tchange?w=8&o=0', auth=('eq01', 'e******1'))
+    # print("ret=", req)
+    # s = SqLite(v.sD, {'w': '8', 'q': '2', 'o': '0', 't': 'Б1', 'v': '2025-04-23 00:08:03'})
+    # ret = s.ticket_move_to_queue()
+    # print("ret=", ret)
+
     # s = SqLite(v.sD, params={'q': '1'})
     #ret = s.ticket_list_queue()
     # print("ret=", ret)
