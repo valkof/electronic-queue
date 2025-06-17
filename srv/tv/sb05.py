@@ -186,7 +186,7 @@ def uiworker(wplace, wticket):
     new_ticket = wticket
     # передача номера талона на "рабочее место"
     try:
-        sb.wticket0_set(int(wplace), new_ticket)
+        sb.wticket0_set(wplace, new_ticket)
     except Exception as e:
         log.debug(str(e))
         pass
@@ -259,12 +259,18 @@ fPid.close()
 directory = path_tmp1
 
 # Стартуем нить httpd
-t_h = threading.Thread(target=httpd_start)
-t_h.daemon = True
-t_h.start()
+threading.Thread(target=httpd_start, daemon=True).start()
 
 # Стартуем UI
 root = tkinter.Tk()
 sb = ScoreBoard(root, v)
+
+# Запуск GUI в отдельном потоке
+def run_gui():
+    # video_app = VideoDataApp()
+    sb.play_video("demo.mp4")
+    # video_app.root.mainloop()
+
+threading.Thread(target=run_gui, daemon=True).start()
 root.protocol("WM_DELETE_WINDOW", on_closing)
 root.mainloop()

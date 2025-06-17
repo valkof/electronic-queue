@@ -7,13 +7,19 @@
       "password": "e******1"
     },
     "ui": {
-        "win_geometry": "1680x1050+0+0",
+        "win_geometry": "1920x1080+0+0",
         "win_bg_img": "images/bg02.png",
+        "timeout_blink": 6,
         "clock": {
             "xy": [1650, 970],
-            "fg_bg": ["blue", "#b6dae8"],
-            "font": ["DejaVu Sans", 50, "bold"],
-            "mode": 1
+            "fg_bg": ["white", "green"],
+            "font": ["DejaVu Sans", 80, "bold"],
+            "mode": 0
+        },
+        "videoplayer": {
+            "fg_bg": ["white", "green"],
+            "font": ["DejaVu Sans", 80, "bold"],
+            "mode": 0
         }
     }
 }

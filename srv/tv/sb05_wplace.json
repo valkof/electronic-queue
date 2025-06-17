@@ -1,29 +1,29 @@
 {
-    "1": {
-        "wplace_name": "Окно 1",
+    "6": {
+        "wplace_name": "1",
         "wplace_xy": [600, 275],
-        "wplace_fg_bg": ["#aaaaaa", "#eeeeee"],
-        "wplace_font": ["Nimbus Mono PS", 110, "bold"],
+        "wplace_fg_bg": ["white", "black"],
+        "wplace_font": ["Nimbus Mono PS", 150, "bold"],
         "wticket_xy": [100, 280],
-        "wticket_fg_bg": ["maroon", "white"],
-        "wticket_font": ["Nimbus Mono PS", 80, "bold"]
+        "wticket_fg_bg": ["white", "black"],
+        "wticket_font": ["Nimbus Mono PS", 120, "bold"]
     },
-    "3": {
-        "wplace_name": "Окно 3",
+    "7": {
+        "wplace_name": "2",
         "wplace_xy": [600, 475],
-        "wplace_fg_bg": ["#aaaaaa", "#eeeeee"],
-        "wplace_font": ["Nimbus Mono PS", 110, "bold"],
+        "wplace_fg_bg": ["white", "black"],
+        "wplace_font": ["Nimbus Mono PS", 150, "bold"],
         "wticket_xy": [200, 480],
-        "wticket_fg_bg": ["maroon", "white"],
-        "wticket_font": ["Nimbus Mono PS", 80, "bold"]
+        "wticket_fg_bg": ["white", "black"],
+        "wticket_font": ["Nimbus Mono PS", 120, "bold"]
     },
-    "12": {
-        "wplace_name": "Каб. 12",
+    "8": {
+        "wplace_name": "3",
         "wplace_xy": [800, 675],
-        "wplace_fg_bg": ["black", "white"],
-        "wplace_font": ["Nimbus Mono PS", 60, "bold"],
+        "wplace_fg_bg": ["white", "black"],
+        "wplace_font": ["Nimbus Mono PS", 150, "bold"],
         "wticket_xy": [300, 680],
-        "wticket_fg_bg": ["black", "#abcdef"],
+        "wticket_fg_bg": ["white", "black"],
         "wticket_font": ["Nimbus Mono PS", 120, "bold"]
     }
 }

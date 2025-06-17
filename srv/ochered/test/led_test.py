@@ -6,13 +6,13 @@ import socket
 
 def run_led(wplace, ticket):
     # Запуск led-табло
-    led_addr = tuple(["10.0.5.139", 2323])
+    led_addr = tuple(["10.0.5.185", 2323])
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     # s.connect(("10.0.5.139", 2323))
     s.settimeout(2)
     s.connect(led_addr)
     
-    ticket = '!' + ticket.center(5) + '^'
+    ticket = '!' + '' + ticket + '^'
     s.send(ticket.encode('utf-8'))  # отправка
     data = s.recv(1024)  # получение
  
@@ -23,4 +23,4 @@ def run_led(wplace, ticket):
 
 
 
-run_led('1','P4')
+run_led('1',"Ф222")

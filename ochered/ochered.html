@@ -109,7 +109,7 @@
     function ochered_v01(nI_, nK_){
       var butt_ = 'ochered'+nI_;
       var sRes_ = '';
-      sRes_ = jsa_032('GET', 'http://127.0.0.1:32103/tcreate?q='+nI_+'&w='+nK_, 'application/json');
+      sRes_ = jsa_032('GET', 'http://10.0.5.168:32103/tcreate?q='+nI_+'&w='+nK_, 'application/json');
       show_r('dop_div');
       const obj = JSON.parse(sRes_);
       if (obj.stdout) {
