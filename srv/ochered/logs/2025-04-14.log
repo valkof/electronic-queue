@@ -1,0 +1,14 @@
+[2025-04-14 14:12:49,164](db_execute_all_trans) SQL: Error: unrecognized token: "{"
+[2025-04-14 14:29:35,400](db_execute_trans) SQL: Error: You did not supply a value for binding 1.
+[2025-04-14 15:31:41,081](db_execute) SQL: Error: expected str, bytes or os.PathLike object, not SqLite
+[2025-04-14 15:31:41,081](db_execute_rowid) SQL: Error: no such table: ticket
+[2025-04-14 15:31:41,081](db_execute_all_trans) SQL: Error: no such table: ticket
+[2025-04-14 15:35:32,811](db_execute) SQL: Error: expected str, bytes or os.PathLike object, not SqLite
+[2025-04-14 15:38:36,788](db_execute) SQL: Error: expected str, bytes or os.PathLike object, not SqLite
+[2025-04-14 15:38:54,572](db_execute) SQL: Error: expected str, bytes or os.PathLike object, not SqLite
+[2025-04-14 15:42:04,901](db_execute) SQL: Error: expected str, bytes or os.PathLike object, not SqLite
+[2025-04-14 15:42:56,580](db_execute) SQL: Error: expected str, bytes or os.PathLike object, not SqLite
+[2025-04-14 15:43:54,594](db_execute) SQL: Error: expected str, bytes or os.PathLike object, not SqLite
+[2025-04-14 15:44:25,694](db_execute) SQL: Error: expected str, bytes or os.PathLike object, not SqLite
+[2025-04-14 15:44:46,276](db_execute) SQL: Error: expected str, bytes or os.PathLike object, not SqLite
+[2025-04-14 15:47:01,740](db_execute) SQL: Error: expected str, bytes or os.PathLike object, not SqLite

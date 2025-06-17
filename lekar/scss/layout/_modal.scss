@@ -1,0 +1,52 @@
+@use "../abstract/variables" as *;
+
+.modal {
+  display: none;
+  position: fixed; 
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0,0,0,0.4);
+
+  &.active {
+    display: block;
+  }
+}
+
+.modal__content {
+  background-color: #fff;
+  margin: 300px auto; 
+  padding: 20px;
+  width: 60%; 
+  font-size: 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 30px;
+  border-radius: 20px;
+}
+
+.modal__message {
+  font-size: 5rem;
+}
+
+.modal__buttons {
+  display: none;
+  justify-content: space-around;
+
+  &.active {
+    display: flex;
+  }
+
+  .button {
+    display: none;
+    width: 250px;
+    height: 80px;
+    
+    &.active {
+      display: block;
+    }
+  }
+}

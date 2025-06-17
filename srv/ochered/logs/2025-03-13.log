@@ -1,0 +1,10 @@
+[2025-03-13 00:48:35,689](db_execute_all_trans) SQL: Error: near "',3'": syntax error
+[2025-03-13 11:04:12,146](db_execute_trans) SQL: Error: unrecognized token: "{"
+[2025-03-13 11:05:54,166](db_execute_trans) SQL: Error: unrecognized token: "{"
+[2025-03-13 11:08:24,289](db_execute_trans) SQL: Error: You did not supply a value for binding 1.
+[2025-03-13 11:10:45,221](db_execute_trans) SQL: Error: You did not supply a value for binding 1.
+[2025-03-13 11:11:10,765](db_execute_trans) SQL: Error: You did not supply a value for binding 1.
+[2025-03-13 11:13:20,458](db_execute_trans) SQL: Error: unrecognized token: "{"
+[2025-03-13 11:13:43,086](db_execute_trans) SQL: Error: unrecognized token: "{"
+[2025-03-13 11:14:33,874](db_execute_trans) SQL: Error: unrecognized token: "{"
+[2025-03-13 11:16:50,813](db_execute_trans) SQL: Error: unrecognized token: "{"

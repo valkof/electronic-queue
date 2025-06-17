@@ -1,0 +1,122 @@
+* {
+  box-sizing: border-box;
+  margin: 0px;
+  padding: 0px;
+  cursor: none;
+}
+
+html {
+  font-size: 10px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor: none;
+}
+
+.wrapper {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.8)), url('./kiosk_fon.jpg');
+  background-attachment: fixed;
+  background-size: cover;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  font-family: "Roboto Condensed", sans-serif;
+}
+
+.block-request {
+  position: fixed;
+  z-index: -1;
+  top: 0px;
+  left: 0px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  width: 100%;
+  font-family: inherit;
+  font-weight: bold;
+  font-style: italic;
+  font-size: 4.5rem;
+  color: #970606;
+}
+
+.header__logo, .header__logo {
+	display: flex;
+  align-items: center;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+}
+
+.list__item {
+  display:flex;
+  flex-direction: column;
+  align-items:center;
+  justify-content: center ;
+  gap: 10px;
+  font-weight: bold;
+  background: #035720;
+  font-size: 4rem;
+  width: 40%;
+  height: 140px;
+  min-height: 100px;
+  padding: 20px 30px;
+  border: 4px solid #FFFFFF;
+  border-radius: 10px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor: none;
+  color: white;
+}	
+
+/* .list__item:hover{
+  cursor: pointer;
+} */
+
+.msg-hidden {
+  display: none;
+}
+
+.footer {
+  display: flex;
+  justify-content: right;
+  font-size: 3.5rem;
+  padding: 20px;
+}
+
+.objtal {  
+  position: fixed;
+  left: 30%;
+  top: 30%;
+  width: 30%;
+  height: 30%;
+  background-color: rgba(255,255,255,0.95);
+  z-index: 1001;
+}
+.headtal {
+  text-align: center;
+  font-size: 5rem;
+}
+.bodytal {
+  text-align: center;
+  font-size: 7.5rem;
+}
+.foottal {
+  text-align: center;
+  font-size: 2.5rem;
+}

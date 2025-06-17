@@ -1,0 +1,44 @@
+%!PS-Adobe-2.0
+%%BoundingBox: 0 0 230 596
+%%HiResBoundingBox: 0.000000 0.000000 230.000000 596.000000
+%%EndComments
+%%EndProlog
+%%EndFeature
+%%EndSetup
+/cou /ERKurierKOI8RRegular findfont def
+/coub /ERKurierKOI8RBold findfont def
+/neworigin
+{0 596 translate 0 rotate} def
+neworigin
+newpath
+1 setlinewidth
+coub [12 0 0 18 0 0] makefont setfont
+1 155 moveto (   УЗ Малоритская ЦРБ      ) show
+
+coub [12 0 0 18 0 0] makefont setfont
+1 130 moveto (@PI001) show
+
+cou [8 0 0 13 0 0] makefont setfont
+1 110 moveto (Отделение:) show
+coub [12 0 0 18 0 0] makefont setfont
+1 90 moveto (@PI002) show
+
+cou [8 0 0 13 0 0] makefont setfont
+1 70 moveto (Кабинет / Специалист:) show
+coub [12 0 0 18 0 0] makefont setfont
+1 50 moveto (@PI003) show
+
+cou [8 0 0 13 0 0] makefont setfont
+1 30 moveto (Дата / Время:) show
+coub [12 0 0 18 0 0] makefont setfont
+1 10 moveto (@PI004) show
+
+cou [8 0 0 13 0 0] makefont setfont
+1 0 moveto ( ) show
+stroke
+showpage
+~
+ PI001 @D3001990000 a001_[99]:=ALLTRIM(a003_[04])
+ PI002 @D3001990000 a001_[99]:=ALLTRIM(a003_[05])
+ PI003 @D3001990000 a001_[99]:=ALLTRIM(a003_[06])
+ PI004 @D3001990000 a001_[99]:=ALLTRIM(a003_[07]) + " " + ALLTRIM(a003_[08]) + " " + ALLTRIM(a003_[09])

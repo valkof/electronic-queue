@@ -1,0 +1,17 @@
+{
+    "eq_wplace": "8",
+    "eq_url": "http://10.0.5.168:32107/",
+    "eq_auth": [
+        "eq01",
+        "e******1"
+    ],
+    "ui": {
+        "timeout_next": 6,
+        "timeout_check": 2,
+        "winfo_x": 213,
+        "winfo_y": 316,
+        "mode": "Dark",
+        "theme": "blue",
+        "scaling": 1.3
+    }
+}

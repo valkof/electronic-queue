@@ -1,0 +1,47 @@
+@use "../abstract/variables" as *;
+
+.times {
+  display: none;
+  padding: 10px;
+
+  .day.active & {
+    display: flex;
+    gap: 5px 10px;
+    flex-wrap: wrap;
+    flex-grow: 1;
+    align-content: flex-start;
+    overflow: hidden;
+  }
+
+  &.active {
+    display: none;
+  }
+}
+
+
+.time {
+  width: 150px;
+  height: 60px;
+
+  .times.active & {
+    display: none;
+  }
+}
+
+.day__message {
+  display: none;
+
+  p {
+    font-family: monospace;
+    color: $color-dark;
+  }
+
+  .times.active + & {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-size: 5rem;
+    width: 100%;
+    align-items: center;
+  }
+}

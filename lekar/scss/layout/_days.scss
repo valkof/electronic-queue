@@ -1,0 +1,53 @@
+.days {
+  display: none;
+
+  .months.active & {
+    display: block;
+    height: 100%;
+  }
+}
+
+
+
+.days__wrapper {
+  display: grid;
+  grid-template: repeat(6, 16.74%) / repeat(6, 16.74%);
+  justify-items: center;
+  align-items: center;
+  height: 100%;
+  overflow: hidden;
+
+  &.active {
+    display: block;
+  }
+}
+
+
+
+.day {
+  display: flex;
+  justify-content: center;
+  width: 95%;
+  height: 95%;
+
+  &.imaginary {
+    opacity: 0.1;
+  }
+
+  .days__wrapper.active & {
+    display: none;
+  };
+
+  .days__wrapper.active &.active {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    justify-content: left;
+  }
+
+  &.active .date-och {
+    display: none;
+  }
+}
+
+

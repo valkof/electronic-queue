@@ -1,0 +1,85 @@
+@use "../abstract/variables" as *;
+
+.buttons {
+  width: 100%;
+  height: 100%;
+}
+
+.office__buttons {
+  display: block;
+
+  .office.active & {
+    display: none;
+  }
+}
+
+.button {
+  width: 100%;
+  height: 100%;
+  border: 3px solid $color-main;
+  border-radius: 50px;
+  padding: 0px 20px;
+  font-size: 2.5rem;
+  overflow-wrap: break-word;
+  background-image: none;
+  background-color: $color-second;
+  color: $color-main;
+  font-family: monospace;
+  hyphens: auto;
+  word-break: auto-phrase;
+
+  &:hover {
+    background-color: $color-second;
+  }
+
+  &.mute {
+    opacity: 0.2;
+  }
+
+  .nav & {
+    width: 230px;
+  }
+}
+
+
+.months__buttons {
+  width: 100%;
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  flex-wrap: wrap;
+
+  .button {
+    width: 200px;
+    height: 70px;
+  }
+
+  .months.active & {
+    display: none;
+  }
+}
+
+#button-back[value="0"] {
+  pointer-events: none;
+  // color: $color-second;
+  // background-color: $color-main;
+  // border-color: $color-midle;
+  opacity: 0.2;
+}
+
+#breadcrumb-button-print[value="0"] {
+  pointer-events: none;
+  // color: $color-second;
+  // background-color: $color-main;
+  // border-color: $color-light;
+  opacity: 0.2;
+}
+
+#button-exit {
+  background-color: $color-exit;
+}
+
+#button-new-ticket[value="0"] {
+  pointer-events: none;
+  opacity: 0.2;
+}

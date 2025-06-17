@@ -1,0 +1,4 @@
+[2025-04-21 13:37:08,540](main) Filepid(C:\Material\VCProjects\electronic-queue\srv\audio\eq_ausrv06.pid) exists, but the process is not started! Delete filepid
+[2025-04-21 13:37:08,541](read_settings) Service: 0.0.0.0, 32105, auth_basic1
+[2025-04-21 23:31:53,650](main) Filepid(D:\My documents\VS project\electronic-queue\srv\audio\eq_ausrv06.pid) exists, but the process is not started! Delete filepid
+[2025-04-21 23:31:53,658](read_settings) Service: 0.0.0.0, 32105, auth_basic1

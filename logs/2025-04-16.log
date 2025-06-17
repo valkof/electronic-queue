@@ -1,0 +1,4 @@
+[2025-04-16 16:18:39,820](read_settings_eq) Проблема с conf-файлом конфигурации: [Errno 2] No such file or directory: 'srv13_set.json'
+[2025-04-16 16:25:27,190](read_settings_eq) Проблема с conf-файлом конфигурации: [Errno 2] No such file or directory: 'srv13_set.json'
+[2025-04-16 16:29:12,865](read_settings_eq) Проблема с conf-файлом конфигурации: [Errno 2] No such file or directory: 'srv13_set.json'
+[2025-04-16 16:29:23,064](read_settings_eq) Проблема с conf-файлом конфигурации: [Errno 2] No such file or directory: 'srv13_set.json'

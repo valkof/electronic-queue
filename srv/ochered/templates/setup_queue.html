@@ -1,0 +1,60 @@
+
+<!DOCTYPE html>
+  <html class="no-js">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>Электронная очередь</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="e-queue" />
+		<meta name="author" content="CIS" />
+		<meta name="color-scheme" content="light dark">
+
+		<!-- Theme style  -->
+		<link rel="stylesheet" href="static/css/pico.min.css">
+		<link rel="stylesheet" href="static/css/custom.css">
+		<style>
+		</style>
+	</head>
+	<body>
+		<div>
+			<span style="float: right;">
+				<a href="home">Ревью</a>
+				<a href="setup" class='selectmenu'>Справочники</a>
+				<a href="report">Отчеты</a>
+			</span>
+		</div>
+		<BR>
+			<div>
+				<span style="float: right;">
+					<a href="setup_queue" class='selectmenu'>Очереди</a>
+					<a href="setup_hw">Железо</a>
+					<a href="report">Рабочие места</a>
+					<a href="report">Киоски</a>
+				</span>
+			</div>
+      <BR>
+      <table>
+        <thead>
+          <tr>
+            <th>id</th>
+            <th>Наименование</th>
+            <th>Тип</th>
+            <th>Описание</th>
+            <th>Статус</th>
+          </tr>
+        </thead>
+        {% for q in queue %}
+          <tr>
+            <td align="left">{{ q[0] }}</td>
+            <td align="center"><B>{{ q[1] }}</B></td>
+            <td>{{ q[2] }}</td>
+            <td align="left">
+              <textarea name="textarea" rows="5">{{ q[3] }}</textarea>
+            </td>
+            <td align="left">{{ q[4] }}</td>
+          </tr>
+        {% endfor %}
+      </table>
+	</body>
+</html>

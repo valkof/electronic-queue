@@ -1,0 +1,600 @@
+* {
+  padding: 0px;
+  margin: 0px;
+  box-sizing: border-box;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+html {
+  font-size: 10px;
+  height: 100vh;
+}
+
+body {
+  height: 100%;
+  color: #1b351a;
+  font-family: monospace;
+  hyphens: auto;
+  word-break: auto-phrase;
+  overflow-wrap: break-word;
+}
+
+p {
+  color: #1b351a;
+  font-family: monospace;
+}
+
+#f_10_02_2_1 {
+  height: 100%;
+}
+
+#f_10_02_2_1 > div {
+  height: 100%;
+}
+
+button {
+  background: none;
+  margin: 0px;
+  padding: 0px;
+  display: block;
+}
+
+h2 {
+  color: #1b351a;
+  font-size: 3rem;
+}
+
+.protect {
+  display: none;
+  position: fixed;
+  z-index: 100;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0);
+}
+.protect.active {
+  display: block;
+}
+
+.buttons {
+  width: 100%;
+  height: 100%;
+}
+
+.office__buttons {
+  display: block;
+}
+.office.active .office__buttons {
+  display: none;
+}
+
+.button {
+  width: 100%;
+  height: 100%;
+  border: 3px solid #f7f7f9;
+  border-radius: 50px;
+  padding: 0px 20px;
+  font-size: 2.5rem;
+  overflow-wrap: break-word;
+  background-image: none;
+  background-color: #367330;
+  color: #f7f7f9;
+  font-family: monospace;
+  hyphens: auto;
+  word-break: auto-phrase;
+}
+.button:hover {
+  background-color: #367330;
+}
+.button.mute {
+  opacity: 0.2;
+}
+.nav .button {
+  width: 230px;
+}
+
+.months__buttons {
+  width: 100%;
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.months__buttons .button {
+  width: 200px;
+  height: 70px;
+}
+.months.active .months__buttons {
+  display: none;
+}
+
+#button-back[value="0"] {
+  pointer-events: none;
+  opacity: 0.2;
+}
+
+#breadcrumb-button-print[value="0"] {
+  pointer-events: none;
+  opacity: 0.2;
+}
+
+#button-exit {
+  background-color: #db4343;
+}
+
+#button-new-ticket[value="0"] {
+  pointer-events: none;
+  opacity: 0.2;
+}
+
+.appointment {
+  height: 100%;
+  padding: 30px;
+  display: grid;
+  background-color: #83aaa9;
+  grid-template-areas: "A A A   A A A   A A A   A A A" "A A A   A A A   A A A   A A A" "D D D   D D D   D D D   E E E";
+  grid-template-columns: repeat(12, 8.3333%);
+  grid-template-rows: 10% auto 10%;
+}
+.appointment.active {
+  grid-template-areas: "C C C   C C C   C C C   B B B" "A A A   A A A   A A A   B B B" "D D D   D D D   D D D   E E E";
+}
+
+.offices {
+  grid-area: A;
+  display: grid;
+  grid-template: repeat(4, 25%)/repeat(4, 25%);
+  justify-items: center;
+  justify-content: center;
+  align-items: center;
+  margin: 10px;
+  box-shadow: 0px 0px 30px 10px;
+  border-radius: 10px;
+}
+.appointment.active .offices {
+  display: block;
+}
+
+.office {
+  display: block;
+  width: 95%;
+  height: 90%;
+}
+.appointment.active .office {
+  display: none;
+}
+.office.active {
+  width: 100%;
+  height: 100%;
+}
+.appointment.active .office.active {
+  display: block;
+}
+
+.rooms {
+  display: none;
+}
+.office.active .rooms {
+  display: grid;
+  height: 100%;
+  grid-template: repeat(3, 33.3%)/repeat(3, 33.3%);
+  justify-items: center;
+  justify-content: center;
+  align-items: center;
+}
+.office.active .rooms.active {
+  display: block;
+}
+
+.room {
+  width: 90%;
+  height: 90%;
+}
+.room__button {
+  display: flex;
+  flex-direction: column;
+  font-size: 1.8rem;
+  justify-content: space-between;
+  height: 100%;
+  background-color: #f7f7f9;
+  border-radius: 10px;
+}
+.room.active .room__button {
+  display: none;
+}
+.room__button > span {
+  display: block;
+  border: 2px solid #f7f7f9;
+  border-radius: 10px;
+  flex-grow: 1;
+  font-size: 2.5rem;
+  padding: 10px;
+  background-color: #367330;
+  color: #f7f7f9;
+  font-family: monospace;
+  hyphens: auto;
+  word-break: auto-phrase;
+  overflow-wrap: break-word;
+  overflow: hidden;
+  height: 100px;
+}
+.room__button div {
+  display: flex;
+  gap: 0px 10px;
+  flex-wrap: wrap;
+  height: 55px;
+  border-width: 0px 2px 2px 2px;
+  border-color: #f7f7f9;
+  border-style: solid;
+  border-radius: 0px 0px 10px 10px;
+  padding: 0px 5px;
+  background-color: #f7f7f9;
+  justify-content: center;
+}
+.rooms.active .room {
+  display: none;
+}
+.rooms.active .room.active {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.months {
+  display: none;
+}
+.months .message {
+  display: none;
+  padding: 30px;
+}
+.months .message img {
+  box-shadow: 0px 0px 30px 10px;
+  border-radius: 25px;
+  width: 300px;
+}
+.months .message.active {
+  flex-direction: column;
+  display: flex;
+  font-size: 5rem;
+  align-items: center;
+  gap: 50px;
+}
+.room.active .months {
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.room.active .months.active {
+  display: block;
+  height: 100%;
+}
+
+.days {
+  display: none;
+}
+.months.active .days {
+  display: block;
+  height: 100%;
+}
+
+.days__wrapper {
+  display: grid;
+  grid-template: repeat(6, 16.74%)/repeat(6, 16.74%);
+  justify-items: center;
+  align-items: center;
+  height: 100%;
+  overflow: hidden;
+}
+.days__wrapper.active {
+  display: block;
+}
+
+.day {
+  display: flex;
+  justify-content: center;
+  width: 95%;
+  height: 95%;
+}
+.day.imaginary {
+  opacity: 0.1;
+}
+.days__wrapper.active .day {
+  display: none;
+}
+.days__wrapper.active .day.active {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: left;
+}
+.day.active .date-och {
+  display: none;
+}
+
+.date-och {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border: 3px solid #f7f7f9;
+  border-radius: 10px;
+  padding: 0px 10px;
+  font-size: 2.2rem;
+  background-image: none;
+  background-color: #367330;
+  color: #f7f7f9;
+  font-family: monospace;
+}
+
+.day-active .date-och {
+  height: 100%;
+}
+
+.times {
+  display: none;
+  padding: 10px;
+}
+.day.active .times {
+  display: flex;
+  gap: 5px 10px;
+  flex-wrap: wrap;
+  flex-grow: 1;
+  align-content: flex-start;
+  overflow: hidden;
+}
+.times.active {
+  display: none;
+}
+
+.time {
+  width: 150px;
+  height: 60px;
+}
+.times.active .time {
+  display: none;
+}
+
+.day__message {
+  display: none;
+}
+.day__message p {
+  font-family: monospace;
+  color: #1b351a;
+}
+.times.active + .day__message {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-size: 5rem;
+  width: 100%;
+  align-items: center;
+}
+
+.breadcrumb {
+  grid-area: B;
+  display: none;
+  margin: 10px;
+  background-color: #f7f7f9;
+}
+.appointment.active .breadcrumb {
+  display: block;
+}
+.breadcrumb__buttons {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0px 0px 30px 10px;
+  padding: 10px;
+}
+.breadcrumb .buttons__button-set {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  justify-content: space-between;
+}
+
+.pattern-button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.pattern-button .button {
+  border-color: #83aaa9;
+  color: #1b351a;
+  background-color: #f7f7f9;
+  border-radius: 0px 10px 10px 10px;
+  height: 100px;
+  overflow: hidden;
+}
+
+.pattern__title {
+  font-size: 2rem;
+  padding: 0px 20px;
+  border: 3px solid #83aaa9;
+  border-radius: 10px 10px 0 0;
+  background-color: #367330;
+  color: #f7f7f9;
+  border-bottom: 0px;
+  display: block;
+  text-align: left;
+  position: relative;
+  top: 2px;
+  width: 280px;
+}
+
+.pattern-join {
+  display: flex;
+  gap: 5px;
+  justify-content: space-between;
+}
+.pattern-join .pattern-left {
+  flex-grow: 1;
+}
+.pattern-join .pattern-left .button {
+  padding: 0px 10px;
+}
+.pattern-join .pattern-right .button {
+  padding: 0 10px;
+  border-radius: 0px 0px 10px 10px;
+}
+.pattern-join span {
+  width: 110px;
+}
+.pattern-join .button {
+  height: 70px;
+}
+
+#breadcrumb-button-office {
+  height: 150px;
+}
+
+#breadcrumb-button-room {
+  height: 110px;
+}
+
+#breadcrumb-button-month {
+  height: 70px;
+}
+
+#breadcrumb-button-print {
+  height: 70px;
+}
+
+.persona {
+  grid-area: C;
+  display: none;
+  position: relative;
+}
+.persona__auth {
+  display: flex;
+  flex-direction: column;
+  font-size: 3rem;
+}
+.appointment.active .persona {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #f7f7f9;
+  margin: 10px;
+  border-radius: 0px 20px 20px 20px;
+  box-shadow: 0px 0px 30px 10px;
+}
+
+.persona__input {
+  display: flex;
+  align-items: baseline;
+}
+.persona__input .user-id {
+  width: 250px;
+  font-size: 2rem;
+  border: none;
+}
+.persona__input input {
+  display: block;
+  box-shadow: none;
+}
+.persona__input input:focus {
+  box-shadow: none;
+}
+.persona__input input.button {
+  width: 150px;
+  display: none;
+}
+
+.organization {
+  position: absolute;
+  top: -29px;
+  left: 0px;
+  background-color: #367330;
+  border: 2px solid #83aaa9;
+  border-radius: 10px 10px 0 0;
+  font-size: 2rem;
+  color: #f7f7f9;
+  padding: 2px 20px;
+  border-bottom: 0px;
+}
+
+.datetime {
+  grid-area: E;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin: 10px;
+  background-color: #f7f7f9;
+  display: flex;
+  font-size: 3rem;
+  border-radius: 20px;
+  box-shadow: 0px 0px 30px 10px;
+}
+
+.nav {
+  grid-area: D;
+  display: flex;
+  flex-direction: row;
+  gap: 50px;
+  padding: 25px 10px 0px 10px;
+}
+
+.header {
+  grid-area: E;
+  border: 2px solid #1b351a;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+.modal.active {
+  display: block;
+}
+
+.modal__content {
+  background-color: #fff;
+  margin: 300px auto;
+  padding: 20px;
+  width: 60%;
+  font-size: 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 30px;
+  border-radius: 20px;
+}
+
+.modal__message {
+  font-size: 5rem;
+}
+
+.modal__buttons {
+  display: none;
+  justify-content: space-around;
+}
+.modal__buttons.active {
+  display: flex;
+}
+.modal__buttons .button {
+  display: none;
+  width: 250px;
+  height: 80px;
+}
+.modal__buttons .button.active {
+  display: block;
+}/*# sourceMappingURL=doctor.css.map */

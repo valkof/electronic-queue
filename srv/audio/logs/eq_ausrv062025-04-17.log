@@ -1,0 +1,11 @@
+[2025-04-17 15:51:31,899](main) Filepid(C:\Material\VCProjects\electronic-queue\srv\audio\eq_ausrv06.pid) exists, but the process is not started! Delete filepid
+[2025-04-17 15:51:31,900](read_settings) Service: 0.0.0.0, 32105, auth_basic1
+[2025-04-17 15:56:14,369](play_acontent3) content\S.mp3 not exists!
+[2025-04-17 15:58:31,163](play_acontent3) content\S.mp3 not exists!
+[2025-04-17 16:08:57,311](play_acontent3) content\S.mp3 not exists!
+[2025-04-17 16:11:03,999](play_acontent3) content\C.mp3 not exists!
+[2025-04-17 16:26:25,977](play_acontent3) content\S.mp3 not exists!
+[2025-04-17 16:26:43,457](play_acontent3) content\S.mp3 not exists!
+[2025-04-17 16:34:28,375](play_acontent3) content\C.mp3 not exists!
+[2025-04-17 16:34:39,012](play_acontent3) content\C.mp3 not exists!
+[2025-04-17 16:34:51,496](play_acontent3) content\G.mp3 not exists!

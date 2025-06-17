@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Электронная Очередь - Малоритская ЦРБ</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background: linear-gradient(to right, #9fcdff, #007bff);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 10px;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+        h1 {
+            font-size: 6vw;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 20px;
+            margin: 15px 0;
+            background: #007bff;
+            font-size: 5vw;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn:hover {
+            background: #0056b3;
+        }
+        .footer {
+            position: absolute;
+            bottom: 10px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            text-align: center;
+        }
+
+        /* Мобильная версия */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 35px;
+            }
+            .btn {
+                font-size: 29px;
+            }
+        }
+
+        /* Кнопки на большом экране */
+        @media (min-width: 601px) {
+            h1 {
+                font-size: 40px;
+            }
+            .btn {
+                font-size: 28px;
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Малоритская ЦРБ</h1>
+        <button class="btn">Регистратура</button>
+        <button class="btn">Льготная регистратура</button>
+        <button class="btn">Стоматология</button>
+        <button class="btn">Запись к врачу</button>
+    </div>
+    <div class="footer">ООО "Апекс-реал"</div>
+</body>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="koi8-r">
+  <title>Электронная очередь</title>
+  <link rel="SHORTCUT ICON" href="./content/00/favicon.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="./styleo.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+  <div class="wrapper">
+    <header class="header">
+      <div class="header__logo">
+        <span>УЗ "Малоритская ЦРБ"</span>
+      </div>
+      <div class="header__time">
+        <span id="time"></span>
+      </div>
+    </header>
+    <main class="main">
+      <div class="list main__list">
+        <button type="button" class="list__item" onclick="ochered_v01(1, 101);">Регистратура</button>
+        <button type="button" class="list__item" onclick="ochered_v01(2, 101);">Регистратура<BR>по льготе</button>
+        <button type="button" class="list__item" onclick="ochered_v01(3, 101);">Стоматология</button>
+        <button type="button" class="list__item" id="doctor" onclick="jsa_031('f_10_02_2_1', 5, 530, 10)">
+        <!-- <button type="button" class="list__item" id="doctor" onclick="jsa_031('f_10_02_2_1', 5, 645, 602)"> -->
+          <span class="button__text">Запись на прием</span>
+          <span class="button__msg"></span>
+        </button>
+      </div>
+    </main>	
+    <footer class="footer">
+      <span>ООО Апекс-Реал</span>
+    </footer>
+    <div style="display:none;" class="objtal" id="dop_div">
+      <div class="headtal">Талон</div>
+      <div class="bodytal" id="bodytal"></div>
+      <div class="foottal" id="foottal"></div>
+    </div>
+    <!-- <form accept-charset="koi8-r" method="post" id="f_10_02_2_1" name="f_10_02_2_1" action="http://zeromis.tutmed.by/cgi-bin/is10_08" target="is10_08"> -->
+      <!-- <form accept-charset="koi8-r" method="post" id="f_10_02_2_1" name="f_10_02_2_1" action="https://zeromis.tutmed.by/cgi-bin/is10_08" target="is10_08" hidden> -->
+      <form accept-charset="koi8-r" method="post" id="f_10_02_2_1" name="f_10_02_2_1" action="https://zeromis0.tutmed.by/cgi-bin/is10_08" target="is10_08">
+  <!-- <form class="block-request" method="post" id="f_10_02_2_1" name="f_10_02_2_1" action="https://0.tutmed.by/cgi-bin/is10_08" target="is10_08" hidden> -->
+    <!-- <form accept-charset="koi8-r" class="block-request" method="post" id="f_10_02_2_1" name="f_10_02_2_1" action="https://zeromis0.tutmed.by/cgi-bin/is10_08" target="is10_08" hidden> -->
+      <input type="hidden" name="sSd_" value="0">
+      <input type="hidden" name="svid_" value="0">
+      <input type="hidden" name="sgr_l" value="0">
+      <input type="hidden" name="sit_l" id="x0001" value="0">
+      <input type="hidden" name="stst_" value="0">
+      <input type="hidden" name="cod_e" value="0">
+      <input type="hidden" name="stat_e" value="0">
+      <input type="hidden" name="sfil_n" value="19">
+      <input type="hidden" name="sfrname_" value="is10_08">
+      <input type="hidden" name="sadd_" id="x0005" value="">
+      <input type="hidden" name="nAgain_" id="x0006" value="2">
+      <input type="hidden" name="sAdres_start" id="sAdres_start"  value="">
+      <input type="hidden" name="s_print" value="MITSU_RP-809">
+      <input type="hidden" name="RaspToKab" value="1">
+    </form>
+  </div>
+  <script>
+    document.getElementById("sAdres_start").value=document.location.href;
+	
+    window.name="is10_08";
+
+    function show_r(nI_) {
+      ndop = document.getElementById(nI_).style.display;
+      if (ndop=='') {
+        document.getElementById(nI_).style.display = 'none';
+        document.body.style.overflow = '';
+        document.getElementById("bodytal").innerHTML ='';
+      } else {
+        document.getElementById(nI_).style.display = '';
+        document.body.style.overflow = 'hidden';
+      }
+    };
+
+    function getXmlHttp() {
+      var xmlhttp;
+      try {
+        xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
+      } catch(e) {
+        try {
+          xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        } catch(E) {
+          xmlhttp = false;
+        }
+      }
+      if (!xmlhttp && typeof XMLHttpRequest != 'undefined') {
+        xmlhttp = new XMLHttpRequest();
+      }
+      return xmlhttp;
+    };
+
+    function jsa_032(nType, sUrl_, sBody_, sConttype) {
+      var sResults_ = '';
+      var xmlhttp = getXmlHttp();
+      xmlhttp.open(nType, sUrl_, false);
+      xmlhttp.send(sBody_);
+
+      if (xmlhttp.status == 200) {
+        sResults_= xmlhttp.responseText;
+      } else {
+        sResults_=xmlhttp.status;
+      }
+      return sResults_;
+    };
+
+    function ochered_v01(nI_, nK_){
+      var butt_ = 'ochered'+nI_;
+      var sRes_ = '';
+      sRes_ = jsa_032('GET', 'http://10.0.5.168:32103/tcreate?q='+nI_+'&w='+nK_, 'application/json');
+      show_r('dop_div');
+      const obj = JSON.parse(sRes_);
+      if (obj.stdout) {
+          const obj1 = obj.stdout;
+          document.getElementById("bodytal").innerHTML = obj1[0];
+          document.getElementById("foottal").innerHTML = obj1[1];
+      } else if (obj.stderr) {
+          document.getElementById("bodytal").innerHTML = obj.stderr;
+          document.getElementById("bodytal").innerHTML = "пп╠яп╟яп╦яп╣яя п╨ пп╢п╪п╦п╫п╦яяяп╟яп╬яя";
+      } else {
+          document.getElementById("bodytal").innerHTML = '';
+          document.getElementById("foottal").innerHTML = '';
+      }
+      setTimeout(function() {
+        show_r('dop_div');
+      }, 2000);
+    };
+
+    function jsa_031(name, nVid_, nGr_l, nNum_, sTarget_, sAddn_, sAction_) {
+      const form = document[name];
+      const temp = Object.assign(form);
+      temp.svid_.value = nVid_;
+      temp.sgr_l.value = nGr_l;
+      temp.sit_l.value = nNum_;
+      if ( sTarget_ !== undefined && sTarget_ !== '') {
+        temp.target = sTarget_;
+        temp.sfrname_.value = sTarget_;
+      };
+      if (sAction_ !== undefined && sAction_ !== '') {
+        temp.action = sAction_;
+      };
+      if (sAddn_ !== undefined && sAddn_ !== '') {
+        temp.sadd_.value = sAddn_;
+      }
+      temp.submit();
+    }
+
+    function getTimeByFormat(hour, minute) {
+      const text = String(hour).padStart(2, '0') + ':' + String(minute).padStart(2, '0');
+      return text;
+    }
+
+    const divTime = document.getElementById("time");
+    
+    function updateClock(text) {
+      divTime.innerText = text;
+    }
+
+    const hourOpen = 0;
+    const minutOpen = 1;
+    const buttonDoctor = document.getElementById("doctor");
+    const buttonDoctorText = document.querySelector("#doctor > span.button__text");
+    const buttonDoctorMsg = document.querySelector("#doctor > span.button__msg");
+    buttonDoctorMsg.textContent = 'откроется с ' +  getTimeByFormat(hourOpen, minutOpen);
+
+    function updateButtonDoctor(text, hour, minute) {
+      if (hour > hourOpen || (hour == hourOpen && minute >= minutOpen)) {
+        buttonDoctor.style.background = '#035720';
+        buttonDoctor.style.pointerEvents = "auto";
+        buttonDoctorText.style.fontWeight = 'bold';
+        buttonDoctorMsg.classList.add('msg-hidden');
+      } else {
+        buttonDoctor.style.background = 'gray';
+        buttonDoctor.style.pointerEvents = "none";
+        buttonDoctorText.style.fontWeight = 'normal';
+        buttonDoctorMsg.classList.remove('msg-hidden');
+      }
+    }
+
+    function updateTime() {
+      const date = new Date();
+      const hour = date.getHours();
+      const minute = date.getMinutes();
+      const timeString = getTimeByFormat(hour, minute);
+      updateClock(timeString);
+      updateButtonDoctor(timeString, hour, minute);
+    }
+    updateTime();
+    setInterval(updateTime, 3000);
+  </script>
+</body>
+</html>

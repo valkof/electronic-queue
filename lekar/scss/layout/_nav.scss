@@ -1,0 +1,9 @@
+@use "../abstract/variables" as *;
+
+.nav {
+  grid-area: D;
+  display: flex;
+  flex-direction: row;
+  gap: 50px;
+  padding: 25px 10px 0px 10px;
+}
