@@ -6,7 +6,6 @@ import tkinter as tk
 # from tkinter import *
 import time
 from date_time import get_date_time
-from tkVideoPlayer import TkinterVideo
 
 class CardCall:
     def __init__(self, parent, data, timeout):
@@ -137,7 +136,7 @@ class ScoreBoard:
         self.instance = vlc.Instance()
  
         self.player = self.instance.media_player_new()
-        self.player.audio_set_volume(0)
+        self.player.audio_set_volume(50)
         self.list_player = self.instance.media_list_player_new()
 
         folder_path = os.path.join(os.getcwd(), "videos")
