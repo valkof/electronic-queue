@@ -1,21 +1,48 @@
-<!DOCTYPE HTML>
-<html>
-  <style>
-    body {
-      background: #000000;
-    }
-  </style>
-
+<!DOCTYPE html>
+  <html lang="ru">
   <head>
-    <meta charset="KOI8-R">
-    <title>Информация</title>
+      <meta charset="UTF-8">
+      <title>Страница с iframe</title>
+      <style>
+          * {
+            padding: 0px;
+            margin: 0px;
+            box-sizing: border-box;
+          }
+          body {
+            background: #000000;
+          }
+          .iframe {
+            overflow: hidden;
+          }
+          .iframe-container {
+              display: flex;
+              flex-direction: column;
+              width: 100%;
+              height: 100vh; /* Полная высота окна */
+          }
+          .iframe-top {
+              flex: 0 0 70%; /* Занимает 80% высоты */
+              width: 100%;
+              border: none;
+          }
+          
+          .iframe-bottom {
+              flex: 0 0 30%; /* Занимает оставшиеся 20% */
+              width: 100%;
+              border: none;
+          }
+      </style>
   </head>
   <body>
-    <iframe webkitallowfullscreen="true" mozallowfullscreen="true" allowfullscreen="true" allowtransparency="true" scrolling="no" frameborder="0" width="3800" height="1770" seamless="seamless" src="https://tutmed.by/cgi-bin/is10_02?sSd_=0&sfil_n=320&svid_=5&sgr_l=40&stst_=0&sit_l=200&shead_=0&sadd_=40,11,3840">
-        <meta http-equiv="refresh" content="5">
-    </iframe>
-    <iframe webkitallowfullscreen="true" mozallowfullscreen="true" allowfullscreen="true" allowtransparency="true" scrolling="no" frameborder="0" width="3800" height="405" seamless="seamless" src="admin.html">
-        <meta http-equiv="refresh" content="1">
-    </iframe>
+      <div class="iframe-container">
+          <iframe class="iframe iframe-top" 
+                  src="https://tutmed.by/cgi-bin/is10_08?sSd_=0&sfil_n=320&svid_=5&sgr_l=40&stst_=0&sit_l=201&shead_=0&sadd_=40,11,3840" 
+                  title="Верхний фрейм" scrolling="no"></iframe>
+                  
+          <iframe class="iframe iframe-bottom" 
+                  src="admin.html" 
+                  title="Нижний фрейм" scrolling="no"></iframe>
+      </div>
   </body>
 </html>
