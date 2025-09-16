@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="koi8-r">
+  <title>Электронная очередь</title>
+  <link rel="SHORTCUT ICON" href="./content/00/favicon.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="http://@D3000800000/ochered/styleo.css" rel="stylesheet" type="text/css">
+  <style>
+	.ticket_blank {
+		font-size: 3rem;
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+		border: 3px solid green;
+		width: fit-content;
+		width: -moz-fit-content;
+		padding: 3rem;
+		background-color: white;
+		border-radius: 2rem;
+		color: black;
+	}
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+	<header class="header">
+	  <div class="header__logo">
+		<span>@D3999200000</span>
+	  </div>
+	  <div class="header__time">
+		<span id="time"></span>
+	  </div>
+	</header>
+	<main class="main">
+	  @D3000710000
+	  <div id="button_repeat" class="list main__list msg-hidden">
+		<p class="button__msg">Проверьте принтер и нажмите кнопку Продолжить.</p>
+		<button type="button" class="list__item" onclick="printTicket();">
+			<span class="button__text">Продолжить</span>
+		</button>
+	  </div>
+	</main>	
+	<footer class="footer">
+	  <span>ООО Апекс-Реал</span>
+	</footer>
+	
+  </div>
+###
+  <script>
+	const button_repeat = document.getElementById("button_repeat");
+  
+	function requestDB(url) {
+		fetch(url)
+			.then(response => {
+				if (!response.ok) {
+					throw new Error(`HTTP ошибка! Статус: ${response.status}`);
+				}
+				return response.json();
+			})
+			.then(data => {
+				console.log(data);
+				isPrinterWork(data);
+			})
+			.catch(error => {
+				console.error('Ошибка:', error);
+			});
+	};
+
+	function printTicket(){
+		requestDB('http://@D3000800000/cgi-bin/is10_09?sSd_=0&svid_=1&sgr_l=360&stst_=0&sit_l=202&shead_=0&sgr_r=0&sfil_n=19&style_=1&ticket_ps=@D3000700000');
+	};
+	 
+	function isPrinterWork(data) {
+		//vyhod()
+		if (data['stderr']) {
+			button_repeat.classList.remove('msg-hidden');
+		} else {
+			button_repeat.classList.add('msg-hidden');
+			setTimeout(vyhod, 2000);
+		};
+	};
+	
+	function vyhod(){
+		window.location.replace('@D3000720000');
+	};
+	
+
+	printTicket();
+	console.log('ok2 1/360/1010');
+###
+  </script>
+</body>
+</html>
+###
+
+#PROGRAM:
+LOCAL nDb_ := {0}, aTmp := {}, sTmp, nTmp, nI_1, nLen_1
+
+*? '1,360,1010 =', a003_,aPar_
+
+* 1 
+
+DO WHILE .T.
+	a000_[70] := CT6_209_(aPar_,"ticket_ps")
+	ticket_html := CT6_209_(aPar_,"ticket_html")
+	a000_[71] := CT3_027_(2,ticket_html)
+	link_reverse := CT6_209_(aPar_,"link_reverse")
+	a000_[72] := CT3_027_(2,link_reverse)
+	aTmp_ := AT2_210_3(a998_[53],' ')
+	a000_[80] := aTmp_[01]
+    a000_[82] := alltrim(CT6_209_(aPar_,'org_name'))
+    a999_[20] := CT3_027_(2,a000_[82])
+? AT0_001_(XP:PART[01])
+? AT0_001_(XP:PART[02])
+*? "console.log('",ticket,"');"
+*? "console.log('ticket');"
+? AT0_001_(XP:PART[03])
+
+	EXIT
+ENDDO
+		
+	
