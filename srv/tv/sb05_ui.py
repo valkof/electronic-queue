@@ -43,12 +43,16 @@ class CardCall:
         self.blink_interval = 500  # интервал в миллисекундах
         self.blink_time = timeout * 1000  # общее время мигания в миллисекундах (10 секунд)
         self.is_visible = True
+        self.blinking_task = ""
+        self.stop_timer = ""
     
     def put_to_row(self, row):
         self.card.grid(row=row, column=0, sticky="nsew", pady=5)
 
     def start_blinking(self):
+        self.stop_blinking()
         self.stop_timer = self.card.after(self.blink_time, self.stop_blinking)
+        print(self.stop_timer)
         self.repeat_blinking()
 
     def repeat_blinking(self):
@@ -63,8 +67,10 @@ class CardCall:
             self.labelTicket.configure(text_color=self.btct)  # делаем невидимым
 
     def stop_blinking(self):
-        self.card.after_cancel(self.blinking_task)
-        self.card.after_cancel(self.stop_timer)
+        if self.blinking_task:
+            self.card.after_cancel(self.blinking_task)
+        if self.stop_timer:
+            self.card.after_cancel(self.stop_timer)
         self.labelTicket.configure(text_color=self.tct)  # возвращаем видимое состояние
         self.is_visible = True
         print('end')

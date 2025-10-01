@@ -1,0 +1,1 @@
+curl -sS -k -u "tv01:e******1" --connect-timeout 5 -m 5 -X GET "http://192.168.100.8:32109/ticket?p=6&t=3"
