@@ -124,7 +124,7 @@ class ScoreBoard:
         master.rowconfigure(0, weight=1)  # Единственная строка
 
         # Левый фрейм делим на видеоплеер и время
-        self.frame_left_player = ctk.CTkFrame(self.frame_left, fg_color=v.dU["videoplayer"]["fg_bg"][1])
+        self.frame_left_player = ctk.CTkFrame(self.frame_left, fg_color=v.dU["videoplayer"]["fg_bg"][1], overwrite_preferred_drawing_method='direct')
         self.frame_left_time = ctk.CTkFrame(self.frame_left)
 
         # Настраиваем веса строк
@@ -139,10 +139,10 @@ class ScoreBoard:
         self.frame_left_time.rowconfigure(0, weight=1)
         
         # видеоплеер
-        self.instance = vlc.Instance()
+        self.instance = vlc.Instance(['--no-xlib', '--ignore-config', '--no-plugins-cache'])
  
         self.player = self.instance.media_player_new()
-        self.player.audio_set_volume(50)
+        self.player.audio_set_volume(100)
         self.list_player = self.instance.media_list_player_new()
 
         folder_path = os.path.join(os.getcwd(), "videos")
@@ -222,15 +222,16 @@ class ScoreBoard:
         self.headertime.after(1000, self.timetick, mode)
 
         
-    def play_video(self, filename):
-        print(f"Путь {os.path.join('videos', filename)} не найден")
-        
+    def play_video(self):        
         # # Воспроизведение
-        print(f"код {self.frame_left_player.winfo_id()}")
+        # print(f"код {self.frame_left_player.winfo_id()}")
+        winfo_id = int(self.frame_left_player.winfo_id())
         if platform.system() == 'Windows':
-          self.player.set_hwnd(self.frame_left_player.winfo_id())
+          print('windows')
+          self.player.set_hwnd(winfo_id)
         else:
-          self.player.set_xwindow(self.frame_left_player.winfo_id())
+          print('centos')
+          self.player.set_xwindow(winfo_id)
         self.list_player.play()
     
     def wticket0_set(self, id, new_ticket):

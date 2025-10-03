@@ -18,6 +18,7 @@ from tkinter import messagebox
 from sb05_ui import ScoreBoard
 from sb05_vars import V
 import threading
+import asyncio
 import json
 
 
@@ -64,7 +65,7 @@ class WORKER:
             # номер окна и талона актуален, отправляем данные на экран
             t_ui = threading.Thread(target=uiworker, args=[self.wplace, self.wticket])
             t_ui.start()
-            t_ui = threading.Thread()
+            # t_ui = threading.Thread()
         else:
             # недостаточно или неверные параметры запроса
             self.r['stderr'] = 'Ошибка: Не указано/отсутствует окно или рабочее место'
@@ -267,9 +268,11 @@ sb = ScoreBoard(root, v)
 
 # Запуск GUI в отдельном потоке
 def run_gui():
-    # video_app = VideoDataApp()
-    sb.play_video("demo.mp4")
-    # video_app.root.mainloop()
+    asyncio.run(pusk())
+
+async def pusk():
+    await asyncio.sleep(2)  # Асинхронная пауза на 2 секунды
+    sb.play_video()
 
 threading.Thread(target=run_gui, daemon=True).start()
 root.protocol("WM_DELETE_WINDOW", on_closing)
