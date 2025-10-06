@@ -1,66 +1,141 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-import math
 import threading
-from oper09_vars import V
+from pult_vars import app_set
 import requests
 import json
 import tkinter as tk
-#import pystray
 from PIL import Image
 import customtkinter as ctk
 from urllib.parse import quote_plus
 import functools
-# import threading
 import time
 import datetime
-#import os
 
-global v
-v = V()
-ctk.set_appearance_mode(v.dH["ui"]["mode"])  # Modes: "System" (standard), "Dark", "Light"
-ctk.set_default_color_theme(v.dH["ui"]["theme"])  # Themes: "blue" (standard), "green", "dark-blue"
-ctk.set_widget_scaling(v.dH["ui"]["scaling"])
-ctk.set_window_scaling(v.dH["ui"]["scaling"])
-# v.dW['queue'].append(v.dH['eq_wplace'])
-print(v.dW)
-# v.dE[v.dH['eq_wplace']] = {"name": "Отложенные"}
-print(v.dE)
-queue = v.dW['queue'][0]
-# first_run_app = True
-dLenQueue = {}
-queues = []
-# список очередей по которым делаем запрос о количестве талонов
-queues_check = v.dW['queue'].copy()
-# добавим отложенную очередь
-queues_check.append(v.dH['eq_wplace'])
-print("queues_check=", queues_check)
-print(queues)
-for key, value in v.dE.items():
-    dLenQueue[key] = 0
-print()
-print(dLenQueue)
 
-class EqWin(ctk.CTk):
+# queue = app_set.dW['queue'][0]
+
+# dLenQueue = {}
+# queues = []
+# # список очередей по которым делаем запрос о количестве талонов
+# queues_check = app_set.dW['queue'].copy()
+# # добавим отложенную очередь
+# queues_check.append(app_set.dH['eq_wplace'])
+# print("queues_check=", queues_check)
+# print(queues)
+# for key, value in app_set.dE.items():
+#     dLenQueue[key] = 0
+# print()
+# print(dLenQueue)
+
+def _app_pos(self, width: int, height: int, zoom: float, shift_x, shift_y: int):
+    screen_width = self.winfo_screenwidth()
+    screen_height = self.winfo_screenheight()
+    shift_pos_x = screen_width - int(width * zoom + shift_x)
+    shift_pos_y = screen_height - int(height * zoom + shift_y)
+    self.geometry(f'{width}x{height}+{shift_pos_x}+{shift_pos_y}')
+    
+class App(ctk.CTk):
     def __init__(self):
         super().__init__()
 
-        # self.extmenu = False
-        self.ticket = "----"
-        self.mess = None
-        # self.curr_time = datetime.datetime.now()
-        self.router_pages = []
-        # configure window
         self.title("Пульт оператора")
-        self.geometry("600")
-        self.columnconfigure(index=0, weight=1)
-        self.columnconfigure(index=1, weight=3)
         self.resizable(False, False)
-        self.count_aside = 'Отлож. 0'
+        _app_pos(self, 600, 200, app_set.pult['ui']['scaling'],
+                  app_set.pult['ui']['shift_left'], app_set.pult['ui']['shift_bottom'])
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_rowconfigure(0, weight=1)
+        # self.extmenu = False
+        # self.ticket = "----"
+        # self.mess = None
+        # self.curr_time = datetime.datetime.now()
+        # self.columnconfigure(index=0, weight=1)
+        # self.columnconfigure(index=1, weight=3)
+        # self.count_aside = 'Отлож. 0'
         # self.clear_message = lambda: self.lmess = ''
-        self.timer_id = None
+        # self.timer_id = None
+
+        self.frame_Auth = FrameAuth(self)
+        self.frame_Auth.grid(row=0, column=0, sticky="nsew")
         
+        # self.frame_Queue = FrameQueue(self)
+        # self.frame_Auth.grid(row=1, column=0, sticky="nsew")
+        # self.frame_Auth.configure(state=tk.DISABLED)
+    
+    def next_frame(self, oper_id):
+        print(f"{oper_id}")
+        self.frame_Auth.grid_remove()
+
+class FrameAuth(ctk.CTkFrame):
+    def __init__(self, parent: App):
+        super().__init__(parent)
+
+        self.parent = parent
+        
+        # Создание переменных для хранения значений
+        self.combo_var = ctk.StringVar()
+        self.entry_var = ctk.StringVar()
+        self.label_var = ctk.StringVar()
+        
+        # Создание виджетов
+        # Выпадающий список
+        self.combo = ctk.CTkComboBox(
+            self, width=300,
+            values=[item[2] for item in app_set.pult['set']],
+            variable=self.combo_var, state="readonly"
+        )
+        self.combo.set(app_set.pult['set'][0][2])
+        self.combo.grid(row=0, column=0, padx=20, pady=10)
+        
+        # Поле ввода чисел
+        self.entry = ctk.CTkEntry(
+            self, width=300,
+            placeholder_text="Пароль",
+            textvariable=self.entry_var
+        )
+        self.entry.grid(row=1, column=0, padx=20, pady=10)
+        
+        # Кнопка действия
+        self.button = ctk.CTkButton(
+            self,
+            text="ВОЙТИ",
+            command=self.button_click
+        )
+        self.button.grid(row=2, column=0, padx=20, pady=10)
+
+        # Сообщение
+        self.label = ctk.CTkLabel(
+            self, width=300,
+            text='', text_color='red'
+        )
+        self.label.grid(row=3, column=0, padx=20, pady=10)
+        
+        # Настройка растяжения столбцов
+        self.grid_columnconfigure(0, weight=1)
+
+    def button_click(self):
+        # Получение значений из виджетов
+        selected_option = self.combo_var.get()
+        kod = self.entry_var.get()
+        
+        matches = []
+    
+        for item in app_set.pult['set']:
+            if item[1] == kod and item[2] == selected_option:
+                matches.append(item)
+        
+        if len(matches) == 1:
+            self.label.configure(text = '')
+            self.parent.next_frame(matches[0][0])
+        else:
+            self.label.configure(text = 'Неверный пароль')
+
+class FrameQueue(ctk.CTkFrame):
+    def __init__(self, parent):
+        super().__init__(parent)
+        
+        self.router_pages = []
 
         ########## Виджеты талона ##########
         self.f_ticket = ctk.CTkFrame(self, corner_radius=0)
@@ -114,40 +189,40 @@ class EqWin(ctk.CTk):
         row = 0
         self.bqueue_: dict[str, ctk.CTkButton] = {}
         self.lqueue_: dict[str, ctk.CTkLabel] = {}
-        for key, value in v.dE.items():
-            self.bqueue_[key] = ctk.CTkButton(self.f_queue,
-                                              text=v.dE[key]["shortname"],
-                                              font=ctk.CTkFont(weight="normal"),
-                                              anchor="w",
-                                              command=functools.partial(self.set_queues_w, key))
-            self.bqueue_[key].grid(row=row, column=column, padx=(3, 3),
-                                       pady=(3, 3), ipadx=0, sticky='w')
+        # for key, value in app_set.dE.items():
+        #     self.bqueue_[key] = ctk.CTkButton(self.f_queue,
+        #                                       text=app_set.dE[key]["shortname"],
+        #                                       font=ctk.CTkFont(weight="normal"),
+        #                                       anchor="w",
+        #                                       command=functools.partial(self.set_queues_w, key))
+        #     self.bqueue_[key].grid(row=row, column=column, padx=(3, 3),
+        #                                pady=(3, 3), ipadx=0, sticky='w')
 
-            self.lqueue_[key] = ctk.CTkLabel(self.f_queue, text=str(dLenQueue[key]),
-                                             font=ctk.CTkFont(weight="normal"),
-                                             width=20)
-            self.lqueue_[key].grid(row=row, column=column, padx=(3, 10), pady=(3, 3), ipadx=0, ipady=0, sticky="e")
-            column = 0 if column >= 2 else column + 1
-            if (column == 0): row += 1
+        #     self.lqueue_[key] = ctk.CTkLabel(self.f_queue, text=str(dLenQueue[key]),
+        #                                      font=ctk.CTkFont(weight="normal"),
+        #                                      width=20)
+        #     self.lqueue_[key].grid(row=row, column=column, padx=(3, 10), pady=(3, 3), ipadx=0, ipady=0, sticky="e")
+        #     column = 0 if column >= 2 else column + 1
+        #     if (column == 0): row += 1
 
-        def setLenQueue():
-            for key, value in dLenQueue.items():
-                self.lqueue_[key].configure(text=str(value))
-            self.l_len_aside.configure(text=self.count_aside)
+        # def setLenQueue():
+        #     for key, value in dLenQueue.items():
+        #         self.lqueue_[key].configure(text=str(value))
+        #     self.l_len_aside.configure(text=self.count_aside)
             
-            for key, value in dLenQueue.items():
-                try:
-                    path = 'qlen?q=' + key
-                    dLenQueue[key] = self.get_request(path)["stdout"]
-                finally:
-                    pass
-            try:
-                path = 'qlen?q=' + v.dH['eq_wplace']
-                self.count_aside = 'Отлож. ' + str(self.get_request(path)["stdout"])
-            finally:
-                pass    
-            self.after(v.dH["ui"]["timeout_check"]*1000, setLenQueue)
-        setLenQueue()
+        #     for key, value in dLenQueue.items():
+        #         try:
+        #             path = 'qlen?q=' + key
+        #             dLenQueue[key] = self.get_request(path)["stdout"]
+        #         finally:
+        #             pass
+        #     try:
+        #         path = 'qlen?q=' + app_set.dH['eq_wplace']
+        #         self.count_aside = 'Отлож. ' + str(self.get_request(path)["stdout"])
+        #     finally:
+        #         pass    
+        #     self.after(app_set.dH["ui"]["timeout_check"]*1000, setLenQueue)
+        # setLenQueue()
 ########## Меню очереди, виджеты ##########
 
 ########## Сообщения, виджеты##########
@@ -214,10 +289,10 @@ class EqWin(ctk.CTk):
         f_redir_ticket.columnconfigure(index=[0,1,2], weight=1)
         i_col = 0
         n_col = 3
-        for key in v.dE.items():
+        for key in app_set.dE.items():
             row = i_col // n_col
             col = i_col - row * n_col
-            button = ctk.CTkButton(f_redir_ticket, text=v.dE[key[0]]["shortname"], fg_color="transparent",
+            button = ctk.CTkButton(f_redir_ticket, text=app_set.dE[key[0]]["shortname"], fg_color="transparent",
                                   border_width=2, font=ctk.CTkFont(weight="normal"), text_color=("gray10", "#DCE4EE"),
                                   anchor="c", command=functools.partial(self.change_queue_w, key[0]))
             button.grid(row=row, column=col, padx=(3, 3), pady=(2, 2), sticky="ew")
@@ -255,7 +330,7 @@ class EqWin(ctk.CTk):
               for key in self.bqueue_:
                 self.bqueue_[key].configure(state=tk.NORMAL)
             self.lmain_tick.configure(text=self.ticket)
-            # self.title("Следующий в очередь " + v.dW['queue'][0] + '. ' + v.dE[ v.dW['queue'][0] ]['name'])
+
             self.show_message(self.mess)
             return
         
@@ -344,7 +419,7 @@ class EqWin(ctk.CTk):
         r = {'stdout': None, 'stderr': None}
         try:
             qq = ','.join([x for x in queues])
-            path = 'tnexts?w=' + v.dH['eq_wplace'] + '&qq=' + qq
+            path = 'tnexts?w=' + app_set.dH['eq_wplace'] + '&qq=' + qq
             r = self.get_request(path)
         except Exception as e:
             r['stderr'] = str(e) + ". "
@@ -356,7 +431,7 @@ class EqWin(ctk.CTk):
         else:
             self.ticket = r['stdout']
             self.mediator('end_next')
-            self.bmain_curr.after(v.dH["ui"]["timeout_next"]*1000, self.mediator, 'end_next_timeout')
+            self.bmain_curr.after(app_set.dH["ui"]["timeout_next"]*1000, self.mediator, 'end_next_timeout')
 ########## Основное меню, команда Следующий ##########
 
 ########## Основное меню, команда Повторить ##########
@@ -364,7 +439,7 @@ class EqWin(ctk.CTk):
         self.mediator('beg_next')
         r = {'stdout': None, 'stderr': None}
         try:
-            path = 'tcurr?w=' + v.dH['eq_wplace']
+            path = 'tcurr?w=' + app_set.dH['eq_wplace']
             r = self.get_request(path)
         except Exception as e:
             r['stderr'] = str(e) + ". "
@@ -375,7 +450,7 @@ class EqWin(ctk.CTk):
         else:
             self.ticket = r['stdout']
             self.mediator('end_curr')
-            self.bmain_curr.after(v.dH["ui"]["timeout_next"]*1000, self.mediator, 'end_curr_timeout')
+            self.bmain_curr.after(app_set.dH["ui"]["timeout_next"]*1000, self.mediator, 'end_curr_timeout')
 ########## Основное меню, команда Повторить ##########
 
 ########## Основное меню, команда Не явился ##########
@@ -383,7 +458,7 @@ class EqWin(ctk.CTk):
         self.mediator('beg_next')
         r = {'stdout': None, 'stderr': None}
         try:
-            path = 'tnotshowing?w=' + v.dH['eq_wplace']
+            path = 'tnotshowing?w=' + app_set.dH['eq_wplace']
             r = self.get_request(path)
         except Exception as e:
             r['stderr'] = str(e) + ". "
@@ -401,7 +476,7 @@ class EqWin(ctk.CTk):
         self.mediator('beg_next')
         r = {'stdout': None, 'stderr': None}
         try:
-            path = 'tend?w=' + v.dH['eq_wplace']
+            path = 'tend?w=' + app_set.dH['eq_wplace']
             r = self.get_request(path)
         except Exception as e:
             r['stderr'] = str(e) + ". "
@@ -442,13 +517,13 @@ class EqWin(ctk.CTk):
         self.mediator('beg_next')
         r = {'stdout': None, 'stderr': None}
         try:
-            path = 'tchange?w=' + v.dH['eq_wplace'] + '&o=0' + '&q=' + str(queue_id)
+            path = 'tchange?w=' + app_set.dH['eq_wplace'] + '&o=0' + '&q=' + str(queue_id)
             r = self.get_request(path)
         except Exception as e:
             r['stderr'] = str(e) + ". "
         
         if r['stderr'] is None:
-            self.mess = "Талон " + self.ticket + " перемещен в очередь " + v.dE[queue_id]["name"] + "."
+            self.mess = "Талон " + self.ticket + " перемещен в очередь " + app_set.dE[queue_id]["name"] + "."
             self.ticket = '----'
             self.mediator('end_notshow')
         else:
@@ -466,7 +541,7 @@ class EqWin(ctk.CTk):
         self.mediator('beg_next')
         r = {'stdout': None, 'stderr': None}
         try:
-            path = 'taside?w=' + v.dH['eq_wplace'] + '&o=0' + '&d=' + quote_plus(self.text_aside_ticket.get())
+            path = 'taside?w=' + app_set.dH['eq_wplace'] + '&o=0' + '&d=' + quote_plus(self.text_aside_ticket.get())
             r = self.get_request(path)
         except Exception as e:
             r['stderr'] = str(e) + ". "
@@ -488,7 +563,7 @@ class EqWin(ctk.CTk):
 
         r = {'stdout': None, 'stderr': None}
         try:
-            path = 'tlist_queues?qq=' + v.dH['eq_wplace']
+            path = 'tlist_queues?qq=' + app_set.dH['eq_wplace']
             r = self.get_request(path)
         except Exception as e:
             r['stderr'] = str(e) + ". "
@@ -539,7 +614,7 @@ class EqWin(ctk.CTk):
         self.mediator('beg_next')
         r = {'stdout': None, 'stderr': None}
         try:
-            path = 'tnextbyname?w=' + v.dH['eq_wplace'] + '&q=' + str(queue_id) + '&n=' + quote_plus(tick_name)
+            path = 'tnextbyname?w=' + app_set.dH['eq_wplace'] + '&q=' + str(queue_id) + '&n=' + quote_plus(tick_name)
             r = self.get_request(path)
         except Exception as e:
             r['stderr'] = str(e) + ". "
@@ -551,15 +626,15 @@ class EqWin(ctk.CTk):
         else:
             self.ticket = r['stdout'][0]
             self.mediator('end_next')
-            self.bmain_curr.after(v.dH["ui"]["timeout_next"]*1000, self.mediator, 'end_next_timeout')  
+            self.bmain_curr.after(app_set.dH["ui"]["timeout_next"]*1000, self.mediator, 'end_next_timeout')  
 ########## Расширенное меню, команда Список отложенных ##########
 
 ##########   http-запрос   ##########
     def get_request(self, path=''):
         r = {'stdout': None, 'stderr': None}
         try:
-            url = v.dH['eq_url'] + path
-            auth = tuple(v.dH['eq_auth'])
+            url = app_set.dH['eq_url'] + path
+            auth = tuple(app_set.dH['eq_auth'])
             req = requests.get(url=url, auth=auth)
             dReq = json.loads(req.text)
             r['stdout'] = dReq['stdout']
@@ -594,15 +669,22 @@ class EqWin(ctk.CTk):
     def change_appearance_mode_event(self, new_appearance_mode: str):
         ctk.set_appearance_mode(new_appearance_mode)
 
-    def change_scaling_event(self, new_scaling: str):
-        new_scaling_float = int(new_scaling.replace("%", "")) / 100
-        ctk.set_widget_scaling(new_scaling_float)
-        ctk.set_window_scaling(new_scaling_float)
+    # def change_scaling_event(self, new_scaling: str):
+    #     new_scaling_float = int(new_scaling.replace("%", "")) / 100
+    #     ctk.set_widget_scaling(new_scaling_float)
+    #     ctk.set_window_scaling(new_scaling_float)
 
-    def sidebar_button_event(self):
-        print("sidebar_button click")
+    # def sidebar_button_event(self):
+    #     print("sidebar_button click")
+
+# Main run
+app_set = app_set()
+ctk.set_appearance_mode(app_set.pult["ui"]["mode"])
+ctk.set_default_color_theme(app_set.pult["ui"]["theme"])
+ctk.set_widget_scaling(app_set.pult["ui"]["scaling"])
+ctk.set_window_scaling(app_set.pult["ui"]["scaling"])
 
 if __name__ == "__main__":
-    app = EqWin()
+    app = App()
     app.wm_attributes("-topmost", True)
     app.mainloop()
