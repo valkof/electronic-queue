@@ -3,3 +3,6 @@ venvScriptsactivate
 logs
 __pycache__
 *.pyc
+*.spec
+build/
+dist/
