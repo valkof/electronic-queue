@@ -35,15 +35,30 @@ def _app_pos(self, width: int, height: int, zoom: float, shift_x, shift_y: int):
     shift_pos_x = screen_width - int(width * zoom + shift_x)
     shift_pos_y = screen_height - int(height * zoom + shift_y)
     self.geometry(f'{width}x{height}+{shift_pos_x}+{shift_pos_y}')
+
+
+class Mediator():
+    """
+    Интерфейс Посредника предоставляет метод, используемый компонентами для
+    уведомления посредника о различных событиях. Посредник может реагировать на
+    эти события и передавать исполнение другим компонентам.
+    """
+
+    def mediator(self, mediator):
+        self._mediator = mediator
+
     
 class App(ctk.CTk):
-    def __init__(self):
+    def __init__(self, mediator: Mediator):
         super().__init__()
 
         self.title("Пульт оператора")
         self.resizable(False, False)
-        _app_pos(self, 600, 200, app_set.pult['ui']['scaling'],
-                  app_set.pult['ui']['shift_left'], app_set.pult['ui']['shift_bottom'])
+        _app_pos(self, 600, 200,
+            app_set.pult['ui']['scaling'],
+            app_set.pult['ui']['shift_left'],
+            app_set.pult['ui']['shift_bottom']
+        )
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(0, weight=1)
         # self.extmenu = False
@@ -57,15 +72,13 @@ class App(ctk.CTk):
         # self.timer_id = None
 
         self.frame_Auth = FrameAuth(self)
-        self.frame_Auth.grid(row=0, column=0, sticky="nsew")
-        
-        # self.frame_Queue = FrameQueue(self)
-        # self.frame_Auth.grid(row=1, column=0, sticky="nsew")
-        # self.frame_Auth.configure(state=tk.DISABLED)
+        self.frame_Auth.grid(row=0, column=0, sticky="nsew")        
     
     def next_frame(self, oper_id):
         print(f"{oper_id}")
         self.frame_Auth.grid_remove()
+        self.frame_Queue = FrameQueue(self)
+        self.frame_Queue.grid(row=0, column=0, sticky="nsew")
 
 class FrameAuth(ctk.CTkFrame):
     def __init__(self, parent: App):
@@ -115,7 +128,6 @@ class FrameAuth(ctk.CTkFrame):
         self.grid_columnconfigure(0, weight=1)
 
     def button_click(self):
-        # Получение значений из виджетов
         selected_option = self.combo_var.get()
         kod = self.entry_var.get()
         
@@ -137,178 +149,165 @@ class FrameQueue(ctk.CTkFrame):
         
         self.router_pages = []
 
-        ########## Виджеты талона ##########
-        self.f_ticket = ctk.CTkFrame(self, corner_radius=0)
-        # self.f_ticket.configure(border_width=1, border_color="blue")
-        self.f_ticket.grid(row=0, column=0, sticky="nsew", rowspan=2)
+        self.f_ticket = FrameTicket(self)
+        # self.f_ticket.mediator.
 
-        self.lmain_tick = ctk.CTkLabel(self.f_ticket, text="----", font=ctk.CTkFont(size=24, weight="bold"))
-        self.lmain_tick.grid(row=0, column=0, padx=(3, 3), pady=(3, 3), ipadx=0, sticky="ew")
+#         ########## Основное меню, виджеты ##########
+#         self.f_main = ctk.CTkFrame(self, corner_radius=0)
+#         # self.f_main.configure(border_width=1, border_color="blue")
+#         self.f_main.grid(row=0, column=1, sticky="ew")
 
-        self.b_adv_opt = ctk.CTkButton(self.f_ticket, text="Дополнительно", font=ctk.CTkFont(weight="normal"),
-                                       command=self.open_adv_opt)
-        self.b_adv_opt.grid(row=1, column=0, padx=(3, 3), pady=(3, 3), ipadx=0, sticky="ew")
+#         self.bmain_next = ctk.CTkButton(self.f_main, text="➜ Следующий",
+#                                         font=ctk.CTkFont(weight="bold"),
+#                                         command=self.eq_nexts_w)
+#         self.bmain_next.grid(row=0, column=0, padx=(3, 3), pady=(3, 3), ipadx=0, sticky="ew")
+#         self.bmain_next.grid_remove()
 
-        self.l_len_aside = ctk.CTkLabel(self.f_ticket, text="Отлож. 0", font=ctk.CTkFont(weight="normal"))
-        self.l_len_aside.grid(row=2, column=0, padx=(3, 3), pady=(3, 3), ipadx=0, sticky="ew")
-        ########## Виджеты талона ##########
+#         self.bmain_curr = ctk.CTkButton(self.f_main, text="⟳ Повторить",
+#                                         font=ctk.CTkFont(weight="bold"),
+#                                         command=self.eq_curr_w)
+#         self.bmain_curr.grid(row=0, column=1, padx=(3, 3), pady=(3, 3), ipadx=0, sticky="ew")
 
-        ########## Основное меню, виджеты ##########
-        self.f_main = ctk.CTkFrame(self, corner_radius=0)
-        # self.f_main.configure(border_width=1, border_color="blue")
-        self.f_main.grid(row=0, column=1, sticky="ew")
+#         self.bmain_notshow = ctk.CTkButton(self.f_main, text="✖ Не явился",
+#                                            font=ctk.CTkFont(weight="bold"),
+#                                            command=self.eq_notshow_w)
+#         self.bmain_notshow.grid(row=0, column=2, padx=(3, 3), pady=(3, 3), ipadx=0, sticky="ew")
 
-        self.bmain_next = ctk.CTkButton(self.f_main, text="➜ Следующий",
-                                        font=ctk.CTkFont(weight="bold"),
-                                        command=self.eq_nexts_w)
-        self.bmain_next.grid(row=0, column=0, padx=(3, 3), pady=(3, 3), ipadx=0, sticky="ew")
-        self.bmain_next.grid_remove()
-
-        self.bmain_curr = ctk.CTkButton(self.f_main, text="⟳ Повторить",
-                                        font=ctk.CTkFont(weight="bold"),
-                                        command=self.eq_curr_w)
-        self.bmain_curr.grid(row=0, column=1, padx=(3, 3), pady=(3, 3), ipadx=0, sticky="ew")
-
-        self.bmain_notshow = ctk.CTkButton(self.f_main, text="✖ Не явился",
-                                           font=ctk.CTkFont(weight="bold"),
-                                           command=self.eq_notshow_w)
-        self.bmain_notshow.grid(row=0, column=2, padx=(3, 3), pady=(3, 3), ipadx=0, sticky="ew")
-
-        self.bmain_end = ctk.CTkButton(self.f_main, text="✔ Обслужен",
-                                       font=ctk.CTkFont(weight="bold"),
-                                       command=self.eq_end_w)
-        self.bmain_end.grid(row=0, column=0, padx=(3, 3), pady=(3, 3), ipadx=0, sticky="ew")
-########## Основное меню, виджеты ##########
+#         self.bmain_end = ctk.CTkButton(self.f_main, text="✔ Обслужен",
+#                                        font=ctk.CTkFont(weight="bold"),
+#                                        command=self.eq_end_w)
+#         self.bmain_end.grid(row=0, column=0, padx=(3, 3), pady=(3, 3), ipadx=0, sticky="ew")
+# ########## Основное меню, виджеты ##########
 
 
-########## Меню очереди, виджеты ##########
-        self.f_queue = ctk.CTkFrame(self, corner_radius=0)
-        # self.f_queue.configure(border_width=1, border_color="green")
-        self.f_queue.grid(row=1, column=1, sticky="ew")
-        column = 0
-        row = 0
-        self.bqueue_: dict[str, ctk.CTkButton] = {}
-        self.lqueue_: dict[str, ctk.CTkLabel] = {}
-        # for key, value in app_set.dE.items():
-        #     self.bqueue_[key] = ctk.CTkButton(self.f_queue,
-        #                                       text=app_set.dE[key]["shortname"],
-        #                                       font=ctk.CTkFont(weight="normal"),
-        #                                       anchor="w",
-        #                                       command=functools.partial(self.set_queues_w, key))
-        #     self.bqueue_[key].grid(row=row, column=column, padx=(3, 3),
-        #                                pady=(3, 3), ipadx=0, sticky='w')
+# ########## Меню очереди, виджеты ##########
+#         self.f_queue = ctk.CTkFrame(self, corner_radius=0)
+#         # self.f_queue.configure(border_width=1, border_color="green")
+#         self.f_queue.grid(row=1, column=1, sticky="ew")
+#         column = 0
+#         row = 0
+#         self.bqueue_: dict[str, ctk.CTkButton] = {}
+#         self.lqueue_: dict[str, ctk.CTkLabel] = {}
+#         # for key, value in app_set.dE.items():
+#         #     self.bqueue_[key] = ctk.CTkButton(self.f_queue,
+#         #                                       text=app_set.dE[key]["shortname"],
+#         #                                       font=ctk.CTkFont(weight="normal"),
+#         #                                       anchor="w",
+#         #                                       command=functools.partial(self.set_queues_w, key))
+#         #     self.bqueue_[key].grid(row=row, column=column, padx=(3, 3),
+#         #                                pady=(3, 3), ipadx=0, sticky='w')
 
-        #     self.lqueue_[key] = ctk.CTkLabel(self.f_queue, text=str(dLenQueue[key]),
-        #                                      font=ctk.CTkFont(weight="normal"),
-        #                                      width=20)
-        #     self.lqueue_[key].grid(row=row, column=column, padx=(3, 10), pady=(3, 3), ipadx=0, ipady=0, sticky="e")
-        #     column = 0 if column >= 2 else column + 1
-        #     if (column == 0): row += 1
+#         #     self.lqueue_[key] = ctk.CTkLabel(self.f_queue, text=str(dLenQueue[key]),
+#         #                                      font=ctk.CTkFont(weight="normal"),
+#         #                                      width=20)
+#         #     self.lqueue_[key].grid(row=row, column=column, padx=(3, 10), pady=(3, 3), ipadx=0, ipady=0, sticky="e")
+#         #     column = 0 if column >= 2 else column + 1
+#         #     if (column == 0): row += 1
 
-        # def setLenQueue():
-        #     for key, value in dLenQueue.items():
-        #         self.lqueue_[key].configure(text=str(value))
-        #     self.l_len_aside.configure(text=self.count_aside)
+#         # def setLenQueue():
+#         #     for key, value in dLenQueue.items():
+#         #         self.lqueue_[key].configure(text=str(value))
+#         #     self.l_len_aside.configure(text=self.count_aside)
             
-        #     for key, value in dLenQueue.items():
-        #         try:
-        #             path = 'qlen?q=' + key
-        #             dLenQueue[key] = self.get_request(path)["stdout"]
-        #         finally:
-        #             pass
-        #     try:
-        #         path = 'qlen?q=' + app_set.dH['eq_wplace']
-        #         self.count_aside = 'Отлож. ' + str(self.get_request(path)["stdout"])
-        #     finally:
-        #         pass    
-        #     self.after(app_set.dH["ui"]["timeout_check"]*1000, setLenQueue)
-        # setLenQueue()
-########## Меню очереди, виджеты ##########
+#         #     for key, value in dLenQueue.items():
+#         #         try:
+#         #             path = 'qlen?q=' + key
+#         #             dLenQueue[key] = self.get_request(path)["stdout"]
+#         #         finally:
+#         #             pass
+#         #     try:
+#         #         path = 'qlen?q=' + app_set.dH['eq_wplace']
+#         #         self.count_aside = 'Отлож. ' + str(self.get_request(path)["stdout"])
+#         #     finally:
+#         #         pass    
+#         #     self.after(app_set.dH["ui"]["timeout_check"]*1000, setLenQueue)
+#         # setLenQueue()
+# ########## Меню очереди, виджеты ##########
 
-########## Сообщения, виджеты##########
-        self.f_mess = ctk.CTkFrame(self, corner_radius=0, height=50, bg_color='#434B4D', fg_color="transparent" )
-        self.f_mess.grid(row=2, column=0, columnspan=2, sticky="ew", padx=(5, 5))
-        # self.f_mess.configure(border_width=1, border_color="blue")
-        self.lmess = ctk.CTkLabel(self.f_mess, text="", text_color="red", bg_color='#434B4D')
-        self.lmess.grid(row=0, column=0, padx=(3, 3), pady=(3, 3), ipadx=0, sticky="ew")
-########## Сообщения, виджеты##########
+# ########## Сообщения, виджеты##########
+#         self.f_mess = ctk.CTkFrame(self, corner_radius=0, height=50, bg_color='#434B4D', fg_color="transparent" )
+#         self.f_mess.grid(row=2, column=0, columnspan=2, sticky="ew", padx=(5, 5))
+#         # self.f_mess.configure(border_width=1, border_color="blue")
+#         self.lmess = ctk.CTkLabel(self.f_mess, text="", text_color="red", bg_color='#434B4D')
+#         self.lmess.grid(row=0, column=0, padx=(3, 3), pady=(3, 3), ipadx=0, sticky="ew")
+# ########## Сообщения, виджеты##########
 
-########## Рабочий фрейм ##########
-        self.f_work = ctk.CTkFrame(self, corner_radius=0)
-        self.f_work.grid(row=4, column=0, sticky="ew", columnspan=2)
-        # self.f_work.configure(border_width=1, border_color="blue")
-        self.f_work.columnconfigure(index=0, weight=1)
+# ########## Рабочий фрейм ##########
+#         self.f_work = ctk.CTkFrame(self, corner_radius=0)
+#         self.f_work.grid(row=4, column=0, sticky="ew", columnspan=2)
+#         # self.f_work.configure(border_width=1, border_color="blue")
+#         self.f_work.columnconfigure(index=0, weight=1)
 
-        ctk.CTkLabel(self.f_work, text="● Отложенные талоны", text_color="white").grid(row=0, column=0, padx=(5, 5), pady=(2, 2), sticky="w")
+#         ctk.CTkLabel(self.f_work, text="● Отложенные талоны", text_color="white").grid(row=0, column=0, padx=(5, 5), pady=(2, 2), sticky="w")
 
-        self.f_aside_tickets = ctk.CTkScrollableFrame(self.f_work, corner_radius=10, bg_color='#434B4D', fg_color="transparent", height=110)
-        self.f_aside_tickets.grid(row=1, column=0, sticky="ew", padx=(3, 3), pady=(3, 3))
-        # self.f_aside_tickets.configure(border_width=1, border_color="red")
-        self.f_aside_tickets._scrollbar.configure(height=0)
-        self.f_aside_tickets.columnconfigure(index=[0,1,2], weight=1)
+#         self.f_aside_tickets = ctk.CTkScrollableFrame(self.f_work, corner_radius=10, bg_color='#434B4D', fg_color="transparent", height=110)
+#         self.f_aside_tickets.grid(row=1, column=0, sticky="ew", padx=(3, 3), pady=(3, 3))
+#         # self.f_aside_tickets.configure(border_width=1, border_color="red")
+#         self.f_aside_tickets._scrollbar.configure(height=0)
+#         self.f_aside_tickets.columnconfigure(index=[0,1,2], weight=1)
 
-        ctk.CTkLabel(self.f_work, text="● Талоны в выбранных очередях", text_color="white").grid(row=2, column=0, padx=(5, 5), pady=(2, 2), sticky="w")
+#         ctk.CTkLabel(self.f_work, text="● Талоны в выбранных очередях", text_color="white").grid(row=2, column=0, padx=(5, 5), pady=(2, 2), sticky="w")
 
-        self.f_mark_tickets = ctk.CTkScrollableFrame(self.f_work, corner_radius=10, bg_color='#434B4D', fg_color="transparent", height=110)
-        self.f_mark_tickets.grid(row=3, column=0, sticky="ew", padx=(3, 3), pady=(3, 3))
-        # self.f_mark_tickets.configure(border_width=1, border_color="red")
-        self.f_mark_tickets._scrollbar.configure(height=0)
-        self.f_mark_tickets.columnconfigure(index=[0,1,2], weight=1)
+#         self.f_mark_tickets = ctk.CTkScrollableFrame(self.f_work, corner_radius=10, bg_color='#434B4D', fg_color="transparent", height=110)
+#         self.f_mark_tickets.grid(row=3, column=0, sticky="ew", padx=(3, 3), pady=(3, 3))
+#         # self.f_mark_tickets.configure(border_width=1, border_color="red")
+#         self.f_mark_tickets._scrollbar.configure(height=0)
+#         self.f_mark_tickets.columnconfigure(index=[0,1,2], weight=1)
 
-        self.router_pages.append(self.f_work)
-        # self.f_work.grid_remove()
-##########  Рабочий фрейм ##########
+#         self.router_pages.append(self.f_work)
+#         # self.f_work.grid_remove()
+# ##########  Рабочий фрейм ##########
 
-##########  Фрейм дополнительных функций к текущему талону ##########
-        self.f_cur_ticket = ctk.CTkFrame(self, corner_radius=0)
-        self.f_cur_ticket.grid(row=5, column=0, sticky="ew", columnspan=2)
-        # self.f_cur_ticket.configure(border_width=1, border_color="red")
-        self.f_cur_ticket.columnconfigure(index=0, weight=1)
+# ##########  Фрейм дополнительных функций к текущему талону ##########
+#         self.f_cur_ticket = ctk.CTkFrame(self, corner_radius=0)
+#         self.f_cur_ticket.grid(row=5, column=0, sticky="ew", columnspan=2)
+#         # self.f_cur_ticket.configure(border_width=1, border_color="red")
+#         self.f_cur_ticket.columnconfigure(index=0, weight=1)
         
-        ctk.CTkLabel(self.f_cur_ticket, text="● Отложить талон", text_color="white").grid(row=0, column=0, padx=(5, 5), pady=(2, 2), sticky="w")
+#         ctk.CTkLabel(self.f_cur_ticket, text="● Отложить талон", text_color="white").grid(row=0, column=0, padx=(5, 5), pady=(2, 2), sticky="w")
         
-        f_aside_ticket = ctk.CTkFrame(self.f_cur_ticket, corner_radius=0, fg_color="transparent")
-        f_aside_ticket.grid(row=1, column=0, sticky="ew")
-        # f_aside_ticket.configure(border_width=1, border_color="blue")
-        f_aside_ticket.columnconfigure(index=0, weight=1)
+#         f_aside_ticket = ctk.CTkFrame(self.f_cur_ticket, corner_radius=0, fg_color="transparent")
+#         f_aside_ticket.grid(row=1, column=0, sticky="ew")
+#         # f_aside_ticket.configure(border_width=1, border_color="blue")
+#         f_aside_ticket.columnconfigure(index=0, weight=1)
         
-        self.text_aside_ticket = ctk.CTkEntry(f_aside_ticket, placeholder_text="Описание талона")
-        self.text_aside_ticket.grid(row=0, column=0, padx=(3, 3), pady=(3, 3), sticky="ew")
+#         self.text_aside_ticket = ctk.CTkEntry(f_aside_ticket, placeholder_text="Описание талона")
+#         self.text_aside_ticket.grid(row=0, column=0, padx=(3, 3), pady=(3, 3), sticky="ew")
 
-        self.but_aside_ticket = ctk.CTkButton(f_aside_ticket, fg_color="transparent",
-                                            text="Отложить талон", 
-                                            border_width=2, text_color=("gray10", "#DCE4EE"),
-                                            command=self.eq_asidecurr)
-        self.but_aside_ticket.grid(row=0, column=1, padx=(3, 3), pady=(3, 3), sticky="ew")
+#         self.but_aside_ticket = ctk.CTkButton(f_aside_ticket, fg_color="transparent",
+#                                             text="Отложить талон", 
+#                                             border_width=2, text_color=("gray10", "#DCE4EE"),
+#                                             command=self.eq_asidecurr)
+#         self.but_aside_ticket.grid(row=0, column=1, padx=(3, 3), pady=(3, 3), sticky="ew")
         
-        ctk.CTkLabel(self.f_cur_ticket, text="● Перевести талон в другую очередь", text_color="white").grid(row=2, column=0, padx=(5, 5), pady=(2, 2), sticky="w")
+#         ctk.CTkLabel(self.f_cur_ticket, text="● Перевести талон в другую очередь", text_color="white").grid(row=2, column=0, padx=(5, 5), pady=(2, 2), sticky="w")
 
-        f_redir_ticket = ctk.CTkFrame(self.f_cur_ticket, corner_radius=0, fg_color="transparent")
-        f_redir_ticket.grid(row=3, column=0, sticky="nsew")
-        # f_redir_ticket.configure(border_width=1, border_color="green")
-        f_redir_ticket.columnconfigure(index=[0,1,2], weight=1)
-        i_col = 0
-        n_col = 3
-        for key in app_set.dE.items():
-            row = i_col // n_col
-            col = i_col - row * n_col
-            button = ctk.CTkButton(f_redir_ticket, text=app_set.dE[key[0]]["shortname"], fg_color="transparent",
-                                  border_width=2, font=ctk.CTkFont(weight="normal"), text_color=("gray10", "#DCE4EE"),
-                                  anchor="c", command=functools.partial(self.change_queue_w, key[0]))
-            button.grid(row=row, column=col, padx=(3, 3), pady=(2, 2), sticky="ew")
-            i_col += 1
+#         f_redir_ticket = ctk.CTkFrame(self.f_cur_ticket, corner_radius=0, fg_color="transparent")
+#         f_redir_ticket.grid(row=3, column=0, sticky="nsew")
+#         # f_redir_ticket.configure(border_width=1, border_color="green")
+#         f_redir_ticket.columnconfigure(index=[0,1,2], weight=1)
+#         i_col = 0
+#         n_col = 3
+#         for key in app_set.dE.items():
+#             row = i_col // n_col
+#             col = i_col - row * n_col
+#             button = ctk.CTkButton(f_redir_ticket, text=app_set.dE[key[0]]["shortname"], fg_color="transparent",
+#                                   border_width=2, font=ctk.CTkFont(weight="normal"), text_color=("gray10", "#DCE4EE"),
+#                                   anchor="c", command=functools.partial(self.change_queue_w, key[0]))
+#             button.grid(row=row, column=col, padx=(3, 3), pady=(2, 2), sticky="ew")
+#             i_col += 1
 
-        self.router_pages.append(self.f_cur_ticket)
-        self.f_cur_ticket.grid_remove()
-##########  Фрейм дополнительных функций к текущему талону ##########
+#         self.router_pages.append(self.f_cur_ticket)
+#         self.f_cur_ticket.grid_remove()
+# ##########  Фрейм дополнительных функций к текущему талону ##########
 
-########## Запуска пульта проверка на наличие открытого талона ###########
-        # global first_run_app
-        # if first_run_app:
-        self.eq_curr_w()
-            # first_run_app = False
-        self.set_queues_w(queue)
-########## Запуска пульта проверка на наличие открытого талона ##########
+# ########## Запуска пульта проверка на наличие открытого талона ###########
+#         # global first_run_app
+#         # if first_run_app:
+#         self.eq_curr_w()
+#             # first_run_app = False
+#         self.set_queues_w(queue)
+# ########## Запуска пульта проверка на наличие открытого талона ##########
 
 ########## Медиатор ##########
     def mediator(self, event: str, status: bool = True):
@@ -677,6 +676,54 @@ class FrameQueue(ctk.CTkFrame):
     # def sidebar_button_event(self):
     #     print("sidebar_button click")
 
+class ComponentMediator:
+    """
+    Базовый Компонент Медиатор.
+    """
+
+    def __init__(self):
+        self._mediator = None
+
+    @property
+    def mediator(self):
+        return self._mediator
+
+    @mediator.setter
+    def mediator(self, mediator):
+        self._mediator = mediator
+
+class Mediator:
+    def __init__(self, app: App = None):
+        self._app = app
+
+    def app(self, app: App):
+        self._app = app
+
+    def state(self, event: str, mod: bool):
+        if event == 'first' and mod:
+            print('ok')
+
+class FrameTicket(ctk.CTkFrame, ComponentMediator):
+    """
+    Фрейм для отображения информации о текущем талоне
+    """
+    def __init__(self, parent):
+        super().__init__(parent)
+
+        self.configure(corner_radius=0)
+        # self.configure(border_width=1, border_color="blue")
+        self.grid(row=0, column=0, sticky="nsew")
+
+        self.LTicket = ctk.CTkLabel(self, text="----", font=ctk.CTkFont(size=24, weight="bold"))
+        self.LTicket.grid(row=0, column=0, padx=(3, 3), pady=(3, 3), ipadx=0, sticky="ew")
+
+        self.BOption = ctk.CTkButton(self, text="Дополнительно", font=ctk.CTkFont(weight="normal")) #, command=self.open_adv_opt)
+        self.BOption.grid(row=1, column=0, padx=(3, 3), pady=(3, 3), ipadx=0, sticky="ew")
+        
+        self.LMessage = ctk.CTkLabel(self, text="Отлож. 0", font=ctk.CTkFont(weight="normal"))
+        self.LMessage.grid(row=2, column=0, padx=(3, 3), pady=(3, 3), ipadx=0, sticky="ew")
+
+
 # Main run
 app_set = app_set()
 ctk.set_appearance_mode(app_set.pult["ui"]["mode"])
@@ -685,6 +732,7 @@ ctk.set_widget_scaling(app_set.pult["ui"]["scaling"])
 ctk.set_window_scaling(app_set.pult["ui"]["scaling"])
 
 if __name__ == "__main__":
-    app = App()
+    mediator = Mediator()
+    app = App(mediator)
     app.wm_attributes("-topmost", True)
     app.mainloop()
