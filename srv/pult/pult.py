@@ -52,7 +52,7 @@ class App(ctk.CTk):
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(0, weight=1)
         # self.extmenu = False
-        # self.ticket = "----"
+        self.ticket = False
         # self.mess = None
         # self.curr_time = datetime.datetime.now()
         # self.columnconfigure(index=0, weight=1)
@@ -68,7 +68,21 @@ class App(ctk.CTk):
         print(f"{oper_id}")
         self.frame_Auth.grid_remove()
         self.frame_Queue = FrameQueue(self, mediator)
-        self.frame_Queue.grid(row=0, column=0, sticky="nsew")   
+        self.frame_Queue.grid(row=0, column=0, sticky="nsew")
+
+    def get_request(self, path=''):
+        r = {'stdout': None, 'stderr': None}
+        # http://10.0.6.168:88/cgi-bin/is10_09?sSd_=0&sfil_n=19&svid_=1&stst_=0&sgr_l=360&shead_=0&sit_l=936&style_=2&oper_id=4&led_tablo_id=3
+        try:
+            url = app_set.pult['eq_url'] + path
+            auth = tuple(app_set.dH['eq_auth'])
+            req = requests.get(url=url, auth=auth)
+            dReq = json.loads(req.text)
+            r['stdout'] = dReq['stdout']
+            r['stderr'] = dReq['stderr']
+        except Exception as e:
+            r['stderr'] = 'Ошибка связи с сервером очереди. ' + str(e) + ". "
+        return r
 
 class FrameAuth(ctk.CTkFrame):
     def __init__(self, parent, mediator: Mediator):
@@ -369,13 +383,7 @@ class FrameQueue(ctk.CTkFrame):
         self.timer_id.start()
 ########## Роутер ##########
 
-##########   Основное меню, команды обновления фреймов ##########
-    def open_adv_opt(self):
-        if self.ticket and self.ticket != '----':  # есть номер талона
-            self.router(self.f_cur_ticket)
-        else:  # нет выбранного талона
-            self.router(self.f_work)
-##########   Основное меню, команды обновления фреймов ##########
+
 
 ########## Основное меню, команда Следующий ##########
     def eq_nexts_w(self):
@@ -593,20 +601,6 @@ class FrameQueue(ctk.CTkFrame):
             self.bmain_curr.after(app_set.dH["ui"]["timeout_next"]*1000, self.mediator, 'end_next_timeout')  
 ########## Расширенное меню, команда Список отложенных ##########
 
-##########   http-запрос   ##########
-    def get_request(self, path=''):
-        r = {'stdout': None, 'stderr': None}
-        try:
-            url = app_set.dH['eq_url'] + path
-            auth = tuple(app_set.dH['eq_auth'])
-            req = requests.get(url=url, auth=auth)
-            dReq = json.loads(req.text)
-            r['stdout'] = dReq['stdout']
-            r['stderr'] = dReq['stderr']
-        except Exception as e:
-            r['stderr'] = 'Ошибка связи с сервером очереди. ' + str(e) + ". "
-        return r
-##########   http-запрос   ##########
 
 ##########   преобразовать список в строку   ##########
     def list2str(self, list_=[]):
@@ -657,12 +651,19 @@ class FrameTicket(ctk.CTkFrame):
         self.LTicket = ctk.CTkLabel(self, text="----", font=ctk.CTkFont(size=24, weight="bold"))
         self.LTicket.grid(row=0, column=0, padx=(3, 3), pady=(3, 3), ipadx=0, sticky="ew")
 
-        self.BOption = ctk.CTkButton(self, text="Дополнительно", font=ctk.CTkFont(weight="normal"))
-          #TODO, command=self.open_adv_opt)
+        self.BOption = ctk.CTkButton(self, text="Дополнительно", font=ctk.CTkFont(weight="normal"), command=self.open_adv_opt)
         self.BOption.grid(row=1, column=0, padx=(3, 3), pady=(3, 3), ipadx=0, sticky="ew")
         
         self.LMessage = ctk.CTkLabel(self, text="Отлож. 0", font=ctk.CTkFont(weight="normal"))
         self.LMessage.grid(row=2, column=0, padx=(3, 3), pady=(3, 3), ipadx=0, sticky="ew")
+
+    def open_adv_opt(self):
+        if mediator._app.ticket:  # есть номер талона
+            # self.router(self.f_cur_ticket)
+            pass
+        else:  # нет выбранного талона
+            # self.router(self.f_work)
+            pass
 
 class FrameControl(ctk.CTkFrame):
     """
