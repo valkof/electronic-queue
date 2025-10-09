@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from __future__ import annotations
 from __future__ import unicode_literals
 import threading
 from pult_vars import app_set
@@ -12,7 +13,6 @@ from urllib.parse import quote_plus
 import functools
 import time
 import datetime
-
 
 # queue = app_set.dW['queue'][0]
 
@@ -36,21 +36,11 @@ def _app_pos(self, width: int, height: int, zoom: float, shift_x, shift_y: int):
     shift_pos_y = screen_height - int(height * zoom + shift_y)
     self.geometry(f'{width}x{height}+{shift_pos_x}+{shift_pos_y}')
 
-
-class Mediator():
-    """
-    Интерфейс Посредника предоставляет метод, используемый компонентами для
-    уведомления посредника о различных событиях. Посредник может реагировать на
-    эти события и передавать исполнение другим компонентам.
-    """
-
-    def mediator(self, mediator):
-        self._mediator = mediator
-
-    
 class App(ctk.CTk):
     def __init__(self, mediator: Mediator):
         super().__init__()
+
+        self._mediator = mediator
 
         self.title("Пульт оператора")
         self.resizable(False, False)
@@ -71,20 +61,20 @@ class App(ctk.CTk):
         # self.clear_message = lambda: self.lmess = ''
         # self.timer_id = None
 
-        self.frame_Auth = FrameAuth(self)
-        self.frame_Auth.grid(row=0, column=0, sticky="nsew")        
+        self.frame_Auth = FrameAuth(self, mediator)
+        self.frame_Auth.grid(row=0, column=0, sticky="nsew")
     
-    def next_frame(self, oper_id):
+    def open_frame_queue(self, oper_id):
         print(f"{oper_id}")
         self.frame_Auth.grid_remove()
-        self.frame_Queue = FrameQueue(self)
-        self.frame_Queue.grid(row=0, column=0, sticky="nsew")
+        self.frame_Queue = FrameQueue(self, mediator)
+        self.frame_Queue.grid(row=0, column=0, sticky="nsew")   
 
 class FrameAuth(ctk.CTkFrame):
-    def __init__(self, parent: App):
+    def __init__(self, parent, mediator: Mediator):
         super().__init__(parent)
 
-        self.parent = parent
+        self._mediator = mediator
         
         # Создание переменных для хранения значений
         self.combo_var = ctk.StringVar()
@@ -139,46 +129,21 @@ class FrameAuth(ctk.CTkFrame):
         
         if len(matches) == 1:
             self.label.configure(text = '')
-            self.parent.next_frame(matches[0][0])
+            self.oper_id = matches[0][0]
+            self._mediator.state('open_frame_queue')
         else:
             self.label.configure(text = 'Неверный пароль')
 
 class FrameQueue(ctk.CTkFrame):
-    def __init__(self, parent):
+    def __init__(self, parent, mediator: Mediator):
         super().__init__(parent)
+
+        self._mediator = mediator
         
         self.router_pages = []
 
-        self.f_ticket = FrameTicket(self)
-        # self.f_ticket.mediator.
-
-#         ########## Основное меню, виджеты ##########
-#         self.f_main = ctk.CTkFrame(self, corner_radius=0)
-#         # self.f_main.configure(border_width=1, border_color="blue")
-#         self.f_main.grid(row=0, column=1, sticky="ew")
-
-#         self.bmain_next = ctk.CTkButton(self.f_main, text="➜ Следующий",
-#                                         font=ctk.CTkFont(weight="bold"),
-#                                         command=self.eq_nexts_w)
-#         self.bmain_next.grid(row=0, column=0, padx=(3, 3), pady=(3, 3), ipadx=0, sticky="ew")
-#         self.bmain_next.grid_remove()
-
-#         self.bmain_curr = ctk.CTkButton(self.f_main, text="⟳ Повторить",
-#                                         font=ctk.CTkFont(weight="bold"),
-#                                         command=self.eq_curr_w)
-#         self.bmain_curr.grid(row=0, column=1, padx=(3, 3), pady=(3, 3), ipadx=0, sticky="ew")
-
-#         self.bmain_notshow = ctk.CTkButton(self.f_main, text="✖ Не явился",
-#                                            font=ctk.CTkFont(weight="bold"),
-#                                            command=self.eq_notshow_w)
-#         self.bmain_notshow.grid(row=0, column=2, padx=(3, 3), pady=(3, 3), ipadx=0, sticky="ew")
-
-#         self.bmain_end = ctk.CTkButton(self.f_main, text="✔ Обслужен",
-#                                        font=ctk.CTkFont(weight="bold"),
-#                                        command=self.eq_end_w)
-#         self.bmain_end.grid(row=0, column=0, padx=(3, 3), pady=(3, 3), ipadx=0, sticky="ew")
-# ########## Основное меню, виджеты ##########
-
+        self.f_ticket = FrameTicket(self, mediator)
+        self.f_control = FrameControl(self, mediator)
 
 # ########## Меню очереди, виджеты ##########
 #         self.f_queue = ctk.CTkFrame(self, corner_radius=0)
@@ -676,39 +641,14 @@ class FrameQueue(ctk.CTkFrame):
     # def sidebar_button_event(self):
     #     print("sidebar_button click")
 
-class ComponentMediator:
-    """
-    Базовый Компонент Медиатор.
-    """
-
-    def __init__(self):
-        self._mediator = None
-
-    @property
-    def mediator(self):
-        return self._mediator
-
-    @mediator.setter
-    def mediator(self, mediator):
-        self._mediator = mediator
-
-class Mediator:
-    def __init__(self, app: App = None):
-        self._app = app
-
-    def app(self, app: App):
-        self._app = app
-
-    def state(self, event: str, mod: bool):
-        if event == 'first' and mod:
-            print('ok')
-
-class FrameTicket(ctk.CTkFrame, ComponentMediator):
+class FrameTicket(ctk.CTkFrame):
     """
     Фрейм для отображения информации о текущем талоне
     """
-    def __init__(self, parent):
+    def __init__(self, parent, mediator: Mediator):
         super().__init__(parent)
+
+        self._mediator = mediator
 
         self.configure(corner_radius=0)
         # self.configure(border_width=1, border_color="blue")
@@ -717,12 +657,56 @@ class FrameTicket(ctk.CTkFrame, ComponentMediator):
         self.LTicket = ctk.CTkLabel(self, text="----", font=ctk.CTkFont(size=24, weight="bold"))
         self.LTicket.grid(row=0, column=0, padx=(3, 3), pady=(3, 3), ipadx=0, sticky="ew")
 
-        self.BOption = ctk.CTkButton(self, text="Дополнительно", font=ctk.CTkFont(weight="normal")) #, command=self.open_adv_opt)
+        self.BOption = ctk.CTkButton(self, text="Дополнительно", font=ctk.CTkFont(weight="normal"))
+          #TODO, command=self.open_adv_opt)
         self.BOption.grid(row=1, column=0, padx=(3, 3), pady=(3, 3), ipadx=0, sticky="ew")
         
         self.LMessage = ctk.CTkLabel(self, text="Отлож. 0", font=ctk.CTkFont(weight="normal"))
         self.LMessage.grid(row=2, column=0, padx=(3, 3), pady=(3, 3), ipadx=0, sticky="ew")
 
+class FrameControl(ctk.CTkFrame):
+    """
+    Фрейм кнопок для управления талоном
+    """
+    def __init__(self, parent, mediator: Mediator):
+        super().__init__(parent, corner_radius=0)
+
+        self._mediator = mediator
+
+        # self.configure(border_width=1, border_color="blue")
+        self.grid(row=0, column=1, sticky="ew")
+
+        self.bmain_next = ctk.CTkButton(self, text="➜ Следующий",
+                                        font=ctk.CTkFont(weight="bold")) #,
+                                        #TODO command=self.eq_nexts_w)
+        self.bmain_next.grid(row=0, column=0, padx=(3, 3), pady=(3, 3), ipadx=0, sticky="ew")
+        self.bmain_next.grid_remove()
+
+        self.bmain_curr = ctk.CTkButton(self, text="⟳ Повторить",
+                                        font=ctk.CTkFont(weight="bold")) #,
+                                        #TODO command=self.eq_curr_w)
+        self.bmain_curr.grid(row=0, column=1, padx=(3, 3), pady=(3, 3), ipadx=0, sticky="ew")
+
+        self.bmain_notshow = ctk.CTkButton(self, text="✖ Не явился",
+                                           font=ctk.CTkFont(weight="bold")) #,
+                                           #TODO command=self.eq_notshow_w)
+        self.bmain_notshow.grid(row=0, column=2, padx=(3, 3), pady=(3, 3), ipadx=0, sticky="ew")
+
+        self.bmain_end = ctk.CTkButton(self, text="✔ Обслужен",
+                                       font=ctk.CTkFont(weight="bold")) #,
+                                       #TODO command=self.eq_end_w)
+        self.bmain_end.grid(row=0, column=0, padx=(3, 3), pady=(3, 3), ipadx=0, sticky="ew")
+
+class Mediator:
+    def __init__(self):
+        self._app = None
+
+    def set_app(self, app: App):
+        self._app = app
+
+    def state(self, event: str, mod: bool = False):
+        if event == 'open_frame_queue':
+            self._app.open_frame_queue(self._app.frame_Auth.oper_id)
 
 # Main run
 app_set = app_set()
@@ -734,5 +718,6 @@ ctk.set_window_scaling(app_set.pult["ui"]["scaling"])
 if __name__ == "__main__":
     mediator = Mediator()
     app = App(mediator)
+    mediator.set_app(app)
     app.wm_attributes("-topmost", True)
     app.mainloop()
