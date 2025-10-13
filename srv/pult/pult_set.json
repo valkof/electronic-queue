@@ -1,6 +1,6 @@
 {
     "eq_wplace": "3",
-    "eq_url": "http://10.0.5.168:88/cgi-bin/",
+    "eq_url": "http://192.168.100.8:8000/cgi-bin/",
     "fil": "19",
     "eq_auth": [
         "eq01",

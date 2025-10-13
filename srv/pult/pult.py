@@ -2,8 +2,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
 from __future__ import unicode_literals
+import asyncio
 import threading
-from pult_vars import app_set
+from pult_vars import AppSet, DataBase, LockableButton, TResponseSetQueue
 import requests
 import json
 import tkinter as tk
@@ -64,25 +65,24 @@ class App(ctk.CTk):
         self.frame_Auth = FrameAuth(self, mediator)
         self.frame_Auth.grid(row=0, column=0, sticky="nsew")
     
-    def open_frame_queue(self, oper_id):
-        print(f"{oper_id}")
-        self.frame_Auth.grid_remove()
+    def get_data_pult(self, oper_id):
+        db.getDataPult(self.open_frame_queue, oper_id, app_set.pult['eq_wplace'])
+        
+
+    def open_frame_queue(self, data: TResponseSetQueue):
+        if data['stderr'] == '':
+            self.frame_Auth.after(5*1000, self._mediator.state, 'message_data_pult', 'отпустил')
+            # self._mediator.state('message_data_pult', data['stderr'])
+            return
+        
+        self._mediator.state('message_data_pult', '')
+
         self.frame_Queue = FrameQueue(self, mediator)
+        
+        self.frame_Auth.grid_remove()
         self.frame_Queue.grid(row=0, column=0, sticky="nsew")
 
-    def get_request(self, path=''):
-        r = {'stdout': None, 'stderr': None}
-        # http://10.0.6.168:88/cgi-bin/is10_09?sSd_=0&sfil_n=19&svid_=1&stst_=0&sgr_l=360&shead_=0&sit_l=936&style_=2&oper_id=4&led_tablo_id=3
-        try:
-            url = app_set.pult['eq_url'] + path
-            auth = tuple(app_set.dH['eq_auth'])
-            req = requests.get(url=url, auth=auth)
-            dReq = json.loads(req.text)
-            r['stdout'] = dReq['stdout']
-            r['stderr'] = dReq['stderr']
-        except Exception as e:
-            r['stderr'] = 'Ошибка связи с сервером очереди. ' + str(e) + ". "
-        return r
+
 
 class FrameAuth(ctk.CTkFrame):
     def __init__(self, parent, mediator: Mediator):
@@ -114,7 +114,7 @@ class FrameAuth(ctk.CTkFrame):
         self.entry.grid(row=1, column=0, padx=20, pady=10)
         
         # Кнопка действия
-        self.button = ctk.CTkButton(
+        self.button = LockableButton(
             self,
             text="ВОЙТИ",
             command=self.button_click
@@ -132,6 +132,14 @@ class FrameAuth(ctk.CTkFrame):
         self.grid_columnconfigure(0, weight=1)
 
     def button_click(self):
+        print(self.button.cget("state"))
+        print(self.button)
+        # self.button.configure(state=ctk.DISABLED)
+        # if self.button.cget("state") == ctk.DISABLED:
+        #     print('block')
+        #     return
+        self.button.lock()
+        print(self.button.cget("state"))
         selected_option = self.combo_var.get()
         kod = self.entry_var.get()
         
@@ -142,11 +150,16 @@ class FrameAuth(ctk.CTkFrame):
                 matches.append(item)
         
         if len(matches) == 1:
-            self.label.configure(text = '')
+            self.label_show()
             self.oper_id = matches[0][0]
-            self._mediator.state('open_frame_queue')
+            self._mediator.state('get_data_pult')
         else:
-            self.label.configure(text = 'Неверный пароль')
+            self.label_show('Неверный пароль')
+            self.button.unlock()
+
+    def label_show(self, message: str = ''):
+        self.label.configure(text=message)
+
 
 class FrameQueue(ctk.CTkFrame):
     def __init__(self, parent, mediator: Mediator):
@@ -156,8 +169,12 @@ class FrameQueue(ctk.CTkFrame):
         
         self.router_pages = []
 
-        self.f_ticket = FrameTicket(self, mediator)
-        self.f_control = FrameControl(self, mediator)
+        mainPanel = ctk.CTkFrame(self)
+        mainPanel.grid(row=0, column=0, sticky="nsew")
+        mainPanel.columnconfigure(index=0, weight=1)
+        self.f_ticket = FrameTicket(mainPanel, mediator).grid(row=0, column=0, rowspan=2, sticky="nsew")
+        self.f_control = FrameControl(mainPanel, mediator).grid(row=0, column=1, sticky="ew")
+        self.f_queues = FrameQueues(mainPanel, mediator).grid(row=1, column=1, sticky="nsew")
 
 # ########## Меню очереди, виджеты ##########
 #         self.f_queue = ctk.CTkFrame(self, corner_radius=0)
@@ -640,13 +657,11 @@ class FrameTicket(ctk.CTkFrame):
     Фрейм для отображения информации о текущем талоне
     """
     def __init__(self, parent, mediator: Mediator):
-        super().__init__(parent)
+        super().__init__(parent, corner_radius=0)
+        # self.configure(border_width=1, border_color="blue")
 
         self._mediator = mediator
 
-        self.configure(corner_radius=0)
-        # self.configure(border_width=1, border_color="blue")
-        self.grid(row=0, column=0, sticky="nsew")
 
         self.LTicket = ctk.CTkLabel(self, text="----", font=ctk.CTkFont(size=24, weight="bold"))
         self.LTicket.grid(row=0, column=0, padx=(3, 3), pady=(3, 3), ipadx=0, sticky="ew")
@@ -671,11 +686,10 @@ class FrameControl(ctk.CTkFrame):
     """
     def __init__(self, parent, mediator: Mediator):
         super().__init__(parent, corner_radius=0)
+        # self.configure(border_width=1, border_color="blue")
 
         self._mediator = mediator
 
-        # self.configure(border_width=1, border_color="blue")
-        self.grid(row=0, column=1, sticky="ew")
 
         self.bmain_next = ctk.CTkButton(self, text="➜ Следующий",
                                         font=ctk.CTkFont(weight="bold")) #,
@@ -698,6 +712,91 @@ class FrameControl(ctk.CTkFrame):
                                        #TODO command=self.eq_end_w)
         self.bmain_end.grid(row=0, column=0, padx=(3, 3), pady=(3, 3), ipadx=0, sticky="ew")
 
+class FrameQueues(ctk.CTkFrame):
+    """
+    Фрейм кнопок для управления очередями
+    """
+    def __init__(self, parent, mediator: Mediator):
+        super().__init__(parent, corner_radius=0)
+        # self.configure(border_width=1, border_color="green")
+
+        self._mediator = mediator
+
+        self.buttons_create()
+
+    def buttons_create(self):
+        column = 0
+        row = 0
+        self.bqueue_: dict[str, ctk.CTkButton] = {}
+        self.lqueue_: dict[str, ctk.CTkLabel] = {}
+        # for key, value in app_set.dE.items():
+        #     self.bqueue_[key] = ctk.CTkButton(self.f_queue,
+        #                                       text=app_set.dE[key]["shortname"],
+        #                                       font=ctk.CTkFont(weight="normal"),
+        #                                       anchor="w",
+        #                                       command=functools.partial(self.set_queues_w, key))
+        #     self.bqueue_[key].grid(row=row, column=column, padx=(3, 3),
+        #                                pady=(3, 3), ipadx=0, sticky='w')
+
+        #     self.lqueue_[key] = ctk.CTkLabel(self.f_queue, text=str(dLenQueue[key]),
+        #                                      font=ctk.CTkFont(weight="normal"),
+        #                                      width=20)
+        #     self.lqueue_[key].grid(row=row, column=column, padx=(3, 10), pady=(3, 3), ipadx=0, ipady=0, sticky="e")
+        #     column = 0 if column >= 2 else column + 1
+        #     if (column == 0): row += 1
+
+class ButtonQueue(ctk.CTkFrame):
+    """
+    Кнопка для управления очередью
+    """
+    def __init__(self, parent, mediator: Mediator):
+        super().__init__(parent, corner_radius=0)
+
+        self._mediator = mediator
+
+        self.button = ctk.CTkButton(
+            self,
+            # text=app_set.dE[key]["shortname"],
+            font=ctk.CTkFont(weight="normal"),
+            anchor="w",
+            # command=functools.partial(self.set_queues_w, key)
+        )
+        # self.button.grid(row=row, column=column, padx=(3, 3), pady=(3, 3), ipadx=0, sticky='w')
+
+        self.label = ctk.CTkLabel(
+            self,
+            # text=str(dLenQueue[key]),
+            # font=ctk.CTkFont(weight="normal"),
+            width=20
+        )
+        # self.label.grid(row=row, column=column, padx=(3, 10), pady=(3, 3), ipadx=0, ipady=0, sticky="e")
+
+
+
+
+# ########## Меню очереди, виджеты ##########
+
+
+#         # def setLenQueue():
+#         #     for key, value in dLenQueue.items():
+#         #         self.lqueue_[key].configure(text=str(value))
+#         #     self.l_len_aside.configure(text=self.count_aside)
+            
+#         #     for key, value in dLenQueue.items():
+#         #         try:
+#         #             path = 'qlen?q=' + key
+#         #             dLenQueue[key] = self.get_request(path)["stdout"]
+#         #         finally:
+#         #             pass
+#         #     try:
+#         #         path = 'qlen?q=' + app_set.dH['eq_wplace']
+#         #         self.count_aside = 'Отлож. ' + str(self.get_request(path)["stdout"])
+#         #     finally:
+#         #         pass    
+#         #     self.after(app_set.dH["ui"]["timeout_check"]*1000, setLenQueue)
+#         # setLenQueue()
+# ########## Меню очереди, виджеты ##########
+
 class Mediator:
     def __init__(self):
         self._app = None
@@ -705,18 +804,25 @@ class Mediator:
     def set_app(self, app: App):
         self._app = app
 
-    def state(self, event: str, mod: bool = False):
-        if event == 'open_frame_queue':
-            self._app.open_frame_queue(self._app.frame_Auth.oper_id)
+    def state(self, event: str, body: any = None):
+        if event == 'get_data_pult':
+            self._app.get_data_pult(self._app.frame_Auth.oper_id)
+            return
+        
+        if event == 'message_data_pult':
+            self._app.frame_Auth.label_show(body)
+            self._app.frame_Auth.button.unlock()
+            return
 
 # Main run
-app_set = app_set()
-ctk.set_appearance_mode(app_set.pult["ui"]["mode"])
-ctk.set_default_color_theme(app_set.pult["ui"]["theme"])
-ctk.set_widget_scaling(app_set.pult["ui"]["scaling"])
-ctk.set_window_scaling(app_set.pult["ui"]["scaling"])
-
 if __name__ == "__main__":
+    app_set = AppSet()
+    db = DataBase(app_set.pult)
+    ctk.set_appearance_mode(app_set.pult["ui"]["mode"])
+    ctk.set_default_color_theme(app_set.pult["ui"]["theme"])
+    ctk.set_widget_scaling(app_set.pult["ui"]["scaling"])
+    ctk.set_window_scaling(app_set.pult["ui"]["scaling"])
+
     mediator = Mediator()
     app = App(mediator)
     mediator.set_app(app)

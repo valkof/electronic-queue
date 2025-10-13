@@ -16,3 +16,5 @@ tk
 urllib3
 zipp
 python-vlc
+aiohttp
+asyncio
