@@ -129,8 +129,9 @@ class TRequest(TypedDict):
 
 
 class ThreadLoop:
-    def __init__(self, funcRequest: Callable[[str], TRequest], path: str, func: Callable):
+    def __init__(self, funcRequest: Callable[[str], TRequest], path: str, min_time: float, func: Callable):
         self.new_loop: asyncio.AbstractEventLoop = None
+        self.min_time = min_time
         self.func: Callable = func
         self.new_loop = asyncio.new_event_loop()
         thread = threading.Thread(target=self.new_loop.run_forever)
@@ -142,7 +143,7 @@ class ThreadLoop:
         data = response.result()
         print(data)
         self.new_loop.call_soon_threadsafe(self.new_loop.stop)
-        self.func(data)
+        self.func(data, self.min_time)
 
 class DataBase:
     def __init__(self, setting: TPult):
@@ -168,6 +169,6 @@ class DataBase:
             data['stderr'] = 'Таймаут при запросе к URL.'             
         return data
 
-    def getDataPult(self, func: Callable[[TResponseSetQueue], None], oper_id: str, wplace_id: str):
+    def getDataPult(self, min_time: float, func: Callable[[TResponseSetQueue], None], oper_id: str, wplace_id: str):
         path = f"svid_=1&sgr_l=360&sit_l=936&oper_id={oper_id}&led_tablo_id={wplace_id}"
-        ThreadLoop(self.request, path, func)
+        ThreadLoop(self.request, path, min_time, func)

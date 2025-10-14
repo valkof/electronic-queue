@@ -65,24 +65,24 @@ class App(ctk.CTk):
         self.frame_Auth = FrameAuth(self, mediator)
         self.frame_Auth.grid(row=0, column=0, sticky="nsew")
     
-    def get_data_pult(self, oper_id):
-        db.getDataPult(self.open_frame_queue, oper_id, app_set.pult['eq_wplace'])
+    def get_data_pult(self, oper_id: str):
+        db.getDataPult(time.time(), self.callback_data_pult, oper_id, app_set.pult['eq_wplace'])
         
 
-    def open_frame_queue(self, data: TResponseSetQueue):
-        if data['stderr'] == '':
-            self.frame_Auth.after(5*1000, self._mediator.state, 'message_data_pult', 'отпустил')
-            # self._mediator.state('message_data_pult', data['stderr'])
+    def callback_data_pult(self, data: TResponseSetQueue, min_time: float):
+        # max_time = max(0, app_set.pult['ui']['timeout_next'] - (time.time() - min_time))
+        max_time = max(0, 0 - (time.time() - min_time))
+        if data['stderr'] != '':
+            self.frame_Auth.after(max_time*1000, self._mediator.state, 'no_data_pult', {'message': data['stderr']})
             return
         
-        self._mediator.state('message_data_pult', '')
+        self.frame_Auth.after(max_time*1000, self._mediator.state, 'open_frame_queue', {'message': 'Авторизация прошла успешно.'})
 
+    def open_frame_queue(self):
         self.frame_Queue = FrameQueue(self, mediator)
         
         self.frame_Auth.grid_remove()
         self.frame_Queue.grid(row=0, column=0, sticky="nsew")
-
-
 
 class FrameAuth(ctk.CTkFrame):
     def __init__(self, parent, mediator: Mediator):
@@ -131,15 +131,17 @@ class FrameAuth(ctk.CTkFrame):
         # Настройка растяжения столбцов
         self.grid_columnconfigure(0, weight=1)
 
+    def __enter__(self):
+        return self
+    
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        pass
+
     def button_click(self):
-        print(self.button.cget("state"))
-        print(self.button)
-        # self.button.configure(state=ctk.DISABLED)
-        # if self.button.cget("state") == ctk.DISABLED:
-        #     print('block')
-        #     return
         self.button.lock()
-        print(self.button.cget("state"))
+        self.verify_authorization()
+
+    def verify_authorization(self):
         selected_option = self.combo_var.get()
         kod = self.entry_var.get()
         
@@ -151,8 +153,8 @@ class FrameAuth(ctk.CTkFrame):
         
         if len(matches) == 1:
             self.label_show()
-            self.oper_id = matches[0][0]
-            self._mediator.state('get_data_pult')
+            oper_id = matches[0][0]
+            self._mediator.state('get_data_pult', {'oper_id': oper_id})
         else:
             self.label_show('Неверный пароль')
             self.button.unlock()
@@ -806,12 +808,20 @@ class Mediator:
 
     def state(self, event: str, body: any = None):
         if event == 'get_data_pult':
-            self._app.get_data_pult(self._app.frame_Auth.oper_id)
+            self._app.get_data_pult(body['oper_id'])
             return
         
-        if event == 'message_data_pult':
-            self._app.frame_Auth.label_show(body)
-            self._app.frame_Auth.button.unlock()
+        if event == 'no_data_pult':
+            with self._app.frame_Auth as frame:
+                frame.label_show(body['message'])
+                frame.button.unlock()
+            return
+        
+        if event == 'open_frame_queue':
+            with self._app.frame_Auth as frame:
+                frame.label_show(body['message'])
+                frame.button.lock()
+            self._app.open_frame_queue()
             return
 
 # Main run
