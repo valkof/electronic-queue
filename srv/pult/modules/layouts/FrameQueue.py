@@ -5,6 +5,7 @@ from pult_types import TMediator
 from .FrameTicket import FrameTicket
 from .FrameControl import FrameControl
 from .FrameQueues import FrameQueues
+from .FrameMessage import FrameMessage
 
 class FrameQueue(ctk.CTkFrame):
     def __init__(self, parent, mediator: TMediator, app_set: AppSet):
@@ -21,3 +22,7 @@ class FrameQueue(ctk.CTkFrame):
         self.f_ticket = FrameTicket(mainPanel, mediator, app_set).grid(row=0, column=0, rowspan=2, sticky="nsew")
         self.f_control = FrameControl(mainPanel, mediator, app_set).grid(row=0, column=1, sticky="ew")
         self.f_queues = FrameQueues(mainPanel, mediator, app_set).grid(row=1, column=1, sticky="nsew")
+        
+        self.f_message = FrameMessage(self, mediator, app_set)
+        self.f_message.grid(row=1, column=0, sticky="ew", padx=(5, 5))
+        self.f_message.columnconfigure(index=0, weight=1)
