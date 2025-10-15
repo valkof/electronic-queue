@@ -1,16 +1,18 @@
 import customtkinter as ctk
-from ...pult import Mediator
+
+from pult_config import AppSet
+from pult_types import TMediator
 
 class FrameTicket(ctk.CTkFrame):
     """
     Фрейм для отображения информации о текущем талоне
     """
-    def __init__(self, parent, mediator: Mediator):
+    def __init__(self, parent, mediator: TMediator, app_set: AppSet):
         super().__init__(parent, corner_radius=0)
         # self.configure(border_width=1, border_color="blue")
 
-        self._mediator = mediator
-
+        # self._mediator = mediator
+        # self._app_set = app_set
 
         self.LTicket = ctk.CTkLabel(self, text="----", font=ctk.CTkFont(size=24, weight="bold"))
         self.LTicket.grid(row=0, column=0, padx=(3, 3), pady=(3, 3), ipadx=0, sticky="ew")

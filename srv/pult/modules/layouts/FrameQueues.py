@@ -1,14 +1,14 @@
 import customtkinter as ctk
 
+from pult_config import AppSet
+from pult_types import TMediator
 from ..elements.ButtonQueue import ButtonQueue
-from ...pult_vars import AppSet
-from ...pult import Mediator
 
 class FrameQueues(ctk.CTkFrame):
     """
     Фрейм кнопок для управления очередями
     """
-    def __init__(self, parent, mediator: Mediator, app_set: AppSet):
+    def __init__(self, parent, mediator: TMediator, app_set: AppSet):
         super().__init__(parent, corner_radius=0)
         # self.configure(border_width=1, border_color="green")
 

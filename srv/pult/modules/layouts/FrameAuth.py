@@ -1,10 +1,11 @@
 import customtkinter as ctk
-from ..elements import LockableButton
-from ...pult_vars import AppSet
-from ...pult import Mediator
+
+from pult_config import AppSet
+from pult_types import TMediator
+from ..elements.LockableButton import LockableButton
 
 class FrameAuth(ctk.CTkFrame):
-    def __init__(self, parent, mediator: Mediator, app_set: AppSet):
+    def __init__(self, parent, mediator: TMediator, app_set: AppSet):
         super().__init__(parent)
 
         self._mediator = mediator
@@ -19,10 +20,10 @@ class FrameAuth(ctk.CTkFrame):
         # Выпадающий список
         self.combo = ctk.CTkComboBox(
             self, width=300,
-            values=[item[2] for item in app_set.pult['set']],
+            values=[item[2] for item in self._app_set.pult['set']],
             variable=self.combo_var, state="readonly"
         )
-        self.combo.set(app_set.pult['set'][0][2])
+        self.combo.set(self._app_set.pult['set'][0][2])
         self.combo.grid(row=0, column=0, padx=20, pady=10)
         
         # Поле ввода чисел

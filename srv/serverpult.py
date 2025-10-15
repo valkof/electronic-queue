@@ -38,8 +38,8 @@ class JSONHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(json.dumps(response_data).encode())
 
-def run(server_class=HTTPServer, handler_class=JSONHandler, port=8000):
-    server_address = ('', port)
+def run(server_class=HTTPServer, handler_class=JSONHandler, port=88):
+    server_address = ('192.168.0.90', port)
     httpd = server_class(server_address, handler_class)
     print(f"Сервер запущен на порту {port}")
     httpd.serve_forever()

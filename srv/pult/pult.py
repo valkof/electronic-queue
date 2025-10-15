@@ -2,21 +2,14 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
 from __future__ import unicode_literals
-import asyncio
-import threading
-from pult_vars import AppSet, DataBase, TResponseSetQueue
-import requests
-import json
-import tkinter as tk
-from PIL import Image
 import customtkinter as ctk
-from urllib.parse import quote_plus
-import functools
 import time
-import datetime
 
+from pult_types import TMediator, TResponseSetQueue
+from pult_config import AppSet
+from pult_db import DataBase
 from modules.layouts.FrameAuth import FrameAuth
-from .modules.layouts.FrameQueue import FrameQueue
+from modules.layouts.FrameQueue import FrameQueue
 
 # queue = app_set.dW['queue'][0]
 
@@ -65,7 +58,7 @@ class App(ctk.CTk):
         # self.clear_message = lambda: self.lmess = ''
         # self.timer_id = None
 
-        self.frame_Auth = FrameAuth(self, mediator)
+        self.frame_Auth = FrameAuth(self, mediator, app_set)
         self.frame_Auth.grid(row=0, column=0, sticky="nsew")
     
     def get_data_pult(self, oper_id: str):
@@ -83,12 +76,12 @@ class App(ctk.CTk):
         self.frame_Auth.after(max_time*1000, self._mediator.state, 'open_frame_queue', {'message': 'Авторизация прошла успешно.'})
 
     def open_frame_queue(self):
-        self.frame_Queue = FrameQueue(self, mediator)
+        self.frame_Queue = FrameQueue(self, mediator, app_set)
         
         self.frame_Auth.grid_remove()
         self.frame_Queue.grid(row=0, column=0, sticky="nsew")
 
-class Mediator:
+class Mediator(TMediator):
     def __init__(self):
         self._app = None
 

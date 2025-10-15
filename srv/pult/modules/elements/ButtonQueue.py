@@ -1,13 +1,12 @@
 import customtkinter as ctk
 
-from ...pult_vars import TQueue
-from ...pult import Mediator
+from pult_types import TMediator, TQueue
 
 class ButtonQueue(ctk.CTkFrame):
     """
     Кнопка для управления очередью
     """
-    def __init__(self, parent, mediator: Mediator, queue: TQueue):
+    def __init__(self, parent, mediator: TMediator, queue: TQueue):
         super().__init__(parent, corner_radius=0)
         # self.configure(border_width=1, border_color="green")
 

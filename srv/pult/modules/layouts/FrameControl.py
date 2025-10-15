@@ -1,16 +1,18 @@
 import customtkinter as ctk
-from ...pult import Mediator
+
+from pult_config import AppSet
+from pult_types import TMediator
 
 class FrameControl(ctk.CTkFrame):
     """
     Фрейм кнопок для управления талоном
     """
-    def __init__(self, parent, mediator: Mediator):
+    def __init__(self, parent, mediator: TMediator, app_set: AppSet):
         super().__init__(parent, corner_radius=0)
         # self.configure(border_width=1, border_color="blue")
 
-        self._mediator = mediator
-
+        # self._mediator = mediator
+        # self._app_set = app_set
 
         self.bmain_next = ctk.CTkButton(self, text="➜ Следующий",
                                         font=ctk.CTkFont(weight="bold")) #,
