@@ -1,10 +1,11 @@
 import customtkinter as ctk
 
 class LockableButton(ctk.CTkButton):
-    def __init__(self, master, text = "Кнопка", command=None):
+    def __init__(self, master, text = "Кнопка", command = None, font_style = "normal"):
         super().__init__(master, text = text, command=command)
 
         self.action = None
+        self.configure(font=ctk.CTkFont(weight=font_style))
     # def handle_click(self):
     #     """Обработчик нажатия кнопки"""
     #     if self.cget("state") == ctk.NORMAL:

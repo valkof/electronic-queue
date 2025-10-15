@@ -51,5 +51,26 @@ class DataBase:
         return data
 
     def getDataPult(self, min_time: float, func: Callable[[TResponseSetQueue], None], oper_id: str, wplace_id: str):
+        # svid_=1&sgr_l=360&sit_l=936&oper_id=4&led_tablo_id=3
+        path = f"svid_=1&sgr_l=360&sit_l=936&oper_id={oper_id}&led_tablo_id={wplace_id}"
+        ThreadLoop(self.request, path, min_time, func)
+
+    def getNextTicket(self, min_time: float, func: Callable[[TResponseSetQueue], None], oper_id: str, wplace_id: str):
+        # svid_=1&sgr_l=360&sit_l=22&oper_id=4&led_tablo_id=3&queues_ids=1&month_id=3&led_tablo_port=2323&led_tablo_title=1&adapter_setting=192.168.10.15#192.168.10.20,32109,1#192.168.10.20,32105#klient_talon,TTT,proidite,okno_nomer,NNN
+        path = f"svid_=1&sgr_l=360&sit_l=936&oper_id={oper_id}&led_tablo_id={wplace_id}"
+        ThreadLoop(self.request, path, min_time, func)
+
+    def getCurrentTicket(self, min_time: float, func: Callable[[TResponseSetQueue], None], oper_id: str, wplace_id: str):
+        # svid_=1&sgr_l=360&sit_l=23&oper_id=4&led_tablo_id=3&month_id=3&led_tablo_port=2323&led_tablo_title=1&adapter_setting=192.168.10.15#192.168.10.20,32109,1#192.168.10.20,32105#klient_talon,TTT,proidite,okno_nomer,NNN
+        path = f"svid_=1&sgr_l=360&sit_l=936&oper_id={oper_id}&led_tablo_id={wplace_id}"
+        ThreadLoop(self.request, path, min_time, func)
+
+    def getAbortTicket(self, min_time: float, func: Callable[[TResponseSetQueue], None], oper_id: str, wplace_id: str):
+        # svid_=1&sgr_l=360&sit_l=25&ticket_id=1&user_id=2&month_id=3&led_tablo_port=2323&adapter_setting=192.168.10.15#192.168.10.20,32109,1#192.168.10.20,32105#klient_talon,TTT,proidite,okno_nomer,NNN
+        path = f"svid_=1&sgr_l=360&sit_l=936&oper_id={oper_id}&led_tablo_id={wplace_id}"
+        ThreadLoop(self.request, path, min_time, func)
+
+    def getFinishTicket(self, min_time: float, func: Callable[[TResponseSetQueue], None], oper_id: str, wplace_id: str):
+        # svid_=1&sgr_l=360&sit_l=936&oper_id=4&led_tablo_id=3
         path = f"svid_=1&sgr_l=360&sit_l=936&oper_id={oper_id}&led_tablo_id={wplace_id}"
         ThreadLoop(self.request, path, min_time, func)
