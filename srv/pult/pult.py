@@ -76,7 +76,7 @@ class App(ctk.CTk):
         self.frame_Auth.after(max_time*1000, self._mediator.state, 'open_frame_queue', {'message': 'Авторизация прошла успешно.'})
 
     def open_frame_queue(self):
-        self.frame_Queue = FrameQueue(self, mediator, app_set)
+        self.frame_Queue = FrameQueue(self, mediator, app_set, db)
         
         self.frame_Auth.grid_remove()
         self.frame_Queue.grid(row=0, column=0, sticky="nsew")

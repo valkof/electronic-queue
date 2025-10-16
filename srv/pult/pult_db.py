@@ -3,7 +3,7 @@ import aiohttp
 import threading
 from typing import Callable, TypedDict, Union
 from pult_log import log_debug
-from pult_types import TPult, TResponseSetQueue
+from pult_types import TPult, TResponseSetQueue, TSetQueue
 
 class TRequest(TypedDict):
     stdout: Union[dict, None]  # Тело ответа
@@ -50,24 +50,94 @@ class DataBase:
             data['stderr'] = 'Таймаут при запросе к URL.'             
         return data
 
-    def getDataPult(self, min_time: float, func: Callable[[TResponseSetQueue], None], oper_id: str, wplace_id: str):
+    def getDataPult(
+            self, min_time: float, func: Callable[[TResponseSetQueue], None],
+            oper_id: str, led_tablo_id: str
+        ):
+        """
+        Получить настройки пульта
+        """
         # svid_=1&sgr_l=360&sit_l=936&oper_id=4&led_tablo_id=3
-        path = f"svid_=1&sgr_l=360&sit_l=936&oper_id={oper_id}&led_tablo_id={wplace_id}"
+        path = "svid_=1&sgr_l=360&sit_l=936"
+        path += f"&oper_id={oper_id}&led_tablo_id={led_tablo_id}"
         ThreadLoop(self.request, path, min_time, func)
 
-    def getNextTicket(self, min_time: float, func: Callable[[TResponseSetQueue], None], oper_id: str, wplace_id: str):
+    def getNextTicket(
+            self, min_time: float, func: Callable[[TResponseSetQueue], None],
+            oper_id: str, oper_set: TSetQueue
+        ):
+        """
+        Получить следующий талон
+        
+        Пример ответа:
+        {
+          "stdout": {
+            "ticket": {
+              "id": "5",
+              "title": "Р002",
+              "queue_id": "1"
+            },
+            "message": "Нет записи на табло окна оператора 192.168.10.15:2323"
+          },
+          "stderr": ""
+        }
+        """
         # svid_=1&sgr_l=360&sit_l=22&oper_id=4&led_tablo_id=3&queues_ids=1&month_id=3&led_tablo_port=2323&led_tablo_title=1&adapter_setting=192.168.10.15#192.168.10.20,32109,1#192.168.10.20,32105#klient_talon,TTT,proidite,okno_nomer,NNN
-        path = f"svid_=1&sgr_l=360&sit_l=936&oper_id={oper_id}&led_tablo_id={wplace_id}"
+        queues_ids = ','.join([x['id'] for x in oper_set['queues']])
+        path = "svid_=1&sgr_l=360&sit_l=22"
+        path += f"&oper_id={oper_id}&led_tablo_id={oper_set['led_tablo']['id']}"
+        path += f"&queues_ids={queues_ids}&month_id={oper_set['month_id']}"
+        path += f"&led_tablo_port={oper_set['led_tablo']['port']}"
+        path += f"&led_tablo_title={oper_set['led_tablo']['title']}"
+        path += f"&adapter_setting={oper_set['adapter_setting']}"
         ThreadLoop(self.request, path, min_time, func)
 
-    def getCurrentTicket(self, min_time: float, func: Callable[[TResponseSetQueue], None], oper_id: str, wplace_id: str):
+    def getCurrentTicket(
+            self, min_time: float, func: Callable[[TResponseSetQueue], None],
+            oper_id: str, oper_set: TSetQueue
+        ):
+        """
+        Получить текущий талон
+        {
+          "stdout": {
+            "ticket": {
+              "id": "1",
+              "title": "Р001",
+              "queue_id": "1"
+            },
+            "message": "Нет записи на табло окна оператора 192.168.10.15:2323"
+          },
+          "stderr": ""
+        }
+        """
         # svid_=1&sgr_l=360&sit_l=23&oper_id=4&led_tablo_id=3&month_id=3&led_tablo_port=2323&led_tablo_title=1&adapter_setting=192.168.10.15#192.168.10.20,32109,1#192.168.10.20,32105#klient_talon,TTT,proidite,okno_nomer,NNN
-        path = f"svid_=1&sgr_l=360&sit_l=936&oper_id={oper_id}&led_tablo_id={wplace_id}"
+        path = "svid_=1&sgr_l=360&sit_l=23"
+        path += f"&oper_id={oper_id}&led_tablo_id={oper_set['led_tablo']['id']}"
+        path += f"&month_id={oper_set['month_id']}"
+        path += f"&led_tablo_port={oper_set['led_tablo']['port']}"
+        path += f"&led_tablo_title={oper_set['led_tablo']['title']}"
+        path += f"&adapter_setting={oper_set['adapter_setting']}"
         ThreadLoop(self.request, path, min_time, func)
 
-    def getAbortTicket(self, min_time: float, func: Callable[[TResponseSetQueue], None], oper_id: str, wplace_id: str):
+    def getAbortTicket(
+            self, min_time: float, func: Callable[[TResponseSetQueue], None],
+            ticket_id: str, oper_set: TSetQueue
+        ):
+        """
+        Получить результат прерывания обслуживания
+        {
+          "stdout": {
+            "message": "Нет записи на табло окна оператора 192.168.10.15:2323"
+          },
+          "stderr": ""
+        }
+        """
         # svid_=1&sgr_l=360&sit_l=25&ticket_id=1&user_id=2&month_id=3&led_tablo_port=2323&adapter_setting=192.168.10.15#192.168.10.20,32109,1#192.168.10.20,32105#klient_talon,TTT,proidite,okno_nomer,NNN
-        path = f"svid_=1&sgr_l=360&sit_l=936&oper_id={oper_id}&led_tablo_id={wplace_id}"
+        path = f"svid_=1&sgr_l=360&sit_l=25"
+        path += f"&ticket_id={ticket_id}&user_id={oper_set['user_id']}"
+        path += f"&month_id={oper_set['month_id']}"
+        path += f"&led_tablo_port={oper_set['led_tablo']['port']}"
+        path += f"&adapter_setting={oper_set['adapter_setting']}"
         ThreadLoop(self.request, path, min_time, func)
 
     def getFinishTicket(self, min_time: float, func: Callable[[TResponseSetQueue], None], oper_id: str, wplace_id: str):

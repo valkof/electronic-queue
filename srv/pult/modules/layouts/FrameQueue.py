@@ -2,13 +2,14 @@ import customtkinter as ctk
 
 from pult_config import AppSet
 from pult_types import TMediator
+from pult_db import DataBase
 from .FrameTicket import FrameTicket
 from .FrameControl import FrameControl
 from .FrameQueues import FrameQueues
 from .FrameMessage import FrameMessage
 
 class FrameQueue(ctk.CTkFrame):
-    def __init__(self, parent, mediator: TMediator, app_set: AppSet):
+    def __init__(self, parent, mediator: TMediator, app_set: AppSet, db: DataBase):
         super().__init__(parent)
 
         # self._mediator = mediator
