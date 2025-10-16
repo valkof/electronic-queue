@@ -1,15 +1,15 @@
 import customtkinter as ctk
 
-from pult_config import AppSet
 from pult_types import TMediator
+from pult_db import DataBase
 from ..elements.LockableButton import LockableButton
 
 class FrameAuth(ctk.CTkFrame):
-    def __init__(self, parent, mediator: TMediator, app_set: AppSet):
+    def __init__(self, parent, mediator: TMediator, db: DataBase):
         super().__init__(parent)
 
         self._mediator = mediator
-        self._app_set = app_set
+        self._db = db
         
         # Создание переменных для хранения значений
         self.combo_var = ctk.StringVar()
@@ -20,10 +20,10 @@ class FrameAuth(ctk.CTkFrame):
         # Выпадающий список
         self.combo = ctk.CTkComboBox(
             self, width=300,
-            values=[item[2] for item in self._app_set.pult['set']],
+            values=[item[2] for item in db.setPult['set']],
             variable=self.combo_var, state="readonly"
         )
-        self.combo.set(self._app_set.pult['set'][0][2])
+        self.combo.set(db.setPult['set'][0][2])
         self.combo.grid(row=0, column=0, padx=20, pady=10)
         
         # Поле ввода чисел
@@ -75,14 +75,15 @@ class FrameAuth(ctk.CTkFrame):
         
         matches = []
     
-        for item in self._app_set.pult['set']:
+        for item in self._db.setPult['set']:
             if item[1] == kod and item[2] == selected_option:
                 matches.append(item)
         
         if len(matches) == 1:
             self.label_show()
             oper_id = matches[0][0]
-            self._mediator.state('get_data_pult', {'oper_id': oper_id})
+            self._db.setOperId(oper_id)
+            self._mediator.state('get_data_pult')
         else:
             self.label_show('Неверный пароль')
             self.button.unlock()

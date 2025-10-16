@@ -1,29 +1,30 @@
 import customtkinter as ctk
 
-from pult_config import AppSet
 from pult_types import TMediator
+from pult_db import DataBase
 from ..elements.ButtonQueue import ButtonQueue
 
 class FrameQueues(ctk.CTkFrame):
     """
     Фрейм кнопок для управления очередями
     """
-    def __init__(self, parent, mediator: TMediator, app_set: AppSet):
+    def __init__(self, parent, mediator: TMediator, db: DataBase):
         super().__init__(parent, corner_radius=0)
         # self.configure(border_width=1, border_color="green")
 
         self._mediator = mediator
-        self._app_set = app_set
+        self._db = db
 
-        self.buttons_create()
-
-    def buttons_create(self):
         self.buttons: dict[str, ButtonQueue] = {}
         # self.bqueue_: dict[str, ctk.CTkButton] = {}
         # self.lqueue_: dict[str, ctk.CTkLabel] = {}
+        
+        self.buttons_create()
+
+    def buttons_create(self):
         column: int = 0
         row: int = 0
-        for item in self._app_set.place['queues']:
+        for item in self._db.setDevice['queues']:
             button = ButtonQueue(self, self._mediator, item)
             button.grid(row=row, column=column, padx=(3, 10), pady=(3, 3), ipadx=0, ipady=0, sticky="e")
             self.buttons[item['id']] = button

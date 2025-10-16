@@ -1,7 +1,6 @@
 import customtkinter as ctk
 
-from pult_config import AppSet
-from pult_types import TMediator
+from pult_types import TMediator, TResponseSetQueue
 from pult_db import DataBase
 from ..elements.LockableButton import LockableButton
 
@@ -9,12 +8,11 @@ class FrameControl(ctk.CTkFrame):
     """
     Фрейм кнопок для управления талоном
     """
-    def __init__(self, parent, mediator: TMediator, app_set: AppSet, db: DataBase):
+    def __init__(self, parent, mediator: TMediator, db: DataBase):
         super().__init__(parent, corner_radius=0)
         # self.configure(border_width=1, border_color="blue")
 
         # self._mediator = mediator
-        self._app_set = app_set
         self._db = db
 
         self.b_next = LockableButton(self, text="➜ Следующий", command=self.equqe_next)
@@ -34,17 +32,16 @@ class FrameControl(ctk.CTkFrame):
     def equqe_next(self):
         self.b_next.lock()
         # self.mediator('beg_next')
-        # self._db.getNextTicket(
-        #     self._app_set.pult["ui"]["timeout_next"],
-        #     self.ewf, self._app_set.pult["eq_wplace"], self._app_set.place
-        # )
-        # r = {'stdout': None, 'stderr': None}
-        # try:
-        #     qq = ','.join([x for x in queues])
-        #     path = 'tnexts?w=' + app_set.dH['eq_wplace'] + '&qq=' + qq
-        #     r = self.get_request(path)
-        # except Exception as e:
-        #     r['stderr'] = str(e) + ". "
+        self._db.getNextTicket(self.callback_equqe_next)
+    
+    def callback_equqe_next(self, data: TResponseSetQueue, time_out: float):
+        print(data)
+        if data['stderr'] != '':
+            # self.after(time_out*1000, self._mediator.state, 'no_data_pult', {'message': data['stderr']})
+            return
+        
+        # self.frame_Auth.after(time_out*1000, self._mediator.state, 'open_frame_queue', {'message': 'Авторизация прошла успешно.'})
+        
         
         # self.mess = r['stderr']
         # if r['stdout'] is None:

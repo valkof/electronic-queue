@@ -1,7 +1,8 @@
 import asyncio
+import time
 import aiohttp
 import threading
-from typing import Callable, TypedDict, Union
+from typing import Callable, List, TypedDict, Union
 from pult_log import log_debug
 from pult_types import TPult, TResponseSetQueue, TSetQueue
 
@@ -10,9 +11,10 @@ class TRequest(TypedDict):
     stderr: str # Сообщение об ошибке
 
 class ThreadLoop:
-    def __init__(self, funcRequest: Callable[[str], TRequest], path: str, min_time: float, func: Callable):
+    def __init__(self, funcRequest: Callable[[str], TRequest], path: str, min_time: float, max_time: float, func: Callable):
         self.new_loop: asyncio.AbstractEventLoop = None
         self.min_time = min_time
+        self.max_time = max_time
         self.func: Callable = func
         self.new_loop = asyncio.new_event_loop()
         thread = threading.Thread(target=self.new_loop.run_forever)
@@ -24,16 +26,44 @@ class ThreadLoop:
         data = response.result()
         print(data)
         self.new_loop.call_soon_threadsafe(self.new_loop.stop)
-        self.func(data, self.min_time)
+        time_out = max(self.max_time, self.max_time - (time.time() - self.min_time))
+        self.func(data, time_out)
 
 class DataBase:
-    def __init__(self, setting: TPult):
-        self.setting = setting
+    oper_id: str = ''
+    setDevice: TSetQueue = {}
+    ticket_id: str = ''
+    queues: List[str] = []
+    
+    def __init__(self, setPult: TPult):
+        self.setPult = setPult
+
+    def setOperId(self, oper_id: str):
+        self.oper_id = oper_id
+
+    def setTicketId(self, ticket_id: str):
+        self.ticket_id = ticket_id
+
+    def setDeviceSetting(self, setDevice: TSetQueue):
+        self.setDevice = setDevice
+        self.setInitialSetting()
+
+    def setInitialSetting(self):
+        for item in self.setDevice['queues']:
+            self.queues.append(item['id'])
+
+    def addInQueues(self, queue) -> bool:
+        if queue in self.queues:
+            self.queues.remove(queue)
+            return False
+        else:
+            self.queues.append(queue)
+            return True
 
     async def request(self, path: str) -> TRequest:
         data = {'stdout': None, 'stderr': ''}
-        param = f"is10_09?sSd_=0&sfil_n={self.setting['fil']}&stst_=0&shead_=0&style_=2&"
-        url = self.setting['eq_url'] + param + path
+        param = f"is10_09?sSd_=0&sfil_n={self.setPult['fil']}&stst_=0&shead_=0&style_=2&"
+        url = self.setPult['eq_url'] + param + path
         # http://10.0.6.168:88/cgi-bin/is10_09?sSd_=0&sfil_n=19&svid_=1&stst_=0&sgr_l=360&shead_=0&sit_l=936&style_=2&oper_id=4&led_tablo_id=3
         try:
             async with aiohttp.ClientSession() as session:
@@ -50,22 +80,16 @@ class DataBase:
             data['stderr'] = 'Таймаут при запросе к URL.'             
         return data
 
-    def getDataPult(
-            self, min_time: float, func: Callable[[TResponseSetQueue], None],
-            oper_id: str, led_tablo_id: str
-        ):
+    def getDataPult(self, func: Callable[[TResponseSetQueue], None]):
         """
         Получить настройки пульта
         """
         # svid_=1&sgr_l=360&sit_l=936&oper_id=4&led_tablo_id=3
         path = "svid_=1&sgr_l=360&sit_l=936"
-        path += f"&oper_id={oper_id}&led_tablo_id={led_tablo_id}"
-        ThreadLoop(self.request, path, min_time, func)
+        path += f"&oper_id={self.oper_id}&led_tablo_id={self.setPult['eq_wplace']}"
+        ThreadLoop(self.request, path, time.time(), 0, func)
 
-    def getNextTicket(
-            self, min_time: float, func: Callable[[TResponseSetQueue], None],
-            oper_id: str, oper_set: TSetQueue
-        ):
+    def getNextTicket(self, func: Callable[[TResponseSetQueue], None]):
         """
         Получить следующий талон
         
@@ -83,19 +107,16 @@ class DataBase:
         }
         """
         # svid_=1&sgr_l=360&sit_l=22&oper_id=4&led_tablo_id=3&queues_ids=1&month_id=3&led_tablo_port=2323&led_tablo_title=1&adapter_setting=192.168.10.15#192.168.10.20,32109,1#192.168.10.20,32105#klient_talon,TTT,proidite,okno_nomer,NNN
-        queues_ids = ','.join([x['id'] for x in oper_set['queues']])
+        queues_ids = ','.join([x for x in self.queues])
         path = "svid_=1&sgr_l=360&sit_l=22"
-        path += f"&oper_id={oper_id}&led_tablo_id={oper_set['led_tablo']['id']}"
-        path += f"&queues_ids={queues_ids}&month_id={oper_set['month_id']}"
-        path += f"&led_tablo_port={oper_set['led_tablo']['port']}"
-        path += f"&led_tablo_title={oper_set['led_tablo']['title']}"
-        path += f"&adapter_setting={oper_set['adapter_setting']}"
-        ThreadLoop(self.request, path, min_time, func)
+        path += f"&oper_id={self.oper_id}&led_tablo_id={self.setDevice['led_tablo']['id']}"
+        path += f"&queues_ids={queues_ids}&month_id={self.setDevice['month_id']}"
+        path += f"&led_tablo_port={self.setDevice['led_tablo']['port']}"
+        path += f"&led_tablo_title={self.setDevice['led_tablo']['title']}"
+        path += f"&adapter_setting={self.setDevice['adapter_setting']}"
+        ThreadLoop(self.request, path, time.time(), self.setPult['ui']['timeout_next'], func)
 
-    def getCurrentTicket(
-            self, min_time: float, func: Callable[[TResponseSetQueue], None],
-            oper_id: str, oper_set: TSetQueue
-        ):
+    def getCurrentTicket(self, func: Callable[[TResponseSetQueue], None]):
         """
         Получить текущий талон
         {
@@ -112,17 +133,14 @@ class DataBase:
         """
         # svid_=1&sgr_l=360&sit_l=23&oper_id=4&led_tablo_id=3&month_id=3&led_tablo_port=2323&led_tablo_title=1&adapter_setting=192.168.10.15#192.168.10.20,32109,1#192.168.10.20,32105#klient_talon,TTT,proidite,okno_nomer,NNN
         path = "svid_=1&sgr_l=360&sit_l=23"
-        path += f"&oper_id={oper_id}&led_tablo_id={oper_set['led_tablo']['id']}"
-        path += f"&month_id={oper_set['month_id']}"
-        path += f"&led_tablo_port={oper_set['led_tablo']['port']}"
-        path += f"&led_tablo_title={oper_set['led_tablo']['title']}"
-        path += f"&adapter_setting={oper_set['adapter_setting']}"
-        ThreadLoop(self.request, path, min_time, func)
+        path += f"&oper_id={self.oper_id}&led_tablo_id={self.setDevice['led_tablo']['id']}"
+        path += f"&month_id={self.setDevice['month_id']}"
+        path += f"&led_tablo_port={self.setDevice['led_tablo']['port']}"
+        path += f"&led_tablo_title={self.setDevice['led_tablo']['title']}"
+        path += f"&adapter_setting={self.setDevice['adapter_setting']}"
+        ThreadLoop(self.request, path, time.time(), self.setPult['ui']['timeout_next'], func)
 
-    def getAbortTicket(
-            self, min_time: float, func: Callable[[TResponseSetQueue], None],
-            ticket_id: str, oper_set: TSetQueue
-        ):
+    def getAbortTicket(self, func: Callable[[TResponseSetQueue], None]):
         """
         Получить результат прерывания обслуживания
         {
@@ -134,13 +152,13 @@ class DataBase:
         """
         # svid_=1&sgr_l=360&sit_l=25&ticket_id=1&user_id=2&month_id=3&led_tablo_port=2323&adapter_setting=192.168.10.15#192.168.10.20,32109,1#192.168.10.20,32105#klient_talon,TTT,proidite,okno_nomer,NNN
         path = f"svid_=1&sgr_l=360&sit_l=25"
-        path += f"&ticket_id={ticket_id}&user_id={oper_set['user_id']}"
-        path += f"&month_id={oper_set['month_id']}"
-        path += f"&led_tablo_port={oper_set['led_tablo']['port']}"
-        path += f"&adapter_setting={oper_set['adapter_setting']}"
-        ThreadLoop(self.request, path, min_time, func)
+        path += f"&ticket_id={self.ticket_id}&user_id={self.setDevice['user_id']}"
+        path += f"&month_id={self.setDevice['month_id']}"
+        path += f"&led_tablo_port={self.setDevice['led_tablo']['port']}"
+        path += f"&adapter_setting={self.setDevice['adapter_setting']}"
+        ThreadLoop(self.request, path, time.time(), self.setPult['ui']['timeout_next'], func)
 
-    def getFinishTicket(self, min_time: float, func: Callable[[TResponseSetQueue], None], oper_id: str, wplace_id: str):
+    def getFinishTicket(self, func: Callable[[TResponseSetQueue], None]):
         # svid_=1&sgr_l=360&sit_l=936&oper_id=4&led_tablo_id=3
-        path = f"svid_=1&sgr_l=360&sit_l=936&oper_id={oper_id}&led_tablo_id={wplace_id}"
-        ThreadLoop(self.request, path, min_time, func)
+        path = f"svid_=1&sgr_l=360&sit_l=936&oper_id={self.oper_id}&led_tablo_id={self.setDevice['led_tablo']['id']}"
+        ThreadLoop(self.request, path, time.time(), self.setPult['ui']['timeout_next'], func)

@@ -34,17 +34,18 @@ def _app_pos(self, width: int, height: int, zoom: float, shift_x, shift_y: int):
     self.geometry(f'{width}x{height}+{shift_pos_x}+{shift_pos_y}')
 
 class App(ctk.CTk):
-    def __init__(self, mediator: Mediator):
+    def __init__(self, mediator: Mediator, db: DataBase):
         super().__init__()
 
         self._mediator = mediator
+        self._db = db
 
         self.title("Пульт оператора")
         self.resizable(False, False)
         _app_pos(self, 600, 200,
-            app_set.pult['ui']['scaling'],
-            app_set.pult['ui']['shift_left'],
-            app_set.pult['ui']['shift_bottom']
+            db.setPult['ui']['scaling'],
+            db.setPult['ui']['shift_left'],
+            db.setPult['ui']['shift_bottom']
         )
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(0, weight=1)
@@ -58,25 +59,22 @@ class App(ctk.CTk):
         # self.clear_message = lambda: self.lmess = ''
         # self.timer_id = None
 
-        self.frame_Auth = FrameAuth(self, mediator, app_set)
+        self.frame_Auth = FrameAuth(self, mediator, db)
         self.frame_Auth.grid(row=0, column=0, sticky="nsew")
     
-    def get_data_pult(self, oper_id: str):
-        db.getDataPult(time.time(), self.callback_data_pult, oper_id, app_set.pult['eq_wplace'])
-        
+    def get_data_pult(self):
+        db.getDataPult(self.callback_data_pult)        
 
-    def callback_data_pult(self, data: TResponseSetQueue, min_time: float):
-        # max_time = max(0, app_set.pult['ui']['timeout_next'] - (time.time() - min_time))
-        max_time = max(0, 0 - (time.time() - min_time))
+    def callback_data_pult(self, data: TResponseSetQueue, time_out: float):
         if data['stderr'] != '':
-            self.frame_Auth.after(max_time*1000, self._mediator.state, 'no_data_pult', {'message': data['stderr']})
+            self.frame_Auth.after(time_out*1000, self._mediator.state, 'no_data_pult', {'message': data['stderr']})
             return
         
-        app_set.place = data['stdout']
-        self.frame_Auth.after(max_time*1000, self._mediator.state, 'open_frame_queue', {'message': 'Авторизация прошла успешно.'})
+        self._db.setDeviceSetting(data['stdout'])
+        self.frame_Auth.after(time_out*1000, self._mediator.state, 'open_frame_queue', {'message': 'Авторизация прошла успешно.'})
 
     def open_frame_queue(self):
-        self.frame_Queue = FrameQueue(self, mediator, app_set, db)
+        self.frame_Queue = FrameQueue(self, self._mediator, self._db)
         
         self.frame_Auth.grid_remove()
         self.frame_Queue.grid(row=0, column=0, sticky="nsew")
@@ -90,7 +88,7 @@ class Mediator(TMediator):
 
     def state(self, event: str, body: any = None):
         if event == 'get_data_pult':
-            self._app.get_data_pult(body['oper_id'])
+            self._app.get_data_pult()
             return
         
         if event == 'no_data_pult':
@@ -116,7 +114,7 @@ if __name__ == "__main__":
     ctk.set_window_scaling(app_set.pult["ui"]["scaling"])
 
     mediator = Mediator()
-    app = App(mediator)
+    app = App(mediator, db)
     mediator.set_app(app)
     app.wm_attributes("-topmost", True)
     app.mainloop()
