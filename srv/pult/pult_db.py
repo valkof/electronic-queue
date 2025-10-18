@@ -4,7 +4,7 @@ import aiohttp
 import threading
 from typing import Callable, List, TypedDict, Union
 from pult_log import log_debug
-from pult_types import TPult, TResponseSetQueue, TSetQueue, TTicket
+from pult_types import TPult, TResponseInfoTicket, TResponseMessage, TResponseSetQueue, TSetQueue, TTicket
 
 class TRequest(TypedDict):
     stdout: Union[dict, None]  # Тело ответа
@@ -32,7 +32,11 @@ class ThreadLoop:
 class DataBase:
     oper_id: str = ''
     setDevice: TSetQueue = {}
-    ticket: TTicket = {}
+    ticket: TTicket = {
+        'id': '',
+        'queue_id': '',
+        'title': '----'
+    }
     queues: List[str] = []
     
     def __init__(self, setPult: TPult):
@@ -92,7 +96,7 @@ class DataBase:
         path += f"&oper_id={self.oper_id}&led_tablo_id={self.setPult['eq_wplace']}"
         ThreadLoop(self.request, path, time.time(), 0, func)
 
-    def getNextTicket(self, func: Callable[[TResponseSetQueue], None]):
+    def getNextTicket(self, func: Callable[[TResponseInfoTicket, float], None]):
         """
         Получить следующий талон
         
@@ -119,9 +123,11 @@ class DataBase:
         path += f"&adapter_setting={self.setDevice['adapter_setting']}"
         ThreadLoop(self.request, path, time.time(), self.setPult['ui']['timeout_next'], func)
 
-    def getCurrentTicket(self, func: Callable[[TResponseSetQueue], None]):
+    def getCurrentTicket(self, func: Callable[[TResponseInfoTicket, float], None]):
         """
         Получить текущий талон
+
+        Пример ответа:
         {
           "stdout": {
             "ticket": {
@@ -143,9 +149,11 @@ class DataBase:
         path += f"&adapter_setting={self.setDevice['adapter_setting']}"
         ThreadLoop(self.request, path, time.time(), self.setPult['ui']['timeout_next'], func)
 
-    def getAbortTicket(self, func: Callable[[TResponseSetQueue], None]):
+    def getAbortTicket(self, func: Callable[[TResponseMessage, float], None]):
         """
         Получить результат прерывания обслуживания
+
+        Пример ответа:
         {
           "stdout": {
             "message": "Нет записи на табло окна оператора 192.168.10.15:2323"
@@ -155,13 +163,13 @@ class DataBase:
         """
         # svid_=1&sgr_l=360&sit_l=25&ticket_id=1&user_id=2&month_id=3&led_tablo_port=2323&adapter_setting=192.168.10.15#192.168.10.20,32109,1#192.168.10.20,32105#klient_talon,TTT,proidite,okno_nomer,NNN
         path = f"svid_=1&sgr_l=360&sit_l=25"
-        path += f"&ticket_id={self.ticket_id}&user_id={self.setDevice['user_id']}"
+        path += f"&ticket_id={self.ticket['id']}&user_id={self.setDevice['user_id']}"
         path += f"&month_id={self.setDevice['month_id']}"
         path += f"&led_tablo_port={self.setDevice['led_tablo']['port']}"
         path += f"&adapter_setting={self.setDevice['adapter_setting']}"
         ThreadLoop(self.request, path, time.time(), self.setPult['ui']['timeout_next'], func)
 
-    def getFinishTicket(self, func: Callable[[TResponseSetQueue], None]):
+    def getFinishTicket(self, func: Callable[[TResponseMessage, float], None]):
         # svid_=1&sgr_l=360&sit_l=936&oper_id=4&led_tablo_id=3
         path = f"svid_=1&sgr_l=360&sit_l=936&oper_id={self.oper_id}&led_tablo_id={self.setDevice['led_tablo']['id']}"
         ThreadLoop(self.request, path, time.time(), self.setPult['ui']['timeout_next'], func)

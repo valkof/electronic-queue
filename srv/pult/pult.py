@@ -106,13 +106,11 @@ class Mediator(TMediator):
             return
         
         if event == 'buttons_lock':
-            # self._app.frame_Queue.f_control.buttons_lock()
             self._app.frame_Queue.f_ticket.button_lock()
             self._app.frame_Queue.f_queues.buttons_lock()
             return
         
         if event == 'buttons_unlock':
-            # self._app.frame_Queue.f_control.buttons_unlock()
             self._app.frame_Queue.f_ticket.button_unlock()
             self._app.frame_Queue.f_queues.buttons_unlock()
             return
@@ -132,8 +130,43 @@ class Mediator(TMediator):
             return
         
         if event == 'next_success_after':
+            self._app.frame_Queue.f_ticket.button_unlock()
+            return
+        
+        if event == 'current':
+            self.state('buttons_lock')
+            return
+        
+        if event == 'current_error':
+            self._app.frame_Queue.f_message.show_message(body['message'])
+            self._app.frame_Queue.f_ticket.button_unlock()
+            return
+        
+        if event == 'current_success':
+            self._app.frame_Queue.f_message.show_message(body['message'])
+            self._app.frame_Queue.f_ticket.show_ticket()
+            return
+        
+        if event == 'current_success_after':
+            self._app.frame_Queue.f_ticket.button_unlock()
+            return
+        
+        if event == 'abort':
+            self.state('buttons_lock')
+            return
+        
+        if event == 'abort_error':
+            self._app.frame_Queue.f_message.show_message(body['message'])
+            self._app.frame_Queue.f_ticket.button_unlock()
+            return
+        
+        if event == 'abort_success':
+            self._app.frame_Queue.f_message.show_message(body['message'])
+            self._app.frame_Queue.f_ticket.show_ticket()
+            return
+        
+        if event == 'abort_success_after':
             self.state('buttons_unlock')
-            # self._app.frame_Queue.f_control.b_finish.unlock()
             return
 
 # Main run

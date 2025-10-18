@@ -58,3 +58,10 @@ class TResponseInfoTicket(TypedDict):
     stdout: TInfoTicket
     stderr: str
 
+class TMessage(TypedDict):
+    message: str
+
+class TResponseMessage(TypedDict):
+    stdout: TMessage
+    stderr: str
+
