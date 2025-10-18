@@ -53,3 +53,11 @@ class FrameQueues(ctk.CTkFrame):
     #     finally:
     #         pass    
     #     self.after(app_set.dH["ui"]["timeout_check"]*1000, setLenQueue)
+
+    def buttons_lock(self):
+        for _, item in self.buttons.items():
+            item.lock()
+
+    def buttons_unlock(self):
+        for _, item in self.buttons.items():
+            item.unlock()

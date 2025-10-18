@@ -1,6 +1,6 @@
 import customtkinter as ctk
 
-from pult_types import TMediator, TResponseSetQueue
+from pult_types import TMediator, TResponseInfoTicket
 from pult_db import DataBase
 from ..elements.LockableButton import LockableButton
 
@@ -12,7 +12,7 @@ class FrameControl(ctk.CTkFrame):
         super().__init__(parent, corner_radius=0)
         # self.configure(border_width=1, border_color="blue")
 
-        # self._mediator = mediator
+        self._mediator = mediator
         self._db = db
 
         self.b_next = LockableButton(self, text="➜ Следующий", command=self.equqe_next)
@@ -27,30 +27,27 @@ class FrameControl(ctk.CTkFrame):
 
         self.b_finish = LockableButton(self, text="✔ Обслужен", command=self.equqe_finish)
         self.b_finish.grid(row=0, column=0, padx=(3, 3), pady=(3, 3), ipadx=0, sticky="ew")
+        self.b_finish.lock()
         self.b_finish.grid_remove()
 
     def equqe_next(self):
         self.b_next.lock()
-        # self.mediator('beg_next')
+        self._mediator.state('next')
         self._db.getNextTicket(self.callback_equqe_next)
     
-    def callback_equqe_next(self, data: TResponseSetQueue, time_out: float):
+    def callback_equqe_next(self, data: TResponseInfoTicket, time_out: float):
         print(data)
         if data['stderr'] != '':
-            # self.after(time_out*1000, self._mediator.state, 'no_data_pult', {'message': data['stderr']})
+            self._mediator.state('next_error', {'message': data['stderr']})
+            self.b_next.unlock()
             return
         
-        # self.frame_Auth.after(time_out*1000, self._mediator.state, 'open_frame_queue', {'message': 'Авторизация прошла успешно.'})
-        
-        
-        # self.mess = r['stderr']
-        # if r['stdout'] is None:
-        #     self.ticket = '----'
-        #     self.mediator('end_next', False)
-        # else:
-        #     self.ticket = r['stdout']
-        #     self.mediator('end_next')
-        #     self.bmain_curr.after(app_set.dH["ui"]["timeout_next"]*1000, self.mediator, 'end_next_timeout')
+        self._db.setTicket(data['stdout']['ticket'])
+        self.b_finish.grid()
+        self.b_next.grid_remove()
+        self._mediator.state('next_success', {'message': data['stdout']['message']})
+        self.b_finish.after(time_out * 1000, self.b_finish.unlock)
+        self.b_next.after(time_out * 1000, self._mediator.state, 'next_success_after')
 
     def equqe_curr(self):
         self.b_curr.lock()
@@ -59,4 +56,10 @@ class FrameControl(ctk.CTkFrame):
         self.b_abort.lock()
 
     def equqe_finish(self):
+        self.b_finish.lock()
+
+    def buttons_lock(self):
+        self.b_next.lock()
+        self.b_curr.lock()
+        self.b_abort.lock()
         self.b_finish.lock()

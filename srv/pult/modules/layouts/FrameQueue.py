@@ -19,9 +19,15 @@ class FrameQueue(ctk.CTkFrame):
         mainPanel = ctk.CTkFrame(self)
         mainPanel.grid(row=0, column=0, sticky="nsew")
         mainPanel.columnconfigure(index=0, weight=1)
-        self.f_ticket = FrameTicket(mainPanel, mediator, db).grid(row=0, column=0, rowspan=2, sticky="nsew")
-        self.f_control = FrameControl(mainPanel, mediator, db).grid(row=0, column=1, sticky="ew")
-        self.f_queues = FrameQueues(mainPanel, mediator, db).grid(row=1, column=1, sticky="nsew")
+        
+        self.f_ticket = FrameTicket(mainPanel, mediator, db)
+        self.f_ticket.grid(row=0, column=0, rowspan=2, sticky="nsew")
+        
+        self.f_control = FrameControl(mainPanel, mediator, db)
+        self.f_control.grid(row=0, column=1, sticky="ew")
+        
+        self.f_queues = FrameQueues(mainPanel, mediator, db)
+        self.f_queues.grid(row=1, column=1, sticky="nsew")
         
         self.f_message = FrameMessage(self, mediator, db)
         self.f_message.grid(row=1, column=0, sticky="ew", padx=(5, 5))

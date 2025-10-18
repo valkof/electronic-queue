@@ -78,6 +78,7 @@ class App(ctk.CTk):
         
         self.frame_Auth.grid_remove()
         self.frame_Queue.grid(row=0, column=0, sticky="nsew")
+        self.frame_Queue.f_message.show_message('Здравствуйте')
 
 class Mediator(TMediator):
     def __init__(self):
@@ -102,6 +103,37 @@ class Mediator(TMediator):
                 frame.label_show(body['message'])
                 frame.button.lock()
             self._app.open_frame_queue()
+            return
+        
+        if event == 'buttons_lock':
+            # self._app.frame_Queue.f_control.buttons_lock()
+            self._app.frame_Queue.f_ticket.button_lock()
+            self._app.frame_Queue.f_queues.buttons_lock()
+            return
+        
+        if event == 'buttons_unlock':
+            # self._app.frame_Queue.f_control.buttons_unlock()
+            self._app.frame_Queue.f_ticket.button_unlock()
+            self._app.frame_Queue.f_queues.buttons_unlock()
+            return
+        
+        if event == 'next':
+            self.state('buttons_lock')
+            return
+        
+        if event == 'next_error':
+            self._app.frame_Queue.f_message.show_message(body['message'])
+            self.state('buttons_unlock')
+            return
+        
+        if event == 'next_success':
+            self._app.frame_Queue.f_message.show_message(body['message'])
+            self._app.frame_Queue.f_ticket.show_ticket()
+            return
+        
+        if event == 'next_success_after':
+            self.state('buttons_unlock')
+            # self._app.frame_Queue.f_control.b_finish.unlock()
             return
 
 # Main run

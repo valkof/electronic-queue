@@ -4,7 +4,7 @@ import aiohttp
 import threading
 from typing import Callable, List, TypedDict, Union
 from pult_log import log_debug
-from pult_types import TPult, TResponseSetQueue, TSetQueue
+from pult_types import TPult, TResponseSetQueue, TSetQueue, TTicket
 
 class TRequest(TypedDict):
     stdout: Union[dict, None]  # Тело ответа
@@ -32,7 +32,7 @@ class ThreadLoop:
 class DataBase:
     oper_id: str = ''
     setDevice: TSetQueue = {}
-    ticket_id: str = ''
+    ticket: TTicket = {}
     queues: List[str] = []
     
     def __init__(self, setPult: TPult):
@@ -41,8 +41,11 @@ class DataBase:
     def setOperId(self, oper_id: str):
         self.oper_id = oper_id
 
-    def setTicketId(self, ticket_id: str):
-        self.ticket_id = ticket_id
+    def setTicket(self, ticket: TTicket):
+        self.ticket = ticket
+
+    def getTicket(self) -> TTicket:
+        return self.ticket
 
     def setDeviceSetting(self, setDevice: TSetQueue):
         self.setDevice = setDevice

@@ -1,6 +1,7 @@
 import customtkinter as ctk
 
 from pult_types import TMediator, TQueue
+from .LockableButton import LockableButton
 
 class ButtonQueue(ctk.CTkFrame):
     """
@@ -12,13 +13,11 @@ class ButtonQueue(ctk.CTkFrame):
 
         self._mediator = mediator
 
-        self.button = ctk.CTkButton(
-            self,
-            text=queue['title'],
-            font=ctk.CTkFont(weight="normal"),
-            anchor="w",
+        self.button = LockableButton(
+            self, text=queue['title'],
             # command=functools.partial(self.set_queues_w, key)
         )
+        self.button.configure(anchor="w")
         self.button.grid(row=0, column=0, padx=(3, 3), pady=(3, 3), ipadx=0, sticky='w')
 
         self.label = ctk.CTkLabel(
@@ -29,3 +28,9 @@ class ButtonQueue(ctk.CTkFrame):
             width=20
         )
         self.label.grid(row=0, column=0, padx=(3, 10), pady=(3, 3), ipadx=0, ipady=0, sticky="e")
+
+    def lock(self):
+        self.button.lock()
+
+    def unlock(self):
+        self.button.unlock()

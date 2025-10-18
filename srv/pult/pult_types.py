@@ -44,3 +44,17 @@ class TSetQueue(TypedDict):
 class TResponseSetQueue(TypedDict):
     stdout: TSetQueue
     stderr: str
+
+class TTicket(TypedDict):
+    id: str
+    title: str
+    queue_id: str
+
+class TInfoTicket(TypedDict):
+    ticket: TTicket
+    message: str
+
+class TResponseInfoTicket(TypedDict):
+    stdout: TInfoTicket
+    stderr: str
+

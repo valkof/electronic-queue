@@ -15,8 +15,15 @@ class FrameMessage(ctk.CTkFrame):
         # self._db = db
 
         self.lmess = ctk.CTkLabel(
-            self, text="Привет", text_color="red",
+            self, text='', text_color="red",
             bg_color='#434B4D',
             font=ctk.CTkFont(family='Helvetica', weight='bold', size=14)
         )
         self.lmess.grid(row=0, column=0, padx=(3, 3), pady=(3, 3), ipadx=0, sticky="ew")
+
+    def show_message(self, text=''):
+        self.lmess.configure(text=text)
+        self.lmess.after(3 * 1000, self.clear_message)
+
+    def clear_message(self):
+        self.lmess.configure(text='')
