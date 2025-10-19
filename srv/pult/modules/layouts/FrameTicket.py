@@ -11,6 +11,8 @@ class FrameTicket(ctk.CTkFrame):
     def __init__(self, parent, mediator: TMediator, db: DataBase):
         super().__init__(parent, corner_radius=0)
         # self.configure(border_width=1, border_color="blue")
+        self.columnconfigure(index=0, weight=1, minsize=db.pult["width"] *  1/4 * db.setPult['ui']['scaling'])
+        self.rowconfigure(index=[0,1,2], weight=1, minsize=db.pult["height"] *  1/4 * db.setPult['ui']['scaling'])
 
         # self._mediator = mediator
         self._db = db

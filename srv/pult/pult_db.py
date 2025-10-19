@@ -10,6 +10,10 @@ class TRequest(TypedDict):
     stdout: Union[dict, None]  # Тело ответа
     stderr: str # Сообщение об ошибке
 
+class TPultSize(TypedDict):
+    width: int
+    height: int
+
 class ThreadLoop:
     def __init__(self, funcRequest: Callable[[str], TRequest], path: str, min_time: float, max_time: float, func: Callable):
         self.new_loop: asyncio.AbstractEventLoop = None
@@ -38,6 +42,10 @@ class DataBase:
         'title': '----'
     }
     queues: List[str] = []
+    pult: TPultSize = {
+      'width': 0,
+      'height': 0
+    }
     
     def __init__(self, setPult: TPult):
         self.setPult = setPult

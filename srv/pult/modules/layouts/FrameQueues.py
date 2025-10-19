@@ -11,6 +11,8 @@ class FrameQueues(ctk.CTkFrame):
     def __init__(self, parent, mediator: TMediator, db: DataBase):
         super().__init__(parent, corner_radius=0)
         # self.configure(border_width=1, border_color="green")
+        self.columnconfigure(index=[0,1,2], weight=1, minsize=db.pult["width"] *  1/4 * db.setPult['ui']['scaling'])
+        self.rowconfigure(index=[0,1], weight=1, minsize=db.pult['height'] *  1/4 * db.setPult['ui']['scaling'])
 
         self._mediator = mediator
         self._db = db
@@ -26,7 +28,7 @@ class FrameQueues(ctk.CTkFrame):
         row: int = 0
         for item in self._db.setDevice['queues']:
             button = ButtonQueue(self, self._mediator, item)
-            button.grid(row=row, column=column, padx=(3, 10), pady=(3, 3), ipadx=0, ipady=0, sticky="e")
+            button.grid(row=row, column=column, padx=(3, 3), pady=(3, 3), ipadx=0, ipady=0, sticky="e")
             self.buttons[item['id']] = button
             if column < 2:
                 column + 1

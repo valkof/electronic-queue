@@ -40,15 +40,18 @@ class App(ctk.CTk):
         self._mediator = mediator
         self._db = db
 
+        self._db.pult['width'] = 600
+        self._db.pult['height'] = 160
+
         self.title("Пульт оператора")
         self.resizable(False, False)
-        _app_pos(self, 600, 200,
+        _app_pos(self, self._db.pult['width'], self._db.pult['height'],
             db.setPult['ui']['scaling'],
             db.setPult['ui']['shift_left'],
             db.setPult['ui']['shift_bottom']
         )
-        self.grid_columnconfigure(0, weight=1)
-        self.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=1, minsize=self._db.pult['width']*db.setPult['ui']['scaling'])
+        self.grid_rowconfigure(0, weight=1, minsize=self._db.pult['height']*db.setPult['ui']['scaling'])
         # self.extmenu = False
         self.ticket = False
         # self.mess = None
@@ -79,10 +82,20 @@ class App(ctk.CTk):
         self.frame_Auth.grid_remove()
         self.frame_Queue.grid(row=0, column=0, sticky="nsew")
         self.frame_Queue.f_message.show_message('Здравствуйте')
+        self._mediator.state('repeat')
+
+        # self.update_idletasks()
+    
+        # # Получаем размеры всех виджетов
+        # width = self.winfo_reqwidth()
+        # height = self.winfo_reqheight()
+        
+        # # Устанавливаем размер окна
+        # self.geometry(f"{width}x{height}")
 
 class Mediator(TMediator):
     def __init__(self):
-        self._app = None
+        self._app: App = None
 
     def set_app(self, app: App):
         self._app = app
@@ -168,6 +181,12 @@ class Mediator(TMediator):
         if event == 'abort_success_after':
             self.state('buttons_unlock')
             return
+        
+        if event == 'repeat':
+            self._app.frame_Queue.f_control.queue_curr()
+            return
+        
+
 
 # Main run
 if __name__ == "__main__":

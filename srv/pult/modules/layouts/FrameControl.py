@@ -11,13 +11,15 @@ class FrameControl(ctk.CTkFrame):
     def __init__(self, parent, mediator: TMediator, db: DataBase):
         super().__init__(parent, corner_radius=0)
         # self.configure(border_width=1, border_color="blue")
+        self.columnconfigure(index=[0,1,2], weight=1, minsize=db.pult["width"] *  1/4 * db.setPult['ui']['scaling'])
+        self.rowconfigure(index=0, weight=1, minsize=db.pult['height'] *  1/4 * db.setPult['ui']['scaling'])
 
         self._mediator = mediator
         self._db = db
 
         self.b_next = LockableButton(self, text="➜ Следующий", command=self.queue_next)
         self.b_next.grid(row=0, column=0, padx=(3, 3), pady=(3, 3), ipadx=0, sticky="ew")
-        # self.b_next.grid_remove()
+        self.b_next.grid_remove()
 
         self.b_curr = LockableButton(self, text="⟳ Повторить", command=self.queue_curr)
         self.b_curr.grid(row=0, column=1, padx=(3, 3), pady=(3, 3), ipadx=0, sticky="ew")
@@ -27,7 +29,7 @@ class FrameControl(ctk.CTkFrame):
 
         self.b_finish = LockableButton(self, text="✔ Обслужен", command=self.queue_finish)
         self.b_finish.grid(row=0, column=0, padx=(3, 3), pady=(3, 3), ipadx=0, sticky="ew")
-        self.b_finish.grid_remove()
+        # self.b_finish.grid_remove()
 
     def queue_next(self):
         self.buttons_lock()
