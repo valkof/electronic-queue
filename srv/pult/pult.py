@@ -26,13 +26,6 @@ from modules.layouts.FrameQueue import FrameQueue
 # print()
 # print(dLenQueue)
 
-def _app_pos(self, width: int, height: int, zoom: float, shift_x, shift_y: int):
-    screen_width = self.winfo_screenwidth()
-    screen_height = self.winfo_screenheight()
-    shift_pos_x = screen_width - int(width * zoom + shift_x)
-    shift_pos_y = screen_height - int(height * zoom + shift_y)
-    self.geometry(f'{width}x{height}+{shift_pos_x}+{shift_pos_y}')
-
 class App(ctk.CTk):
     def __init__(self, mediator: Mediator, db: DataBase):
         super().__init__()
@@ -45,11 +38,7 @@ class App(ctk.CTk):
 
         self.title("Пульт оператора")
         self.resizable(False, False)
-        _app_pos(self, self._db.pult['width'], self._db.pult['height'],
-            db.setPult['ui']['scaling'],
-            db.setPult['ui']['shift_left'],
-            db.setPult['ui']['shift_bottom']
-        )
+        self.put_position()
         self.grid_columnconfigure(0, weight=1, minsize=self._db.pult['width']*db.setPult['ui']['scaling'])
         self.grid_rowconfigure(0, weight=1, minsize=self._db.pult['height']*db.setPult['ui']['scaling'])
         # self.extmenu = False
@@ -64,6 +53,19 @@ class App(ctk.CTk):
 
         self.frame_Auth = FrameAuth(self, mediator, db)
         self.frame_Auth.grid(row=0, column=0, sticky="nsew")
+
+    def put_position(self, addHeight: int = 0):
+        width = self._db.pult['width']
+        height = self._db.pult['height']
+        zoom = self._db.setPult['ui']['scaling']
+        shift_x = self._db.setPult['ui']['shift_left']
+        shift_y = self._db.setPult['ui']['shift_bottom']
+        screen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()
+        print(addHeight)
+        shift_pos_x = screen_width - int(width * zoom + shift_x)
+        shift_pos_y = screen_height - int(height * zoom + shift_y + addHeight)
+        self.geometry(f'{width}x{height + int(addHeight / zoom)}+{shift_pos_x}+{shift_pos_y}')
     
     def get_data_pult(self):
         db.getDataPult(self.callback_data_pult)        
@@ -83,15 +85,6 @@ class App(ctk.CTk):
         self.frame_Queue.grid(row=0, column=0, sticky="nsew")
         self.frame_Queue.f_message.show_message('Здравствуйте')
         self._mediator.state('repeat')
-
-        # self.update_idletasks()
-    
-        # # Получаем размеры всех виджетов
-        # width = self.winfo_reqwidth()
-        # height = self.winfo_reqheight()
-        
-        # # Устанавливаем размер окна
-        # self.geometry(f"{width}x{height}")
 
 class Mediator(TMediator):
     def __init__(self):
@@ -158,6 +151,7 @@ class Mediator(TMediator):
         if event == 'current_success':
             self._app.frame_Queue.f_message.show_message(body['message'])
             self._app.frame_Queue.f_ticket.show_ticket()
+            self._app.frame_Queue.f_ticket.set_action('adv_with_ticket')
             return
         
         if event == 'current_success_after':
@@ -184,6 +178,18 @@ class Mediator(TMediator):
         
         if event == 'repeat':
             self._app.frame_Queue.f_control.queue_curr()
+            return
+        
+        if event == 'update_window':
+            self._app.put_position(body['height'])
+            return
+        
+        if event == 'adv_with_ticket':
+            self._app.frame_Queue.adv_with_ticket()
+            return
+        
+        if event == 'adv_without_ticket':
+            self._app.frame_Queue.adv_without_ticket()
             return
         
 
