@@ -1,3 +1,4 @@
+from urllib.parse import quote_plus
 import customtkinter as ctk
 
 from pult_types import TMediator
@@ -13,7 +14,7 @@ class FrameBackgroud(ctk.CTkFrame):
         # self.configure(border_width=1, border_color="blue")
         self.columnconfigure(index=0, weight=1)
 
-        # self._mediator = mediator
+        self._mediator = mediator
         self._db = db
 
         ctk.CTkLabel(self, text="● Отложить талон", text_color="white").grid(row=0, column=0, padx=(5, 5), pady=(2, 2), sticky="w")
@@ -29,10 +30,13 @@ class FrameBackgroud(ctk.CTkFrame):
         self.but_ticket = ctk.CTkButton(f_ticket, fg_color="transparent",
                                             text="Отложить талон", 
                                             border_width=2, text_color=("gray10", "#DCE4EE"),
-                                            command=self.eq_asidecurr)
+                                            command=self.ticket_cancel)
         self.but_ticket.grid(row=0, column=1, padx=(3, 3), pady=(3, 3), sticky="ew")
 
-    def eq_asidecurr(self):
+    def ticket_cancel(self):
+        comment = quote_plus(self.text_ticket.get())
+        self.text_ticket.delete(0, 300)
+        self._mediator.state('adv_with_ticket')
         pass
     
 
