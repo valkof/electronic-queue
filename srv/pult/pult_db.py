@@ -175,9 +175,22 @@ class DataBase:
         path += f"&month_id={self.setDevice['month_id']}"
         path += f"&led_tablo_port={self.setDevice['led_tablo']['port']}"
         path += f"&adapter_setting={self.setDevice['adapter_setting']}"
-        ThreadLoop(self.request, path, time.time(), self.setPult['ui']['timeout_next'], func)
+        ThreadLoop(self.request, path, time.time(), 0, func)
 
     def getFinishTicket(self, func: Callable[[TResponseMessage, float], None]):
         # svid_=1&sgr_l=360&sit_l=936&oper_id=4&led_tablo_id=3
         path = f"svid_=1&sgr_l=360&sit_l=936&oper_id={self.oper_id}&led_tablo_id={self.setDevice['led_tablo']['id']}"
         ThreadLoop(self.request, path, time.time(), self.setPult['ui']['timeout_next'], func)
+
+    def getBackgroudTicket(self, func: Callable[[TResponseInfoTicket, float], None], comment: str):
+        """
+        Отложить текущий талон
+        """
+        # 
+        path = f"svid_=1&sgr_l=360&sit_l=25"
+        path += f"&ticket_id={self.ticket['id']}&user_id={self.setDevice['user_id']}"
+        path += f"&message={comment}"
+        path += f"&month_id={self.setDevice['month_id']}"
+        path += f"&led_tablo_port={self.setDevice['led_tablo']['port']}"
+        path += f"&adapter_setting={self.setDevice['adapter_setting']}"
+        ThreadLoop(self.request, path, time.time(), 0, func)

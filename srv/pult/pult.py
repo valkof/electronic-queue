@@ -176,6 +176,10 @@ class Mediator(TMediator):
             self.state('buttons_unlock')
             return
         
+        if event == 'finish_success_after':
+            self.state('buttons_unlock')
+            return
+        
         if event == 'repeat':
             self._app.frame_Queue.f_control.queue_curr()
             return
@@ -190,6 +194,30 @@ class Mediator(TMediator):
         
         if event == 'adv_without_ticket':
             self._app.frame_Queue.adv_without_ticket()
+            return
+        
+        if event == 'background':
+            self.state('adv_with_ticket')
+            self._app.frame_Queue.f_control.buttons_lock()
+            self.state('buttons_lock')
+            return
+        
+        if event == 'background_error':
+            self._app.frame_Queue.f_message.show_message(body['message'])
+            self._app.frame_Queue.f_ticket.button_unlock()
+            self._app.frame_Queue.f_control.b_curr.unlock()
+            self._app.frame_Queue.f_control.b_finish.unlock()
+            self._app.frame_Queue.f_control.b_abort.unlock()
+            return
+        
+        if event == 'background_success':
+            self._app.frame_Queue.f_message.show_message(body['message'])
+            self._app.frame_Queue.f_ticket.show_ticket()
+            self._app.frame_Queue.f_ticket.set_action('adv_without_ticket')
+            return
+        
+        if event == 'background_success_after':
+            self._app.frame_Queue.f_control.begin_state(body['time_out'])
             return
         
 

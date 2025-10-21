@@ -92,16 +92,18 @@ class FrameControl(ctk.CTkFrame):
             return
         
         self._db.setTicket({'id': '', 'queue_id': '', 'title': '----'})
-        self.b_next.grid()
-        self.b_finish.grid_remove()
         self._mediator.state('abort_success', {'message': data['stdout']['message']})
-        self.b_next.after(time_out * 1000, self.b_next.unlock)
-        self.b_next.after(time_out * 1000, self._mediator.state, 'abort_success_after')
-
+        self.begin_state(time_out)
 
     def queue_finish(self):
         self.b_finish.lock()
 
+    def begin_state(self, time_out: float):
+        self.b_next.grid()
+        self.b_finish.grid_remove()
+        self.b_next.after(time_out * 1000, self.b_next.unlock)
+        self.b_next.after(time_out * 1000, self._mediator.state, 'finish_success_after')
+        
     def buttons_lock(self):
         self.b_next.lock()
         self.b_curr.lock()

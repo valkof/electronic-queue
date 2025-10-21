@@ -1,7 +1,7 @@
 from urllib.parse import quote_plus
 import customtkinter as ctk
 
-from pult_types import TMediator
+from pult_types import TMediator, TResponseMessage
 from pult_db import DataBase
 # from ..elements.LockableButton import LockableButton
 
@@ -36,8 +36,18 @@ class FrameBackgroud(ctk.CTkFrame):
     def ticket_cancel(self):
         comment = quote_plus(self.text_ticket.get())
         self.text_ticket.delete(0, 300)
-        self._mediator.state('adv_with_ticket')
-        pass
+        self._mediator.state('background')
+        self._db.getBackgroudTicket(self.callback_ticket_cancel, comment)
+
+    def callback_ticket_cancel(self, data: TResponseMessage, time_out: float):
+        print(data)
+        if data['stderr'] != '':
+            self._mediator.state('background_error', {'message': data['stderr']})
+            return
+        
+        self._db.setTicket({'id': '', 'queue_id': '', 'title': '----'})
+        self._mediator.state('background_success', {'message': data['stdout']['message']})
+        self._mediator.state('background_success_after', {'time_out': time_out})
     
 
 # ########## Расширенное меню, команда Отложить ##########
