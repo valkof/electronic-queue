@@ -4,6 +4,7 @@ import vlc
 import customtkinter as ctk
 import tkinter as tk
 # from tkinter import *
+from PIL import Image
 import time
 from date_time import get_date_time
 
@@ -121,7 +122,7 @@ class ScoreBoard:
         # Настраиваем веса столбцов
         master.columnconfigure(0, weight=2)
         master.columnconfigure(1, weight=1)
-        master.rowconfigure(0, weight=1)  # Единственная строка
+        master.rowconfigure(0, weight=1, minsize=100)  # Единственная строка
 
         # Левый фрейм делим на видеоплеер и время
         self.frame_left_player = ctk.CTkFrame(self.frame_left, fg_color=v.dU["videoplayer"]["fg_bg"][1], overwrite_preferred_drawing_method='direct')
@@ -130,9 +131,11 @@ class ScoreBoard:
         # Настраиваем веса строк
         self.frame_left.columnconfigure(0, weight=1)
         self.frame_left.rowconfigure(0, weight=5)
-        self.frame_left.rowconfigure(1, weight=1)
+        self.frame_left.rowconfigure(1, weight=1, minsize=100)
 
         self.frame_left_player.grid(row=0, column=0, sticky="nsew", pady=15, padx=15)
+        self.frame_left_player.columnconfigure(0, weight=1)
+        self.frame_left_player.rowconfigure(0, weight=1)
         self.frame_left_time.grid(row=1, column=0, sticky="nsew")
 
         self.frame_left_time.columnconfigure(0, weight=1)
@@ -150,14 +153,26 @@ class ScoreBoard:
         video_filesname = []
         video_filesname += os.listdir(folder_path)
         
-        media_list = self.instance.media_list_new()
+        self.media_list = self.instance.media_list_new()
         for f in video_filesname:
           media = self.instance.media_new(os.path.join(os.getcwd(), "videos", str(f)))
-          media_list.add_media(media)
+          self.media_list.add_media(media)
 
-        self.list_player.set_media_list(media_list)
+        self.list_player.set_media_list(self.media_list)
         self.list_player.set_media_player(self.player)
         self.list_player.set_playback_mode(vlc.PlaybackMode.loop)
+
+        # фотозаставка
+        folder_image_path = os.path.join(os.getcwd(), "images")
+        file_image_path = os.path.join(folder_image_path, 'screen.jpg')
+        if os.path.isfile(file_image_path):
+            self.screen = ctk.CTkImage(
+                light_image=Image.open(file_image_path)
+                # size=(1200, 800)  # Размер изображения
+            )
+            self.label_screen = ctk.CTkLabel(self.frame_left_player, image=self.screen, text='')
+        else:
+            self.label_screen = ctk.CTkLabel(self.frame_left_player, text='')
 
         # время
         self.headertime = ctk.CTkLabel(self.frame_left_time, text="", font=tuple(v.dU["clock"]["font"]), text_color=v.dU["clock"]["fg_bg"][0], bg_color=v.dU["clock"]["fg_bg"][1])
@@ -222,7 +237,11 @@ class ScoreBoard:
         self.headertime.after(1000, self.timetick, mode)
 
         
-    def play_video(self):        
+    def play_video(self):
+        count_media = self.media_list.count()
+        if count_media == 0:
+            self.put_photo()
+            return        
         # # Воспроизведение
         # print(f"код {self.frame_left_player.winfo_id()}")
         winfo_id = int(self.frame_left_player.winfo_id())
@@ -233,7 +252,13 @@ class ScoreBoard:
           print('centos')
           self.player.set_xwindow(winfo_id)
         self.list_player.play()
-    
+
+    def put_photo(self):
+        width = self.frame_left_player.winfo_width() * 3/4
+        height = self.frame_left_player.winfo_height() * 3/4
+        self.screen.configure(size=(width, height))
+        self.label_screen.grid(row=0, column=0, pady=0, padx=0, sticky="nsew")
+
     def wticket0_set(self, id, new_ticket):
         index = next((i for i, el in enumerate(self.elementsWplace) if el['id'] == str(id)), None)
 

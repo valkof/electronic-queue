@@ -254,6 +254,18 @@ try:
 except:
     log.debug("Error creating directory structure: "+path_tmp1+". Shutdown...")
     sys.exit()
+path_tmp2 = os.path.join(path_def, 'videos')
+try:
+    os.makedirs(path_tmp2, exist_ok=True)
+except:
+    log.debug("Error creating directory structure: "+path_tmp2+". Shutdown...")
+    sys.exit()
+path_tmp3 = os.path.join(path_def, 'wwwroot')
+try:
+    os.makedirs(path_tmp3, exist_ok=True)
+except:
+    log.debug("Error creating directory structure: "+path_tmp3+". Shutdown...")
+    sys.exit()
 fPid = open(filePid, 'w')
 fPid.write(str(pid))
 fPid.close()
