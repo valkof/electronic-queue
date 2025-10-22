@@ -209,7 +209,7 @@ class DataBase:
         ThreadLoop(self.request, path, time.time(), 0, func)
 
 
-    def getSelectTicket(self, func: Callable[[TResponseInfoTicket, float], None], comment: str):
+    def getSelectTicket(self, func: Callable[[TResponseInfoTicket, float], None], status: str):
         """
         Вызвать указанный талон
         {
@@ -228,7 +228,7 @@ class DataBase:
         path += f"&ticket_id={self.ticket['id']}"
         path += f"&oper_id={self.oper_id}&led_tablo_id={self.setDevice['led_tablo']['id']}"
         path += f"&ticket_title={self.ticket['title']}"
-        path += f"&ticket_status=10"
+        path += f"&ticket_status={status}"
         path += f"&month_id={self.setDevice['month_id']}"
         path += f"&led_tablo_port={self.setDevice['led_tablo']['port']}"
         path += f"&led_tablo_title={self.setDevice['led_tablo']['title']}"

@@ -170,6 +170,7 @@ class Mediator(TMediator):
         if event == 'abort_success':
             self._app.frame_Queue.f_message.show_message(body['message'])
             self._app.frame_Queue.f_ticket.show_ticket()
+            self._app.frame_Queue.f_ticket.set_action('adv_without_ticket')
             return
         
         if event == 'abort_success_after':
