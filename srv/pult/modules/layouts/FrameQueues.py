@@ -31,7 +31,7 @@ class FrameQueues(ctk.CTkFrame):
             button.grid(row=row, column=column, padx=(3, 3), pady=(3, 3), ipadx=0, ipady=0, sticky="e")
             self.buttons[item['id']] = button
             if column < 2:
-                column + 1
+                column += 1
             else:
                 column = 0
                 row += 1

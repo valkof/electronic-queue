@@ -1,7 +1,9 @@
+import functools
 import customtkinter as ctk
 
-from pult_types import TMediator
+from pult_types import TMediator, TResponseReserveTickets
 from pult_db import DataBase
+from ..elements.LockableButton import LockableButton
 # from ..elements.LockableButton import LockableButton
 
 class FrameReserve(ctk.CTkFrame):
@@ -13,7 +15,7 @@ class FrameReserve(ctk.CTkFrame):
         # self.configure(border_width=1, border_color="blue")
         self.columnconfigure(index=0, weight=1)
 
-        # self._mediator = mediator
+        self._mediator = mediator
         self._db = db
 
         
@@ -23,7 +25,40 @@ class FrameReserve(ctk.CTkFrame):
         self.f_tickets.grid(row=1, column=0, sticky="ew", padx=(3, 3), pady=(3, 3))
         # self.f_tickets.configure(border_width=1, border_color="red")
         self.f_tickets._scrollbar.configure(height=0)
-        self.f_tickets.columnconfigure(index=[0,1,2], weight=1)
-
-
+        self.f_tickets.columnconfigure(index=[0,1,2], weight=1, minsize=int(db.pult["width"] *  1/3 * db.setPult['ui']['scaling']))
     
+    def update_tickets(self):
+        for widget in self.f_tickets.winfo_children():
+            widget.destroy()
+
+        # self._mediator.state('abort')
+        self._db.getReserveTickets(self.callback_update_tickets)
+
+    def callback_update_tickets(self, data: TResponseReserveTickets, time_out: float):
+        # print(data)
+        if data['stderr'] != '':
+            self._mediator.state('reserve_error', {'message': data['stderr']})
+            return
+        
+        column: int = 0
+        row: int = 0
+        for item in data['stdout']['tickets']:
+            text = f"{item['title']}   Время: {item['time']}"
+            button = LockableButton(
+                self.f_tickets, text=text,
+                command=functools.partial(self.button_click, item['id'], item['title'])
+            )
+            button.configure(
+                fg_color="transparent", width=170, border_width=2,
+                text_color=("gray10", "#DCE4EE")
+            )
+            button.grid(row=row, column=column, padx=(3, 3), pady=(3, 3), sticky="w")
+            if column < 2:
+                column += 1
+            else:
+                column = 0
+                row += 1
+
+    def button_click(self, id: str, title: str):
+        self._mediator.state('select_ticket', {'id': id, 'title': title})
+        pass

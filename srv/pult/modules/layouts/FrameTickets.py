@@ -21,7 +21,26 @@ class FrameTickets(ctk.CTkFrame):
         self.f_reserve = FrameReserve(self, mediator, db)
         self.f_reserve.grid(row=0, column=0, sticky="nsew")
 
-        self.f_reserve = FrameTablo(self, mediator, db)
-        self.f_reserve.grid(row=1, column=0, sticky="nsew")
+        self.f_tablo = FrameTablo(self, mediator, db)
+        self.f_tablo.grid(row=1, column=0, sticky="nsew")
+
+
+#     def eq_queuelist(self, queue_id, tick_name=''):
+#         self.mediator('beg_next')
+#         r = {'stdout': None, 'stderr': None}
+#         try:
+#             path = 'tnextbyname?w=' + app_set.dH['eq_wplace'] + '&q=' + str(queue_id) + '&n=' + quote_plus(tick_name)
+#             r = self.get_request(path)
+#         except Exception as e:
+#             r['stderr'] = str(e) + ". "
+        
+#         self.mess = r['stderr']
+#         if r['stdout'] is None:
+#             self.ticket = '----'
+#             self.mediator('end_next', False)
+#         else:
+#             self.ticket = r['stdout'][0]
+#             self.mediator('end_next')
+#             self.bmain_curr.after(app_set.dH["ui"]["timeout_next"]*1000, self.mediator, 'end_next_timeout') 
 
     

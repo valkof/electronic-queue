@@ -37,7 +37,7 @@ class FrameControl(ctk.CTkFrame):
         self._db.getNextTicket(self.callback_queue_next)
     
     def callback_queue_next(self, data: TResponseInfoTicket, time_out: float):
-        print(data)
+        # print(data)
         if data['stderr'] != '':
             self._mediator.state('next_error', {'message': data['stderr']})
             self.b_next.unlock()
@@ -57,7 +57,7 @@ class FrameControl(ctk.CTkFrame):
         self._db.getCurrentTicket(self.callback_queue_curr)
 
     def callback_queue_curr(self, data: TResponseInfoTicket, time_out: float):
-        print(data)
+        # print(data)
         if data['stderr'] != '':
             if data['stderr'] == 'Нет доступных талонов':
                 self.callback_queue_abort(data={'stdout':{'message':'Нет доступных талонов'},'stderr':''}, time_out=time_out)
@@ -77,13 +77,13 @@ class FrameControl(ctk.CTkFrame):
         self.b_next.after(time_out * 1000, self._mediator.state, 'current_success_after')
 
     def queue_abort(self):
-        print('ok')
+        # print('ok')
         self.buttons_lock()
         self._mediator.state('abort')
         self._db.getAbortTicket(self.callback_queue_abort)
 
     def callback_queue_abort(self, data: TResponseMessage, time_out: float):
-        print(data)
+        # print(data)
         if data['stderr'] != '':
             self._mediator.state('abort_error', {'message': data['stderr']})
             self.b_curr.unlock()

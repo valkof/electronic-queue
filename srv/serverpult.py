@@ -64,12 +64,23 @@ class JSONHandler(BaseHTTPRequestHandler):
               },
               "stderr": ""
             }
-        elif sit_l == '25':
+        elif sit_l == '28':
             response_data = {
               "stdout": {
                 "message": "Нет записи на табло окна оператора 192.168.10.15:2323"
               },
               "stderr": ""
+            }
+        elif sit_l == '29':
+            response_data = {
+                'stdout': {
+                    'tickets': [
+                        {'id': '9', 'title': 'Р006', 'time': '20:47'},
+                        {'id': '10', 'title': 'Р007', 'time': '14:12'}
+                    ],
+                    'message': ''
+                },
+                'stderr': ''
             }
         else:
             response_data = {}

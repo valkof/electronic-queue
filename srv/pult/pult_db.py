@@ -4,7 +4,7 @@ import aiohttp
 import threading
 from typing import Callable, List, TypedDict, Union
 from pult_log import log_debug
-from pult_types import TPult, TResponseInfoTicket, TResponseMessage, TResponseSetQueue, TSetQueue, TTicket
+from pult_types import TPult, TResponseInfoTicket, TResponseMessage, TResponseReserveTickets, TResponseSetQueue, TSetQueue, TTicket
 
 class TRequest(TypedDict):
     stdout: Union[dict, None]  # Тело ответа
@@ -41,7 +41,7 @@ class DataBase:
         'queue_id': '',
         'title': '----'
     }
-    queues: List[str] = []
+    queues: List[str] = [] # Список id выбранных очередей
     pult: TPultSize = {
       'width': 0,
       'height': 0
@@ -187,10 +187,50 @@ class DataBase:
         Отложить текущий талон
         """
         # 
-        path = f"svid_=1&sgr_l=360&sit_l=25"
+        path = f"svid_=1&sgr_l=360&sit_l=28"
         path += f"&ticket_id={self.ticket['id']}&user_id={self.setDevice['user_id']}"
-        path += f"&message={comment}"
+        path += f"&msg={comment}&ticket_title={self.ticket['title']}"
         path += f"&month_id={self.setDevice['month_id']}"
         path += f"&led_tablo_port={self.setDevice['led_tablo']['port']}"
+        path += f"&led_tablo_title={self.setDevice['led_tablo']['title']}"
+        path += f"&adapter_setting={self.setDevice['adapter_setting']}"
+        ThreadLoop(self.request, path, time.time(), 0, func)
+
+    
+    def getReserveTickets(self, func: Callable[[TResponseReserveTickets, float], None]):
+        """
+        Получить отложенные талоны в указанных очередях
+        """
+        # 
+        queues_ids = ','.join([x for x in self.queues])
+        # print(queues_ids)
+        path = f"svid_=1&sgr_l=360&sit_l=29"
+        path += f"&queues_ids={queues_ids}&month_id={self.setDevice['month_id']}"
+        ThreadLoop(self.request, path, time.time(), 0, func)
+
+
+    def getSelectTicket(self, func: Callable[[TResponseInfoTicket, float], None], comment: str):
+        """
+        Вызвать указанный талон
+        {
+          "stdout": {
+            "ticket": {
+              "id":"@D3000310000",
+              "title":"@D3000320000"
+            },
+            "message":"@D3000330000"
+          },
+          "stderr": "@D3000300000"
+        }
+        """
+        # 
+        path = f"svid_=1&sgr_l=360&sit_l=27"
+        path += f"&ticket_id={self.ticket['id']}"
+        path += f"&oper_id={self.oper_id}&led_tablo_id={self.setDevice['led_tablo']['id']}"
+        path += f"&ticket_title={self.ticket['title']}"
+        path += f"&ticket_status=10"
+        path += f"&month_id={self.setDevice['month_id']}"
+        path += f"&led_tablo_port={self.setDevice['led_tablo']['port']}"
+        path += f"&led_tablo_title={self.setDevice['led_tablo']['title']}"
         path += f"&adapter_setting={self.setDevice['adapter_setting']}"
         ThreadLoop(self.request, path, time.time(), 0, func)

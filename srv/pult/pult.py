@@ -62,7 +62,7 @@ class App(ctk.CTk):
         shift_y = self._db.setPult['ui']['shift_bottom']
         screen_width = self.winfo_screenwidth()
         screen_height = self.winfo_screenheight()
-        print(addHeight)
+        # print(addHeight)
         shift_pos_x = screen_width - int(width * zoom + shift_x)
         shift_pos_y = screen_height - int(height * zoom + shift_y + addHeight)
         self.geometry(f'{width}x{height + int(addHeight / zoom)}+{shift_pos_x}+{shift_pos_y}')
@@ -220,8 +220,18 @@ class Mediator(TMediator):
             self._app.frame_Queue.f_control.begin_state(body['time_out'])
             return
         
+        if event == 'update_tickets_frame':
+            self._app.frame_Queue.f_tickets.f_reserve.update_tickets()
+            return
+        
+        if event == 'reserve_error':
+            self._app.frame_Queue.f_message.show_message(body['message'])
+            return
 
-
+        if event == 'select_ticket':
+            self.state('buttons_lock')
+            return
+        
 # Main run
 if __name__ == "__main__":
     app_set = AppSet()

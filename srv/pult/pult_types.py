@@ -50,12 +50,25 @@ class TTicket(TypedDict):
     title: str
     queue_id: str
 
+class TTicketTime(TypedDict):
+    id: str
+    title: str
+    time: str
+
+class TTicketsTime(TypedDict):
+    tickets: List[TTicketTime]
+    message: str
+
 class TInfoTicket(TypedDict):
     ticket: TTicket
     message: str
 
 class TResponseInfoTicket(TypedDict):
     stdout: TInfoTicket
+    stderr: str
+
+class TResponseReserveTickets(TypedDict):
+    stdout: TTicketsTime
     stderr: str
 
 class TMessage(TypedDict):

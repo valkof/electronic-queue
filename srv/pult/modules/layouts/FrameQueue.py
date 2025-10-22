@@ -75,4 +75,4 @@ class FrameQueue(ctk.CTkFrame):
             self.f_tickets.grid()
             
     def update_tickets_frame(self):
-        pass
+        self._mediator.state('update_tickets_frame')
