@@ -1,7 +1,7 @@
 import functools
 import customtkinter as ctk
 
-from pult_types import TMediator, TResponseReserveTickets
+from pult_types import TMediator, TResponseInfoTicket, TResponseInfoTickets, TTicket
 from pult_db import DataBase
 from ..elements.LockableButton import LockableButton
 # from ..elements.LockableButton import LockableButton
@@ -34,7 +34,7 @@ class FrameReserve(ctk.CTkFrame):
         # self._mediator.state('abort')
         self._db.getReserveTickets(self.callback_update_tickets)
 
-    def callback_update_tickets(self, data: TResponseReserveTickets, time_out: float):
+    def callback_update_tickets(self, data: TResponseInfoTickets, time_out: float):
         # print(data)
         if data['stderr'] != '':
             self._mediator.state('reserve_error', {'message': data['stderr']})
@@ -46,8 +46,9 @@ class FrameReserve(ctk.CTkFrame):
             text = f"{item['title']}   Время: {item['time']}"
             button = LockableButton(
                 self.f_tickets, text=text,
-                command=functools.partial(self.button_click, item['id'], item['title'])
+                command=functools.partial(self.button_click, item)
             )
+            button.setTicket(item)
             button.configure(
                 fg_color="transparent", width=170, border_width=2,
                 text_color=("gray10", "#DCE4EE")
@@ -59,6 +60,15 @@ class FrameReserve(ctk.CTkFrame):
                 column = 0
                 row += 1
 
-    def button_click(self, id: str, title: str):
-        self._mediator.state('select_ticket', {'id': id, 'title': title})
-        pass
+    def button_click(self, ticket: TTicket):
+        self._mediator.state('select_ticket')
+        self._db.getSelectTicket(self.callback_button_click, ticket, '10')
+
+    def callback_button_click(self, data: TResponseInfoTicket, time_out: float):
+        if data['stderr'] != '':
+            self._mediator.state('select_ticket_error', {'message': data['stderr']})
+            return
+        
+        self._db.setTicket(data['stdout']['ticket'])
+        self._mediator.state('select_ticket_success', {'message': data['stdout']['message']})
+        self._mediator.state('select_ticket_success_after', {'time_out': time_out})

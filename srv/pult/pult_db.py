@@ -4,7 +4,7 @@ import aiohttp
 import threading
 from typing import Callable, List, TypedDict, Union
 from pult_log import log_debug
-from pult_types import TPult, TResponseInfoTicket, TResponseMessage, TResponseReserveTickets, TResponseSetQueue, TSetQueue, TTicket
+from pult_types import TPult, TResponseInfoTicket, TResponseMessage, TResponseSetQueue, TSetQueue, TTicket
 
 class TRequest(TypedDict):
     stdout: Union[dict, None]  # Тело ответа
@@ -39,7 +39,8 @@ class DataBase:
     ticket: TTicket = {
         'id': '',
         'queue_id': '',
-        'title': '----'
+        'title': '----',
+        'time': ''
     }
     queues: List[str] = [] # Список id выбранных очередей
     pult: TPultSize = {
@@ -197,7 +198,7 @@ class DataBase:
         ThreadLoop(self.request, path, time.time(), 0, func)
 
     
-    def getReserveTickets(self, func: Callable[[TResponseReserveTickets, float], None]):
+    def getReserveTickets(self, func: Callable[[TResponseInfoTicket, float], None]):
         """
         Получить отложенные талоны в указанных очередях
         """
@@ -209,7 +210,7 @@ class DataBase:
         ThreadLoop(self.request, path, time.time(), 0, func)
 
 
-    def getSelectTicket(self, func: Callable[[TResponseInfoTicket, float], None], status: str):
+    def getSelectTicket(self, func: Callable[[TResponseInfoTicket, float], None], ticket: TTicket, status: str):
         """
         Вызвать указанный талон
         {
@@ -225,12 +226,13 @@ class DataBase:
         """
         # 
         path = f"svid_=1&sgr_l=360&sit_l=27"
-        path += f"&ticket_id={self.ticket['id']}"
+        path += f"&ticket_id={ticket['id']}"
         path += f"&oper_id={self.oper_id}&led_tablo_id={self.setDevice['led_tablo']['id']}"
-        path += f"&ticket_title={self.ticket['title']}"
+        path += f"&ticket_title={ticket['title']}"
         path += f"&ticket_status={status}"
         path += f"&month_id={self.setDevice['month_id']}"
         path += f"&led_tablo_port={self.setDevice['led_tablo']['port']}"
         path += f"&led_tablo_title={self.setDevice['led_tablo']['title']}"
         path += f"&adapter_setting={self.setDevice['adapter_setting']}"
+        print(path)
         ThreadLoop(self.request, path, time.time(), 0, func)

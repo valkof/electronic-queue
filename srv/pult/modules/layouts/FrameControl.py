@@ -44,12 +44,8 @@ class FrameControl(ctk.CTkFrame):
             return
         
         self._db.setTicket(data['stdout']['ticket'])
-        self.b_finish.grid()
-        self.b_next.grid_remove()
         self._mediator.state('next_success', {'message': data['stdout']['message']})
-        self.b_curr.after(time_out * 1000, self.b_curr.unlock)
-        self.b_finish.after(time_out * 1000, self.b_finish.unlock)
-        self.b_next.after(time_out * 1000, self._mediator.state, 'next_success_after')
+        self.next_state(time_out)
 
     def queue_curr(self):
         self.buttons_lock()
@@ -103,6 +99,13 @@ class FrameControl(ctk.CTkFrame):
         self.b_finish.grid_remove()
         self.b_next.after(time_out * 1000, self.b_next.unlock)
         self.b_next.after(time_out * 1000, self._mediator.state, 'finish_success_after')
+    
+    def next_state(self, time_out: float):
+        self.b_finish.grid()
+        self.b_next.grid_remove()
+        self.b_curr.after(time_out * 1000, self.b_curr.unlock)
+        self.b_finish.after(time_out * 1000, self.b_finish.unlock)
+        self.b_next.after(time_out * 1000, self._mediator.state, 'next_success_after')
         
     def buttons_lock(self):
         self.b_next.lock()

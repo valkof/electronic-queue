@@ -230,7 +230,25 @@ class Mediator(TMediator):
             return
 
         if event == 'select_ticket':
+            self._app.frame_Queue.f_ticket.adv_without_ticket()
             self.state('buttons_lock')
+            self._app.frame_Queue.f_control.buttons_lock()
+            return
+        
+        if event == 'select_ticket_error':
+            self._app.frame_Queue.f_message.show_message(body['message'])
+            self.state('buttons_unlock')
+            self._app.frame_Queue.f_control.b_next.unlock()
+            return
+        
+        if event == 'select_ticket_success':
+            self._app.frame_Queue.f_message.show_message(body['message'])
+            self._app.frame_Queue.f_ticket.show_ticket()
+            self._app.frame_Queue.f_ticket.set_action('adv_with_ticket')
+            return
+        
+        if event == 'select_ticket_success_after':
+            self._app.frame_Queue.f_control.next_state(body['time_out'])
             return
         
 # Main run
