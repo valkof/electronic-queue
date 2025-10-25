@@ -4,7 +4,7 @@ import aiohttp
 import threading
 from typing import Callable, List, TypedDict, Union
 from pult_log import log_debug
-from pult_types import TPult, TResponseInfoTicket, TResponseMessage, TResponseSetQueue, TSetQueue, TTicket
+from pult_types import TPult, TQueue, TResponseInfoTicket, TResponseInfoTickets, TResponseMessage, TResponseSetQueue, TSetQueue, TTicket
 
 class TRequest(TypedDict):
     stdout: Union[dict, None]  # Тело ответа
@@ -28,7 +28,7 @@ class ThreadLoop:
     
     def callbackDataPult(self, response: asyncio.Future):
         data = response.result()
-        print(data)
+        # print(data)
         self.new_loop.call_soon_threadsafe(self.new_loop.stop)
         time_out = max(self.max_time, self.max_time - (time.time() - self.min_time))
         self.func(data, time_out)
@@ -198,9 +198,24 @@ class DataBase:
         ThreadLoop(self.request, path, time.time(), 0, func)
 
     
-    def getReserveTickets(self, func: Callable[[TResponseInfoTicket, float], None]):
+    def getReserveTickets(self, func: Callable[[TResponseInfoTickets, float], None]):
         """
         Получить отложенные талоны в указанных очередях
+
+        {
+          "stdout": {
+            "tickets": [
+              {
+                "id": str,
+                "title": str,
+                "queues_id":str,
+                "time":str
+              }
+            ],
+            "message":str
+          },
+          "stderr":str
+        }
         """
         # 
         queues_ids = ','.join([x for x in self.queues])
@@ -209,19 +224,47 @@ class DataBase:
         path += f"&queues_ids={queues_ids}&month_id={self.setDevice['month_id']}"
         ThreadLoop(self.request, path, time.time(), 0, func)
 
+    def getTabloTickets(self, func: Callable[[TResponseInfoTickets, float], None]):
+        """
+        Получить ожидающие талоны в указанных очередях
+
+        {
+          "stdout": {
+            "tickets": [
+              {
+                "id": str,
+                "title": str,
+                "queues_id":str,
+                "time":str
+              }
+            ],
+            "message":str
+          },
+          "stderr":str
+        }
+        """
+        # 
+        queues_ids = ','.join([x for x in self.queues])
+        # print(queues_ids)
+        path = f"svid_=1&sgr_l=360&sit_l=26"
+        path += f"&queues_ids={queues_ids}&month_id={self.setDevice['month_id']}"
+        ThreadLoop(self.request, path, time.time(), 0, func)
 
     def getSelectTicket(self, func: Callable[[TResponseInfoTicket, float], None], ticket: TTicket, status: str):
         """
         Вызвать указанный талон
+        
         {
           "stdout": {
             "ticket": {
-              "id":"@D3000310000",
-              "title":"@D3000320000"
+              "id": str,
+              "title": str,
+              "queues_id":str,
+			        "time":str
             },
-            "message":"@D3000330000"
+            "message":str
           },
-          "stderr": "@D3000300000"
+          "stderr":str
         }
         """
         # 
@@ -231,6 +274,31 @@ class DataBase:
         path += f"&ticket_title={ticket['title']}"
         path += f"&ticket_status={status}"
         path += f"&month_id={self.setDevice['month_id']}"
+        path += f"&led_tablo_port={self.setDevice['led_tablo']['port']}"
+        path += f"&led_tablo_title={self.setDevice['led_tablo']['title']}"
+        path += f"&adapter_setting={self.setDevice['adapter_setting']}"
+        print(path)
+        ThreadLoop(self.request, path, time.time(), self.setPult['ui']['timeout_next'], func)
+
+
+    def getChangeQueue(self, func: Callable[[TResponseMessage, float], None], queue: TQueue):
+        """
+        Перевести талон в указанную очередь
+        
+        Пример ответа:
+        {
+          "stdout": {
+            "message": "Нет записи на табло окна оператора 192.168.10.15:2323"
+          },
+          "stderr": ""
+        }
+        """
+        # 
+        path = f"svid_=1&sgr_l=360&sit_l=30"
+        path += f"&month_id={self.setDevice['month_id']}"
+        path += f"&queue_id={queue['id']}&queue_title={queue['title']}"
+        path += f"&ticket_id={self.ticket['id']}"
+        path += f"&ticket_title={self.ticket['title']}"
         path += f"&led_tablo_port={self.setDevice['led_tablo']['port']}"
         path += f"&led_tablo_title={self.setDevice['led_tablo']['title']}"
         path += f"&adapter_setting={self.setDevice['adapter_setting']}"

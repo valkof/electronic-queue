@@ -223,6 +223,7 @@ class Mediator(TMediator):
         
         if event == 'update_tickets_frame':
             self._app.frame_Queue.f_tickets.f_reserve.update_tickets()
+            self._app.frame_Queue.f_tickets.f_tablo.update_tickets()
             return
         
         if event == 'reserve_error':
@@ -248,6 +249,34 @@ class Mediator(TMediator):
             return
         
         if event == 'select_ticket_success_after':
+            self._app.frame_Queue.f_control.next_state(body['time_out'])
+            return
+        
+        if event == 'tablo_error':
+            self._app.frame_Queue.f_message.show_message(body['message'])
+            return
+        
+        if event == 'change_queue':
+            self._app.frame_Queue.f_ticket.adv_with_ticket()
+            self.state('buttons_lock')
+            self._app.frame_Queue.f_control.buttons_lock()
+            return
+        
+        if event == 'change_queue_error':
+            self._app.frame_Queue.f_message.show_message(body['message'])
+            self.state('buttons_unlock')
+            self._app.frame_Queue.f_control.b_finish.unlock()
+            self._app.frame_Queue.f_control.b_curr.unlock()
+            self._app.frame_Queue.f_control.b_abort.unlock()
+            return
+        
+        if event == 'change_queue_success':
+            self._app.frame_Queue.f_message.show_message(body['message'])
+            self._app.frame_Queue.f_ticket.show_ticket()
+            self._app.frame_Queue.f_ticket.set_action('adv_without_ticket')
+            return
+        
+        if event == 'change_queue_success_after':
             self._app.frame_Queue.f_control.next_state(body['time_out'])
             return
         

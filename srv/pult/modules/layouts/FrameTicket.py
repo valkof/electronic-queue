@@ -28,7 +28,7 @@ class FrameTicket(ctk.CTkFrame):
         self.LMessage.grid(row=2, column=0, padx=(3, 3), pady=(3, 3), ipadx=0, sticky="ew")
 
     def set_action(self, state: Literal['adv_with_ticket', 'adv_without_ticket']):
-        print(state)
+        # print(state)
         if state == 'adv_with_ticket':
             self.BOption.configure(command=self.adv_with_ticket)
             return
