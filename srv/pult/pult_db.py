@@ -68,7 +68,7 @@ class DataBase:
         for item in self.setDevice['queues']:
             self.queues.append(item['id'])
 
-    def addInQueues(self, queue) -> bool:
+    def addInQueues(self, queue: str) -> bool:
         if queue in self.queues:
             self.queues.remove(queue)
             return False

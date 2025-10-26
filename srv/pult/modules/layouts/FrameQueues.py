@@ -27,7 +27,7 @@ class FrameQueues(ctk.CTkFrame):
         column: int = 0
         row: int = 0
         for item in self._db.setDevice['queues']:
-            button = ButtonQueue(self, self._mediator, item)
+            button = ButtonQueue(self, self._mediator, self._db, item)
             button.grid(row=row, column=column, padx=(3, 3), pady=(3, 3), ipadx=0, ipady=0, sticky="e")
             self.buttons[item['id']] = button
             if column < 2:
