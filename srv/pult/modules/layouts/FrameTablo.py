@@ -4,7 +4,6 @@ import customtkinter as ctk
 from pult_types import TMediator, TResponseInfoTicket, TResponseInfoTickets, TTicket
 from pult_db import DataBase
 from ..elements.LockableButton import LockableButton
-# from ..elements.LockableButton import LockableButton
 
 class FrameTablo(ctk.CTkFrame):
     """

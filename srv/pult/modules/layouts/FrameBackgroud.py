@@ -45,7 +45,7 @@ class FrameBackgroud(ctk.CTkFrame):
             self._mediator.state('background_error', {'message': data['stderr']})
             return
         
-        self._db.setTicket({'id': '', 'queue_id': '', 'title': '----'})
+        self._db.setTicket({'id':'', 'queue_id': '', 'title': '----', 'time': ''})
         self._mediator.state('background_success', {'message': data['stdout']['message']})
         self._mediator.state('background_success_after', {'time_out': time_out})
     

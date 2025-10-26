@@ -122,6 +122,7 @@ class Mediator(TMediator):
             return
         
         if event == 'next':
+            self._app.frame_Queue.adv_without_ticket(action='close')
             self.state('buttons_lock')
             return
         
@@ -133,6 +134,7 @@ class Mediator(TMediator):
         if event == 'next_success':
             self._app.frame_Queue.f_message.show_message(body['message'])
             self._app.frame_Queue.f_ticket.show_ticket()
+            self._app.frame_Queue.f_ticket.set_action('adv_with_ticket')
             return
         
         if event == 'next_success_after':
@@ -140,6 +142,7 @@ class Mediator(TMediator):
             return
         
         if event == 'current':
+            self._app.frame_Queue.adv_with_ticket(action='close')
             self.state('buttons_lock')
             return
         
@@ -159,6 +162,7 @@ class Mediator(TMediator):
             return
         
         if event == 'abort':
+            self._app.frame_Queue.adv_with_ticket(action='close')
             self.state('buttons_lock')
             return
         
@@ -175,6 +179,22 @@ class Mediator(TMediator):
         
         if event == 'abort_success_after':
             self.state('buttons_unlock')
+            return
+        
+        if event == 'finish':
+            self._app.frame_Queue.adv_with_ticket(action='close')
+            self.state('buttons_lock')
+            return
+        
+        if event == 'finish_error':
+            self._app.frame_Queue.f_message.show_message(body['message'])
+            self._app.frame_Queue.f_ticket.button_unlock()
+            return
+        
+        if event == 'finish_success':
+            self._app.frame_Queue.f_message.show_message(body['message'])
+            self._app.frame_Queue.f_ticket.show_ticket()
+            self._app.frame_Queue.f_ticket.set_action('adv_without_ticket')
             return
         
         if event == 'finish_success_after':
@@ -277,7 +297,7 @@ class Mediator(TMediator):
             return
         
         if event == 'change_queue_success_after':
-            self._app.frame_Queue.f_control.next_state(body['time_out'])
+            self._app.frame_Queue.f_control.begin_state(body['time_out'])
             return
         
 # Main run

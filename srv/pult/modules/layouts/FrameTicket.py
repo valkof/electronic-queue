@@ -24,7 +24,7 @@ class FrameTicket(ctk.CTkFrame):
         self.BOption = LockableButton(self, text="Дополнительно", command=self.adv_without_ticket)
         self.BOption.grid(row=1, column=0, padx=(3, 3), pady=(3, 3), ipadx=0, sticky="ew")
         
-        self.LMessage = ctk.CTkLabel(self, text="Отлож. 0", font=ctk.CTkFont(weight="normal"))
+        self.LMessage = ctk.CTkLabel(self, text="Отложено - 0", font=ctk.CTkFont(weight="normal"))
         self.LMessage.grid(row=2, column=0, padx=(3, 3), pady=(3, 3), ipadx=0, sticky="ew")
 
     def set_action(self, state: Literal['adv_with_ticket', 'adv_without_ticket']):
@@ -42,14 +42,6 @@ class FrameTicket(ctk.CTkFrame):
         
     def adv_without_ticket(self):
         self._mediator.state('adv_without_ticket')
-        
-
-        # if ticket["id"] == '':  # нет талона
-        #     # self.router(self.f_work)
-        #     pass
-        # else:  # есть талон талона
-        #     # self.router(self.f_cur_ticket)
-        #     pass
         
     def button_lock(self):
         self.BOption.lock()

@@ -41,18 +41,27 @@ class FrameAuth(ctk.CTkFrame):
             text="ВОЙТИ",
             command=self.button_click
         )
-        self.button.grid(row=2, column=0, padx=20, pady=10)
+        self.button.grid(row=2, column=0, padx=20, pady=5)
 
         # Сообщение
         self.label = ctk.CTkLabel(
             self, width=300,
             text='', text_color='red'
         )
-        self.label.grid(row=3, column=0, padx=20, pady=10)
+        self.label.grid(row=3, column=0, padx=20, pady=0)
         
         # Настройка растяжения столбцов
         self.grid_columnconfigure(0, weight=1)
 
+        self.enter_unlock()
+
+    def enter_lock(self):
+        """Блокирование клавиши Enter"""
+        self.entry.unbind("<Return>")
+        self.entry.unbind("<KP_Enter>")
+
+    def enter_unlock(self):
+        """Активация клавиши Enter"""
         self.entry.bind("<Return>", self.on_enter_pressed)
         self.entry.bind("<KP_Enter>", self.on_enter_pressed)
 
@@ -66,6 +75,9 @@ class FrameAuth(ctk.CTkFrame):
         pass
 
     def button_click(self):
+        self.enter_lock()
+        self.combo.configure(state=ctk.DISABLED)
+        self.entry.configure(state=ctk.DISABLED)
         self.button.lock()
         self.verify_authorization()
 
@@ -87,6 +99,9 @@ class FrameAuth(ctk.CTkFrame):
         else:
             self.label_show('Неверный пароль')
             self.button.unlock()
+            self.enter_unlock()
+            self.combo.configure(state=ctk.NORMAL)
+            self.entry.configure(state=ctk.NORMAL)
 
     def label_show(self, message: str = ''):
         self.label.configure(text=message)

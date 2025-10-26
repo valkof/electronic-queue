@@ -21,12 +21,28 @@ class JSONHandler(BaseHTTPRequestHandler):
                         {
                             "id": "1",
                             "title": "Регистратура"
+                        },
+                        {
+                            "id": "2",
+                            "title": "Справочная"
+                        },
+                        {
+                            "id": "3",
+                            "title": "Процедурная"
+                        },
+                        {
+                            "id": "4",
+                            "title": "Льгота"
                         }
                     ],
                     "queues_delay": [
                         {
                             "id": "1",
                             "title": "Регистратура"
+                        },
+                        {
+                            "id": "3",
+                            "title": "Процедурная"
                         }
                     ],
                     "adapter_setting": "156.156.156.156",
@@ -64,9 +80,42 @@ class JSONHandler(BaseHTTPRequestHandler):
               },
               "stderr": ""
             }
+        elif sit_l == '24':
+            response_data = {
+              "stdout": {
+                "message": "Нет записи на табло окна оператора 192.168.10.15:2323"
+              },
+              "stderr": ""
+            }
         elif sit_l == '25':
             response_data = {
               "stdout": {
+                "message": "Нет записи на табло окна оператора 192.168.10.15:2323"
+              },
+              "stderr": ""
+            }
+        elif sit_l == '26':
+            response_data = {
+                'stdout': {
+                    'tickets': [
+                        {'id': '9', 'title': 'Р006', 'time': '20:47'},
+                        {'id': '10', 'title': 'Р007', 'time': '14:12'},
+                        {'id': '11', 'title': 'Р008', 'time': '14:13'},
+                        {'id': '12', 'title': 'Р009', 'time': '14:14'},
+                        {'id': '13', 'title': 'Р010', 'time': '14:15'}
+                    ],
+                    'message': ''
+                },
+                'stderr': ''
+            }
+        elif sit_l == '27':
+            response_data = {
+              "stdout": {
+                "ticket": {
+                  "id": "5",
+                  "title": "Р002",
+                  "queue_id": "1"
+                },
                 "message": "Нет записи на табло окна оператора 192.168.10.15:2323"
               },
               "stderr": ""
@@ -91,6 +140,13 @@ class JSONHandler(BaseHTTPRequestHandler):
                     'message': ''
                 },
                 'stderr': ''
+            }
+        elif sit_l == '30':
+            response_data = {
+              "stdout": {
+                "message": "Нет записи на табло окна оператора 192.168.10.15:2323"
+              },
+              "stderr": ""
             }
         else:
             response_data = {}

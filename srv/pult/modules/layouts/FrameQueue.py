@@ -1,3 +1,4 @@
+from typing import Literal
 import customtkinter as ctk
 
 from pult_types import TMediator
@@ -23,6 +24,7 @@ class FrameQueue(ctk.CTkFrame):
         self.router_pages = []
 
         mainPanel = ctk.CTkFrame(self)
+        mainPanel.configure(fg_color='transparent')
         mainPanel.grid(row=0, column=0, sticky="nsew")
         mainPanel.columnconfigure(index=0, weight=1, minsize=db.pult["width"] *  1/4 * db.setPult['ui']['scaling'])
         mainPanel.columnconfigure(index=1, weight=1, minsize=db.pult["width"] * 3/4 * db.setPult['ui']['scaling'])
@@ -33,7 +35,7 @@ class FrameQueue(ctk.CTkFrame):
         self.f_ticket.grid(row=0, column=0, rowspan=2, sticky="nsew")
         
         self.f_control = FrameControl(mainPanel, mediator, db)
-        self.f_control.grid(row=0, column=1, sticky="ew")
+        self.f_control.grid(row=0, column=1, sticky="nsew")
         
         self.f_queues = FrameQueues(mainPanel, mediator, db)
         self.f_queues.grid(row=1, column=1, sticky="nsew")
@@ -51,21 +53,31 @@ class FrameQueue(ctk.CTkFrame):
         self.f_tickets.grid_remove()
         # self.f_tickets.columnconfigure(index=0, weight=1)
 
-    def adv_with_ticket(self):
+    def adv_with_ticket(self, action: Literal['', 'close'] = ''):
         enabled_frame = self.grid_slaves(row=2, column=0).count(self.f_cancel) > 0
+        if action == 'close':
+            if enabled_frame:
+                self.f_cancel.grid_remove()
+                self._mediator.state('update_window', {'height': 0})
+            return
         if enabled_frame: # панель открыта
             self.f_cancel.grid_remove()
             self._mediator.state('update_window', {'height': 0})
         else:
-            self.update_cancel_frame()
+            # self.update_cancel_frame()
             self._mediator.state('update_window', {'height': self.f_cancel.winfo_reqheight()})
             self.f_cancel.grid()
 
-    def update_cancel_frame(self):
-        pass
+    # def update_cancel_frame(self):
+    #     pass
 
-    def adv_without_ticket(self):
+    def adv_without_ticket(self, action: Literal['', 'close'] = ''):
         enabled_frame = self.grid_slaves(row=2, column=0).count(self.f_tickets) > 0
+        if action == 'close':
+            if enabled_frame:
+                self.f_tickets.grid_remove()
+                self._mediator.state('update_window', {'height': 0})
+            return
         if enabled_frame: # панель открыта
             self.f_tickets.grid_remove()
             self._mediator.state('update_window', {'height': 0})

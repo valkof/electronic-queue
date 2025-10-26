@@ -179,6 +179,26 @@ class DataBase:
         ThreadLoop(self.request, path, time.time(), 0, func)
 
     def getFinishTicket(self, func: Callable[[TResponseMessage, float], None]):
+        """
+        Получить результат завершения обслуживания
+
+        Пример ответа:
+        {
+          "stdout": {
+            "message": "Нет записи на табло окна оператора 192.168.10.15:2323"
+          },
+          "stderr": ""
+        }
+        """
+        # svid_=1&sgr_l=360&sit_l=25&ticket_id=1&user_id=2&month_id=3&led_tablo_port=2323&adapter_setting=192.168.10.15#192.168.10.20,32109,1#192.168.10.20,32105#klient_talon,TTT,proidite,okno_nomer,NNN
+        path = f"svid_=1&sgr_l=360&sit_l=24"
+        path += f"&ticket_id={self.ticket['id']}&user_id={self.setDevice['user_id']}"
+        path += f"&month_id={self.setDevice['month_id']}"
+        path += f"&led_tablo_port={self.setDevice['led_tablo']['port']}"
+        path += f"&adapter_setting={self.setDevice['adapter_setting']}"
+        ThreadLoop(self.request, path, time.time(), 0, func)
+
+    def getFinishTicket(self, func: Callable[[TResponseMessage, float], None]):
         # svid_=1&sgr_l=360&sit_l=936&oper_id=4&led_tablo_id=3
         path = f"svid_=1&sgr_l=360&sit_l=936&oper_id={self.oper_id}&led_tablo_id={self.setDevice['led_tablo']['id']}"
         ThreadLoop(self.request, path, time.time(), self.setPult['ui']['timeout_next'], func)
