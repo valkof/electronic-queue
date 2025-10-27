@@ -96,18 +96,55 @@ class JSONHandler(BaseHTTPRequestHandler):
             }
         elif sit_l == '26':
             response_data = {
-                'stdout': {
-                    'tickets': [
-                        {'id': '9', 'title': 'Р006', 'time': '20:47'},
-                        {'id': '10', 'title': 'Р007', 'time': '14:12'},
-                        {'id': '11', 'title': 'Р008', 'time': '14:13'},
-                        {'id': '12', 'title': 'Р009', 'time': '14:14'},
-                        {'id': '13', 'title': 'Р010', 'time': '14:15'}
-                    ],
-                    'message': ''
+                "stdout": {
+                  "tickets": [
+                    {
+                      "id": "9",
+                      "title": "Р001",
+                      "queues_id": "1",
+                      "time": "10:33"
+                    },
+                    {
+                      "id": "10",
+                      "title": "С001",
+                      "queues_id": "2",
+                      "time": "10:33"
+                    },
+                    {
+                      "id": "11",
+                      "title": "Р002",
+                      "queues_id": "1",
+                      "time": "10:33"
+                    },
+                    {
+                      "id": "12",
+                      "title": "Р003",
+                      "queues_id": "1",
+                      "time": "10:33"
+                    },
+                    {
+                      "id": "13",
+                      "title": "С002",
+                      "queues_id": "2",
+                      "time": "10:33"
+                    },
+                    {
+                      "id": "14",
+                      "title": "С003",
+                      "queues_id": "2",
+                      "time": "10:33"
+                    },
+                    {
+                      "id": "15",
+                      "title": "С004",
+                      "queues_id": "2",
+                      "time": "10:33"
+                    }
+                  ],
+                  "message": ""
                 },
-                'stderr': ''
-            }
+                "stderr": ""
+              }
         elif sit_l == '27':
             response_data = {
               "stdout": {

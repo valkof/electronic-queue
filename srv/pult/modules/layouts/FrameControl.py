@@ -55,16 +55,16 @@ class FrameControl(ctk.CTkFrame):
     def callback_queue_curr(self, data: TResponseInfoTicket, time_out: float):
         # print(data)
         if data['stderr'] != '':
-            if data['stderr'] == 'Нет доступных талонов':
-                self.callback_queue_abort(data={'stdout':{'message':'Нет доступных талонов'},'stderr':''}, time_out=time_out)
-                return
-
             self._mediator.state('current_error', {'message': data['stderr']})
             self.b_finish.unlock()
             self.b_abort.unlock()
             self.b_curr.unlock()
             return
         
+        if data['stdout']['ticket']['id'] == '':
+            self.callback_queue_abort(data={'stdout':{'message':data['stdout']['message']},'stderr':''}, time_out=0)
+            return
+
         self._db.setTicket(data['stdout']['ticket'])
         self._mediator.state('current_success', {'message': data['stdout']['message']})
         self.b_finish.after(time_out * 1000, self.b_finish.unlock)

@@ -84,6 +84,7 @@ class App(ctk.CTk):
         self.frame_Auth.grid_remove()
         self.frame_Queue.grid(row=0, column=0, sticky="nsew")
         self.frame_Queue.f_message.show_message('Здравствуйте')
+        self._mediator.state('count_tickets')
         self._mediator.state('repeat')
 
 class Mediator(TMediator):
@@ -94,6 +95,9 @@ class Mediator(TMediator):
         self._app = app
 
     def state(self, event: str, body: any = None):
+        if event == 'count_tickets':
+            self._app.frame_Queue.update_count_tickets()
+
         if event == 'get_data_pult':
             self._app.get_data_pult()
             return

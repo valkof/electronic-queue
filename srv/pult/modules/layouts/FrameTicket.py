@@ -27,6 +27,8 @@ class FrameTicket(ctk.CTkFrame):
         self.LMessage = ctk.CTkLabel(self, text="Отложено - 0", font=ctk.CTkFont(weight="normal"))
         self.LMessage.grid(row=2, column=0, padx=(3, 3), pady=(3, 3), ipadx=0, sticky="ew")
 
+        self.update_count_tickets()
+
     def set_action(self, state: Literal['adv_with_ticket', 'adv_without_ticket']):
         # print(state)
         if state == 'adv_with_ticket':
@@ -52,5 +54,11 @@ class FrameTicket(ctk.CTkFrame):
     def show_ticket(self):
         ticket = self._db.getTicket()
         self.LTicket.configure(text=ticket["title"])
+
+    def update_count_tickets(self):
+        count = self._db.getCountReserveTickets()
+        self.LMessage.configure(text=f"Отложено - {count}")
+        # print(f"Отложено - {count}")
+        self.LMessage.after(5 * 1000, self.update_count_tickets)
 
     

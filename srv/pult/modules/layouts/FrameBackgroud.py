@@ -40,7 +40,7 @@ class FrameBackgroud(ctk.CTkFrame):
         self._db.getBackgroudTicket(self.callback_ticket_cancel, comment)
 
     def callback_ticket_cancel(self, data: TResponseMessage, time_out: float):
-        print(data)
+        # print(data)
         if data['stderr'] != '':
             self._mediator.state('background_error', {'message': data['stderr']})
             return

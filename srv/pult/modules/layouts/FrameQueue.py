@@ -1,7 +1,7 @@
 from typing import Literal
 import customtkinter as ctk
 
-from pult_types import TMediator
+from pult_types import TMediator, TResponseCountTickets
 from pult_db import DataBase
 from .FrameCancel import FrameCancel
 from .FrameTickets import FrameTickets
@@ -19,7 +19,7 @@ class FrameQueue(ctk.CTkFrame):
         self.rowconfigure(index=1, weight=1, minsize=db.pult["height"] * 1/4 * db.setPult['ui']['scaling'])
         
         self._mediator = mediator
-        # self._db = db
+        self._db = db
         
         self.router_pages = []
 
@@ -88,3 +88,15 @@ class FrameQueue(ctk.CTkFrame):
             
     def update_tickets_frame(self):
         self._mediator.state('update_tickets_frame')
+
+    def update_count_tickets(self):
+        self._db.getCountTickets(self.callback_count_tickets)
+
+    def callback_count_tickets(self, data: TResponseCountTickets, time_out: float):
+        # print(data)
+        if data['stderr'] != '':
+            # self._mediator.state('next_error', {'message': data['stderr']})
+            return
+        
+        self._db.setCountTickets(data['stdout'])
+        self.after(5 * 1000, self.update_count_tickets)

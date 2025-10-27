@@ -4,7 +4,7 @@ import aiohttp
 import threading
 from typing import Callable, List, TypedDict, Union
 from pult_log import log_debug
-from pult_types import TPult, TQueue, TResponseInfoTicket, TResponseInfoTickets, TResponseMessage, TResponseSetQueue, TSetQueue, TTicket
+from pult_types import TAllCountTickets, TPult, TQueue, TResponseCountTickets, TResponseInfoTicket, TResponseInfoTickets, TResponseMessage, TResponseSetQueue, TSetQueue, TTicket
 
 class TRequest(TypedDict):
     stdout: Union[dict, None]  # Тело ответа
@@ -47,12 +47,29 @@ class DataBase:
       'width': 0,
       'height': 0
     }
+    count_tickets: TAllCountTickets = {
+        'ticketsCount': '0',
+        'queues': [],
+        'message': ''
+    }
     
     def __init__(self, setPult: TPult):
         self.setPult = setPult
 
     def setOperId(self, oper_id: str):
         self.oper_id = oper_id
+
+    def setCountTickets(self, countTickets: TAllCountTickets):
+        self.count_tickets = countTickets
+
+    def getCountReserveTickets(self) -> str:
+        return self.count_tickets['ticketsCount']
+    
+    def getCountQueueTickets(self, queue_id: str) -> str:
+        for queue in self.count_tickets['queues']:
+            if queue['id'] == queue_id:
+                return queue['ticketsCount']
+        return '0'
 
     def setTicket(self, ticket: TTicket):
         self.ticket = ticket
@@ -81,6 +98,7 @@ class DataBase:
         param = f"is10_09?sSd_=0&sfil_n={self.setPult['fil']}&stst_=0&shead_=0&style_=2&"
         url = self.setPult['eq_url'] + param + path
         # http://10.0.6.168:88/cgi-bin/is10_09?sSd_=0&sfil_n=19&svid_=1&stst_=0&sgr_l=360&shead_=0&sit_l=936&style_=2&oper_id=4&led_tablo_id=3
+        print(url)
         try:
             async with aiohttp.ClientSession() as session:
                 async with session.get(url) as response:
@@ -93,7 +111,8 @@ class DataBase:
         except asyncio.TimeoutError:
             # print(f"Таймаут при запросе к {url}")
             log_debug("Таймаут при запросе к " + url + ". ")
-            data['stderr'] = 'Таймаут при запросе к URL.'             
+            data['stderr'] = 'Таймаут при запросе к URL.'     
+        print(data)        
         return data
 
     def getDataPult(self, func: Callable[[TResponseSetQueue], None]):
@@ -198,11 +217,6 @@ class DataBase:
         path += f"&adapter_setting={self.setDevice['adapter_setting']}"
         ThreadLoop(self.request, path, time.time(), 0, func)
 
-    def getFinishTicket(self, func: Callable[[TResponseMessage, float], None]):
-        # svid_=1&sgr_l=360&sit_l=936&oper_id=4&led_tablo_id=3
-        path = f"svid_=1&sgr_l=360&sit_l=936&oper_id={self.oper_id}&led_tablo_id={self.setDevice['led_tablo']['id']}"
-        ThreadLoop(self.request, path, time.time(), self.setPult['ui']['timeout_next'], func)
-
     def getBackgroudTicket(self, func: Callable[[TResponseInfoTicket, float], None], comment: str):
         """
         Отложить текущий талон
@@ -297,7 +311,7 @@ class DataBase:
         path += f"&led_tablo_port={self.setDevice['led_tablo']['port']}"
         path += f"&led_tablo_title={self.setDevice['led_tablo']['title']}"
         path += f"&adapter_setting={self.setDevice['adapter_setting']}"
-        print(path)
+        # print(path)
         ThreadLoop(self.request, path, time.time(), self.setPult['ui']['timeout_next'], func)
 
 
@@ -322,5 +336,30 @@ class DataBase:
         path += f"&led_tablo_port={self.setDevice['led_tablo']['port']}"
         path += f"&led_tablo_title={self.setDevice['led_tablo']['title']}"
         path += f"&adapter_setting={self.setDevice['adapter_setting']}"
-        print(path)
+        # print(path)
+        ThreadLoop(self.request, path, time.time(), 0, func)
+
+    def getCountTickets(self, func: Callable[[TResponseCountTickets, float], None]):
+        """
+        Получить отложенные талоны в указанных очередях
+
+        {
+          "stdout": {
+            "ticketsCount": str,
+            "queues": [
+              {
+                "id": str,
+                "ticketsCount": str
+              }
+            ],
+            "message": str
+          },
+          "stderr": str
+        }
+        """
+        # 
+        queues_ids = ','.join([x['id'] for x in self.setDevice['queues']])
+        # print(queues_ids)
+        path = f"svid_=1&sgr_l=360&sit_l=31"
+        path += f"&queues_ids={queues_ids}&month_id={self.setDevice['month_id']}"
         ThreadLoop(self.request, path, time.time(), 0, func)

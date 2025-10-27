@@ -59,12 +59,25 @@ class TInfoTicket(TypedDict):
     ticket: TTicket
     message: str
 
+class TQueueCountTickets(TypedDict):
+    id: str
+    ticketsCount: str
+
+class TAllCountTickets(TypedDict):
+    ticketsCount: str
+    queues: List[TQueueCountTickets]
+    message: str
+
 class TResponseInfoTicket(TypedDict):
     stdout: TInfoTicket
     stderr: str
 
 class TResponseInfoTickets(TypedDict):
     stdout: TInfoTickets
+    stderr: str
+
+class TResponseCountTickets(TypedDict):
+    stdout: TAllCountTickets
     stderr: str
 
 class TMessage(TypedDict):

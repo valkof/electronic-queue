@@ -42,6 +42,8 @@ class ButtonQueue(ctk.CTkFrame):
         )
         self.label.grid(row=0, column=0, padx=(3, 7), pady=(3, 3), ipadx=0, ipady=0, sticky="e")
 
+        self.update_count_tickets()
+
     def lock(self):
         self.button.lock()
 
@@ -56,3 +58,9 @@ class ButtonQueue(ctk.CTkFrame):
         else:
             self.button.configure(fg_color=self.main_color, hover_color=self.main_color)
             self.label.configure(bg_color=self.main_color)
+
+    def update_count_tickets(self):
+        count = self._db.getCountQueueTickets(self.queue['id'])
+        self.label.configure(text=f"{count}")
+        # print(f"Отложено - {count}")
+        self.label.after(5 * 1000, self.update_count_tickets)
