@@ -1,2 +1,6 @@
 envochered
 venvScriptsactivate
+__pycache__/
+build/
+dist/
+logs/
