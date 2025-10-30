@@ -13,8 +13,9 @@ class Browser(QMainWindow):
         self.setWindowTitle("Мой браузер")
         
         # Создаем веб-просмотр
+        # https://zeromis.tutmed.by/cgi-bin/is10_09?sSd_=0&svid_=5&sgr_l=40&sit_l=211&stst_=0&cod_e=0&stat_e=0&sfil_n=2092&style_=0&nAgain_=0&sadd_=15,300,3840
         self.browser = QWebEngineView()
-        self.browser.setUrl(QUrl("https://tutmed.by/infotablo/"))
+        self.browser.setUrl(QUrl("http://192.168.0.90:88/cgi-bin/is10_08?sSd_=0&svid_=1&sgr_l=360&sit_l=1020&sfil_n=19"))
         self.setCentralWidget(self.browser)
         
         # Добавляем панель состояния

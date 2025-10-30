@@ -3,3 +3,5 @@ pillow
 customtkinter
 psutil
 pygame
+PyQt5
+PyQtWebEngine
