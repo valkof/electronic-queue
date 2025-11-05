@@ -1,74 +1,86 @@
-from PyQt5.QtWidgets import QApplication, QMainWindow, QToolBar, QLineEdit, QAction, QStatusBar
+import json
+import os
+from PyQt5.QtWidgets import QApplication, QMainWindow
 from PyQt5.QtWebEngineWidgets import QWebEngineView
-from PyQt5.QtCore import QUrl, Qt
+from PyQt5.QtCore import QUrl, Qt, QTimer
 
 class Browser(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.showFullScreen()
+        # self.showFullScreen()
         
+        path = self.read_settings_host()
+
+        print(path)
+
         self.setWindowFlag(Qt.FramelessWindowHint)  # Скрываем заголовок окна
 
         self.setWindowTitle("Мой браузер")
         
-        # Создаем веб-просмотр
-        # https://zeromis.tutmed.by/cgi-bin/is10_09?sSd_=0&svid_=5&sgr_l=40&sit_l=211&stst_=0&cod_e=0&stat_e=0&sfil_n=2092&style_=0&nAgain_=0&sadd_=15,10,3840
+
         self.browser = QWebEngineView()
-        self.browser.setUrl(QUrl("https://zeromis.tutmed.by/cgi-bin/is10_08?sSd_=0&svid_=5&sgr_l=40&sit_l=212&stst_=0&shead_=0&style_=0&nAgain_=1&sfil_n=2092&sadd_=10,10,10800,16"))
-        # self.browser.setUrl(QUrl("http://192.168.0.90:88/cgi-bin/is10_08?sSd_=0&svid_=1&sgr_l=360&sit_l=1020&sfil_n=19"))
+        self.browser.setUrl(QUrl(path + "/cgi-bin/is10_08?sSd_=0&svid_=1&sgr_l=360&sit_l=1021&sfil_n=19"))
         self.setCentralWidget(self.browser)
         
-        # Добавляем панель состояния
-        # self.status = QStatusBar()
-        # self.setStatusBar(self.status)
-        
-        # Создаем панель инструментов
-        # toolbar = QToolBar()
-        # self.addToolBar(toolbar)
-        
-        # Кнопка "Назад"
-        # back_btn = QAction("Назад", self)
-        # back_btn.triggered.connect(self.browser.back)
-        # toolbar.addAction(back_btn)
-        
-        # Кнопка "Вперед"
-        # next_btn = QAction("Вперед", self)
-        # next_btn.triggered.connect(self.browser.forward)
-        # toolbar.addAction(next_btn)
-        
-        # Кнопка "Обновить"
-        # reload_btn = QAction("Обновить", self)
-        # reload_btn.triggered.connect(self.browser.reload)
-        # toolbar.addAction(reload_btn)
-        
-        # Поле ввода URL
-        # self.urlbar = QLineEdit()
-        # self.urlbar.returnPressed.connect(self.navigate_to_url)
-        # toolbar.addWidget(self.urlbar)
-        
-        # Кнопка "Стоп"
-        # stop_btn = QAction("Стоп", self)
-        # stop_btn.triggered.connect(self.browser.stop)
-        # toolbar.addAction(stop_btn)
-        
-        # Связываем события
-        # self.browser.urlChanged.connect(self.update_urlbar)
         self.browser.loadFinished.connect(self.update_title)
+
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.update_window)
+        self.timer.start(60000)
 
     def update_title(self):
         title = self.browser.page().title()
         self.setWindowTitle(f"{title} - Мой браузер")
 
-    # def navigate_to_url(self):
-    #     q = QUrl(self.urlbar.text())
-    #     if q.scheme() == "":
-    #         q.setScheme("http")
-    #     self.browser.setUrl(q)
+    def update_window(self):
+        print('ewf')
+        if not self.isFullScreen():
+            self.showFullScreen()
 
-    # def update_urlbar(self, q):
-    #     self.urlbar.setText(q.toString())
-    #     self.urlbar.setCursorPosition(0)
+    def read_settings_host(self, config_file='wall_set.json'):
+        """
+        Читает настройки хоста из JSON-файла.
+        
+        Args:
+            config_file (str): Путь к JSON-файлу с настройками.
+        
+        Returns:
+            str: Путь из настройки 'host.path', или None при ошибке.
+        """
+        # Проверяем существование файла
+        if not os.path.exists(config_file):
+            print(f"Ошибка: файл {config_file} не найден.")
+            return None
+
+        try:
+            with open(config_file, 'r', encoding='utf-8') as data:
+                config = json.load(data)
+            
+            # Проверяем наличие ключей
+            if 'host' not in config:
+                print("Ошибка: в конфигурации отсутствует раздел 'host'.")
+                return None
+            
+            if 'path' not in config['host']:
+                print("Ошибка: в разделе 'host' отсутствует ключ 'path'.")
+                return None
+            
+            path = config['host']['path']
+            
+            # Дополнительная валидация (например, не пустой ли путь)
+            if not path or not path.strip():
+                print("Ошибка: значение 'path' пустое или состоит из пробелов.")
+                return None
+            
+            return path.strip()
+        
+        except json.JSONDecodeError as e:
+            print(f"Ошибка парсинга JSON: {e}")
+            return None
+        except Exception as e:
+            print(f"Неожиданная ошибка: {e}")
+            return None
 
 if __name__ == "__main__":
     app = QApplication([])
