@@ -304,6 +304,10 @@ class Mediator(TMediator):
             self._app.frame_Queue.f_control.begin_state(body['time_out'])
             return
         
+        if event == 'button_queue_toggle_state':
+            self._app.frame_Queue.adv_ticket_close()
+            return
+        
 # Main run
 if __name__ == "__main__":
     app_set = AppSet()

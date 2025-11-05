@@ -52,6 +52,7 @@ class ButtonQueue(ctk.CTkFrame):
 
     def button_toggle_state(self):
         state = self._db.addInQueues(self.queue['id'])
+        self._mediator.state('button_queue_toggle_state')
         if state:
             self.button.configure(fg_color=self.second_color, hover_color=self.second_color)
             self.label.configure(bg_color=self.second_color)

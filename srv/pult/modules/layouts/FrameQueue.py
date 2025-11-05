@@ -86,6 +86,10 @@ class FrameQueue(ctk.CTkFrame):
             self._mediator.state('update_window', {'height': self.f_tickets.winfo_reqheight()})
             self.f_tickets.grid()
             
+    def adv_ticket_close(self):
+        self.f_tickets.grid_remove()
+        self._mediator.state('update_window', {'height': 0})
+    
     def update_tickets_frame(self):
         self._mediator.state('update_tickets_frame')
 
