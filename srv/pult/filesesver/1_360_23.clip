@@ -1,0 +1,182 @@
+{
+	"stdout": {
+		"ticket": {
+			"id":"@D3000310000",
+			"title":"@D3000320000",
+			"queue_id":"@D3000340000"
+		},
+		"message":"@D3000330000"
+	},
+	"stderr": "@D3000300000"
+}
+###
+
+#PROGRAM:
+LOCAL cSql, sTmp, aTmp_ := {}, sysOut := "", sysErr := "", sRet_ := "", sMes_ := ""
+
+?? 'Content-type: application/json; charset=UTF-8 '
+*?? 'Content-type: application/json; charset=koi8-r '
+? ''
+?? 'Access-Control-Allow-Origin: * '
+? ''
+?? 'Access-Control-Allow-Headers: Content-type '
+? ''
+??'Access-Control-Allow-Methods: GET '
+? ''
+? ''
+
+*? "взять клиента из очереди 1,360,21",a003_
+* sfil_n - Филиал
+* oper_id - ID оператора
+* led_tablo_id - ID лед табло
+
+DO WHILE .T.
+	sfil_n := CT6_209_(aPar_,"sfil_n")
+//	yyyymm := SUBSTR(DTOS(DATE()),1,6)
+	dd := SUBSTR(DTOS(DATE()),7,2)
+	oper_id := CT6_209_(aPar_,"oper_id")
+	led_tablo_id := CT6_209_(aPar_,"led_tablo_id")
+	month_id := CT6_209_(aPar_,"month_id")
+	led_tablo_port := CT6_209_(aPar_,"led_tablo_port")
+	led_tablo_title := CT6_209_(aPar_,"led_tablo_title")
+	adapter_setting := CT6_209_(aPar_,"adapter_setting")
+
+	aTmp_ = {}
+	* выборка обслуживаемого талона
+	cSql = "SELECT T134__02, T134__06, T134__07 FROM T234_" + sfil_n + " WHERE T134__01=" + month_id + " AND T134__14=" + dd + " AND T134__08="+ led_tablo_id +" AND T134__09=2 AND T134__98=0"
+*? '<br>3=',cSql
+	IF .NOT. CheckResult(CT12_209_(hPipe,cSql,aTmp_))
+		sRet_ = 'Int.err 7 3'
+		EXIT
+	ENDIF
+*? aTmp_
+	IF EMPTY(aTmp_)
+		//sRet_ = 'Можно вызывать следующего клиента'
+		queue_id := ''	// номер очереди
+		ticket_id := ''	// номер талона за текущий месяц
+		ticket_title := ''
+		sMes_:= 'Можно вызывать следующего клиента'
+		EXIT
+	ENDIF
+	
+	queue_id := aTmp_[01]	// номер очереди
+	ticket_id := aTmp_[02]	// номер талона за текущий месяц
+	ticket_title := aTmp_[03] // название талона
+	
+	DO WHILE .T.	
+		* выводим на лед табло
+//		led_tablo_port := aTmp_[01] 
+//		led_tablo_title := aTmp_[02] 
+		adapter_setting := AT2_210_3(adapter_setting,"#")
+		led_tablo_IP := adapter_setting[01]
+*? led_tablo_port,  led_tablo_ip   
+		IF VAL(led_tablo_port) > 0 // есть порт индикатора
+			host := tcpConnect(led_tablo_IP, VAL(led_tablo_port), 6000 )
+*? '<br>22=',host
+			If host < 0	
+				sMes_:="Нет записи на табло окна оператора " + led_tablo_IP + ":" + led_tablo_port
+				EXIT
+			ENDIF
+			nTmp := tcpWrite(host,"!"+CT6_010_TO_UTF(ticket_title)+"^")
+*? '<br>23=',nTmp
+			If nTmp < 0
+				sMes_:="Нет записи на табло окна оператора " + led_tablo_IP + ":" + led_tablo_port
+				EXIT
+			ENDIF
+			tcpClose(host)
+*? '<br>24='
+		ELSE
+			sMes_:="Не указан порт."
+		ENDIF
+		
+		EXIT
+	ENDDO
+	
+	DO WHILE .T.
+		* выводим на инфотабло
+		a000_[80] := UrlEnCode(CT6_010_TO_UTF(ticket_title))  // Конвертация названия талона
+		IF !EMPTY(adapter_setting[02])  // не пустой список
+			aTmp_ = AT2_210_3(adapter_setting[02],",")
+			nLen_ := LEN(aTmp_)
+*? '<br>25=',nLen_,aTmp_
+			FOR nI_ = 1 TO nLen_ STEP 3
+*? '<br>26=', CT3_010_(5,ticket_title)
+				sTmp = "curl -sS -k -u 'tv01:e******1' --connect-timeout 5 -m 5 -X GET 'http://"+aTmp_[nI_]+":"+aTmp_[nI_+1]+"/ticket?p="+aTmp_[nI_+2]+"&t="+ a000_[80]  +"'"
+*? sTmp
+				syscmd(sTmp,"",@sysOut,@sysErr)
+*? '<br>sysOut:=', sysOut
+*? '<br>sysErr:=', sysErr
+				IF sysErr != ''
+					sMes_:= "Ошибка видеосервера " + aTmp_[nI_] + ":" + aTmp_[nI_+1]
+				ENDIF
+			NEXT
+		ELSE
+			sMes_:="Нет настроек инфотабло"
+			EXIT
+		ENDIF
+		
+		EXIT
+	ENDDO
+	
+	DO WHILE .T.
+		* выводим аудиосообщение
+		a000_[81] := UrlEnCode(CT6_010_TO_UTF(led_tablo_title))  // номер индикатора
+		IF !EMPTY(adapter_setting[03])  // не пустой список
+			aTmp_ := AT2_210_3(adapter_setting[03],",")
+			nLen_ := LEN(aTmp_)
+			sTxt_ := ATREPL('TTT',ATREPL('NNN',adapter_setting[04],a000_[81]),a000_[80])
+*? '<br>26=',nLen_,aTmp_,sTxt_
+			FOR nI_ = 1 TO nLen_ STEP 2
+*? '<br>вывод на аудио'
+				sTmp = "curl -sS -k -u 'au01:e******1' --connect-timeout 5 -m 5 -X GET 'http://"+aTmp_[nI_]+":"+aTmp_[nI_+1]+"/"+sTxt_+"'"
+*? sTmp
+				syscmd(sTmp,"",@sysOut,@sysErr)
+*? '<br>sysOut:=', sysOut
+*? '<br>sysErr:=', sysErr
+				IF sysErr != ''
+					sMes_:= "Ошибка аудиосервера " + aTmp_[nI_] + ":" + aTmp_[nI_+1]
+				ENDIF
+			NEXT
+		ELSE
+			sMes_:="Нет настроек аудиосервера"
+			EXIT
+		ENDIF
+		
+		EXIT
+	ENDDO
+	
+	EXIT
+ENDDO
+
+*? '<br>R=', sRet_
+IF sRet_ == ""
+	a000_[30] := CT3_010_(5, "")
+	a000_[31] := CT3_010_(5, ticket_id)
+	a000_[32] := CT3_010_(5, ticket_title)
+	a000_[34] := CT3_010_(5, queue_id)
+	a000_[33] := CT3_010_(5, sMes_)
+ELSE
+	a000_[30] := CT3_010_(5, sRet_)
+	a000_[31] := CT3_010_(5, "")
+	a000_[32] := CT3_010_(5, "")
+	a000_[34] := CT3_010_(5, "")
+	a000_[33] := CT3_010_(5, "")
+ENDIF
+*?? CT3_010_(5,sfil_n)
+? AT0_001_(XP:PART[01]) 
+
+
+
+static function UrlEnCode(tt)
+Local ret:='', j, alf:="qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM"
+
+for j:=1 to len(tt)
+	if tt[j] $ alf
+	   ret+=tt[j]
+	else
+	   ret+="%"+ntoc(asc(tt[j]),16,2,"0")
+	endif
+next
+Return ret
+		
+	

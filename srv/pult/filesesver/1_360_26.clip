@@ -1,0 +1,107 @@
+{
+	"stdout": {
+###
+		"tickets":[
+###
+			{
+			"id":"@D3000310000",
+			"title":"@D3000320000",
+			"queues_id":"@D3000350000",
+			"time":"@D3000340000"
+			}
+###
+			,
+###
+		],
+###
+		"message":"@D3000330000"
+	},
+	"stderr": "@D3000300000"
+}
+###
+
+#PROGRAM:
+LOCAL cSql, sTmp, aTmp_ := {}, sysOut := "", sysErr := "", sRet_ := "", sMes_ := ""
+
+?? 'Content-type: application/json; charset=UTF-8 '
+*?? 'Content-type: application/json; charset=koi8-r '
+? ''
+?? 'Access-Control-Allow-Origin: * '
+? ''
+?? 'Access-Control-Allow-Headers: Content-type '
+? ''
+??'Access-Control-Allow-Methods: GET '
+? ''
+? ''
+
+*? "взять клиента из очереди 1,360,21",a003_
+* sfil_n - Филиал
+* queues_ids - ID очередей
+
+DO WHILE .T.
+	sfil_n := CT6_209_(aPar_,"sfil_n")
+	dd := SUBSTR(DTOS(DATE()),7,2)
+	queues_ids := CT6_209_(aPar_,"queues_ids")
+	month_id := CT6_209_(aPar_,"month_id")
+
+? AT0_001_(XP:PART[01]) 	
+	aTmp_ = {}
+	IF EMPTY(queues_ids)
+		sRet_ = 'Нет доступных очередей'
+		EXIT
+	ENDIF
+
+	* выборка доступных талон в очередях
+	cSql = "SELECT T134__04, T134__06, T134__07, T134__02 FROM T234_" + sfil_n + " WHERE T134__01=" + month_id + " AND T134__14=" + dd + " AND T134__09=1 AND T134__02 IN (" + queues_ids + ") AND T134__98=0 ORDER BY T134__06"
+*? '<br>3=',cSql
+	IF .NOT. CheckResult(CT12_209_(hPipe,cSql,aTmp_))
+		sRet_ = 'Int.err 7 3'
+		EXIT
+	ENDIF
+*? aTmp_
+	IF EMPTY(aTmp_)
+		sRet_ = 'Нет талонов в указанных очередях'
+		EXIT
+	ENDIF
+
+
+? AT0_001_(XP:PART[02]) 
+
+	nLen_ := LEN(aTmp_)
+	FOR nI_ = 1 TO nLen_ STEP 4
+		a000_[31] := aTmp_[nI_+1]
+		a000_[32] := CT3_010_(5, aTmp_[nI_+2])
+		a000_[35] := aTmp_[nI_+3]
+		a000_[34] := SecToHHMM(aTmp_[nI_])
+? AT0_001_(XP:PART[03]) 
+		IF nI_ < nLen_ - 3
+? AT0_001_(XP:PART[04]) 
+		ENDIF
+	NEXT
+? AT0_001_(XP:PART[05]) 
+
+	EXIT
+ENDDO
+
+*? '<br>R=', sRet_
+IF sRet_ == ""
+	a000_[30] := CT3_010_(5, "")
+	a000_[33] := CT3_010_(5, sMes_)
+ELSE
+	a000_[30] := CT3_010_(5, sRet_)
+	a000_[33] := CT3_010_(5, "")
+ENDIF
+*?? CT3_010_(5,sfil_n)
+? AT0_001_(XP:PART[06]) 
+
+static function SecToHHMM(nSeconds)
+   LOCAL nHours, nMinutes, cResult
+
+	nHours = INT(VAL(nSeconds) / 3600)
+	nSeconds = MOD(VAL(nSeconds), 3600)
+	nMinutes = INT(nSeconds / 60)
+	cResult = STRZERO(nHours, 2) + ":" + STRZERO(nMinutes, 2)
+   
+RETURN cResult
+		
+	

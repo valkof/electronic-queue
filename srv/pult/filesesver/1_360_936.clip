@@ -1,0 +1,284 @@
+{
+	"stdout": {
+###
+		"queues":[
+###
+			{
+			"id":"@D3000310000",
+			"title":"@D3000320000"
+			}
+###
+		],
+###
+		"led_tablo":{
+			"id":"@D3000340000",
+			"title":"@D3000350000",
+			"port":"@D3000370000"
+		},
+###
+		"video_server":[
+###
+			{
+			"id":"@D3000380000",
+			"ip":"@D3000390000",
+			"port":"@D3000400000"
+			}
+###
+		"audio_server":[
+###
+			{
+			"ip":"@D3000410000",
+			"port":"@D3000420000"
+			}
+###
+		"audio_track":"@D3000430000",
+###
+		"month_id":"@D3000440000",
+###
+		"message":"@D3000330000"
+	},
+	"stderr": "@D3000300000"
+}
+###
+		"adapter_setting":"@D3000450000",
+###
+		"user_id":"@D3000460000",
+###
+		"queues_delay":[
+###
+
+#PROGRAM:
+LOCAL sTmp, cSql, aTmp_ := {}, aTmp_1 := {1,'Оператор',2,'Администратор'}, aTmp_2 := {}, aTmp_3 := {}, aTmp_4 := {1,'Да',9,'Нет'}, aTmp_5 := {}, nI_2, nI_, nLen_2, nLen_, sMes_:="", sRet_:=""
+
+
+?? 'Content-type: application/json; charset=utf-8 '
+?''
+?? 'Access-Control-Allow-Origin: * '
+?''
+??'Access-Control-Allow-Headers: Content-type '
+?''
+??'Access-Control-Allow-Methods: GET '
+?''
+
+*? '1,360,936',a003_
+* http://10.0.5.168:88/cgi-bin/is10_09?sSd_=0&sfil_n=19&svid_=1&stst_=0&sgr_l=360&shead_=0&sit_l=936&style_=2&oper_id=9&led_tablo_id=3
+
+DO WHILE .T.
+	sfil_n := CT6_209_(aPar_,"sfil_n")
+	oper_id := CT6_209_(aPar_,"oper_id")
+	led_tablo_id := CT6_209_(aPar_,"led_tablo_id")
+	
+	a000_[30] := ""
+	a000_[33] := ""
+
+? AT0_001_(XP:PART[01])
+
+* список очередей
+	cSql = "SELECT T134__06,T134__07 "+;
+	"FROM T234_"+sfil_n+", T231_"+sfil_n+" WHERE "+;
+	"T134__01=T131__01 AND T131__08=12012090 AND T134__14=50 AND T134__09=1 AND T134__98=0 AND T131__98=0"
+*? '<br>1=',cSql
+	IF .NOT. CheckResult(CT12_219_(hPipe,cSql,aTmp_2))
+		sRet_ = 'Int.err 7 1'
+		EXIT
+	ENDIF
+	nLen_2 = LEN(aTmp_2)
+*? aTmp_2
+
+* список индикаторов
+	cSql = "SELECT T134__06,T134__07,T134__02,T134__13 "+;
+	"FROM T234_"+sfil_n+", T231_"+sfil_n+" WHERE "+;
+	"T134__01=T131__01 AND T131__08=12012090 AND T134__14=20 AND T134__09=1 AND T134__98=0 AND T131__98=0"
+*? '<br>2=',cSql
+	IF .NOT. CheckResult(CT12_219_(hPipe,cSql,aTmp_5))
+		sRet_ = 'Int.err 7 2'
+		EXIT
+	ENDIF
+	nLen_5 = LEN(aTmp_5)
+*? aTmp_5
+
+
+* настройки очередей оператора
+	cSql = "SELECT T134__07,T134__13,T134__02 "+;
+	"FROM T234_"+sfil_n+", T231_"+sfil_n+" WHERE "+;
+	"T134__01=T131__01 AND T131__08=12012090 AND T134__06="+oper_id+" AND T134__14=10 AND T134__98=0 AND T131__98=0"
+*? '<br>3=',cSql
+	IF .NOT. CheckResult(CT12_219_(hPipe,cSql,aTmp_))
+		sRet_ = 'Int.err 7 3 1'
+		EXIT
+	ENDIF
+*? aTmp_
+	
+	a000_[46] := aTmp_[03]
+?? AT0_001_(XP:PART[14])
+
+		ochereds := aTmp_[02]
+* список рабочих очередей
+?? AT0_001_(XP:PART[02])
+	IF !EMPTY(ochereds)  // есть список очередей
+		aTmp_3 := AT2_210_3(ochereds,"_")
+		nLen_3 = LEN(aTmp_3)
+		//?aTmp_3
+		kol := 0
+		FOR nI_3 = 1 TO nLen_3 STEP 2
+			//a000_[20] += CT3_212_3(VAL(aTmp_3[nI_3]),aTmp_2)+'<br>'
+			IF VAL(aTmp_3[nI_3+1]) == 1
+				IF kol > 0
+?? ","
+				ENDIF
+				a000_[31] := ZSTR(VAL(aTmp_3[nI_3]))
+				a000_[32] := CT3_010_(5, SUBSTR(CT3_212_3(VAL(aTmp_3[nI_3]),aTmp_2), 3))
+?? AT0_001_(XP:PART[03])
+				kol += 1
+			ENDIF
+			*? aTmp_2
+			
+		NEXT
+	ENDIF
+? AT0_001_(XP:PART[04])	
+
+* список отложенных очередей
+?? AT0_001_(XP:PART[15])
+	IF !EMPTY(ochereds)  // есть список очередей
+		aTmp_3 := AT2_210_3(ochereds,"_")
+		nLen_3 = LEN(aTmp_3)
+		//?aTmp_3
+		kol := 0
+		FOR nI_3 = 1 TO nLen_3 STEP 2
+			//a000_[20] += CT3_212_3(VAL(aTmp_3[nI_3]),aTmp_2)+'<br>'
+			IF kol > 0
+?? ","
+			ENDIF
+			a000_[31] := ZSTR(VAL(aTmp_3[nI_3]))
+			a000_[32] := CT3_010_(5, SUBSTR(CT3_212_3(VAL(aTmp_3[nI_3]),aTmp_2), 3))
+?? AT0_001_(XP:PART[03])
+			kol += 1
+			*? aTmp_2
+			
+		NEXT
+	ENDIF
+? AT0_001_(XP:PART[04])	
+	
+	a000_[45] := aTmp_5[04]
+? AT0_001_(XP:PART[13])	
+	
+	
+//	settings := AT2_210_3(aTmp_5[04],"#")	
+	led_tablo := aTmp_[01]
+	IF !EMPTY(led_tablo)  // есть список индикаторов
+		aTmp_3 := AT2_210_3(led_tablo,"_")
+		IF ASCAN(aTmp_3, led_tablo_id) > 0
+			nLen_5 = LEN(aTmp_5)
+			FOR nI_5 = 1 TO nLen_5 STEP 4
+				IF aTmp_5[nI_5] == VAL(led_tablo_id)
+					a000_[34] := aTmp_5[nI_5]
+					a000_[35] := aTmp_5[nI_5+1]
+					a000_[37] := aTmp_5[nI_5+2]
+? AT0_001_(XP:PART[05])
+					a000_[45] := STRTRAN(aTmp_5[nI_5+3], "#", "%23")
+? AT0_001_(XP:PART[13])
+				ENDIF
+			NEXT
+		ELSE
+			sMes_:=CT6_010_TO_UTF("Нет лед табло")
+		ENDIF
+	ELSE
+		sMes_:=CT6_010_TO_UTF("Нет лед табло")
+	ENDIF
+/*	
+? AT0_001_(XP:PART[06])	 
+	IF !EMPTY(settings[02])
+		aTmp_3 := AT2_210_3(settings[02],",")
+		nLen_3 = LEN(aTmp_3)
+		FOR nI_3 = 1 TO nLen_3 STEP 3
+			a000_[38] := aTmp_3[nI_3+2]
+			a000_[39] := aTmp_3[nI_3]
+			a000_[40] := aTmp_3[nI_3+1]
+?? AT0_001_(XP:PART[07])  
+			IF nI_3 < nLen_3 - 3
+?? ","
+			ENDIF
+		NEXT
+	ELSE
+		sMes_:="Нет видеосервера"
+	ENDIF
+? AT0_001_(XP:PART[04])
+
+? AT0_001_(XP:PART[08])	 
+	IF !EMPTY(settings[03])
+		aTmp_3 := AT2_210_3(settings[03],",")
+		nLen_3 = LEN(aTmp_3)
+		FOR nI_3 = 1 TO nLen_3 STEP 2
+			a000_[41] := aTmp_3[nI_3]
+			a000_[42] := aTmp_3[nI_3+1]
+?? AT0_001_(XP:PART[09])  
+			IF nI_3 < nLen_3 - 2
+?? ","
+			ENDIF
+		NEXT
+	ELSE
+		sMes_:="Нет аудиосервера"
+	ENDIF
+? AT0_001_(XP:PART[04])
+
+  
+	IF !EMPTY(settings[04])
+		a000_[43] := settings[04]
+?? AT0_001_(XP:PART[10])
+	ELSE
+		sMes_:="Нет аудиотрека"
+	ENDIF
+*/
+
+
+	aTmp_ := {}
+	
+	
+	dd := SUBSTR(DTOS(DATE()),7,2)
+	mm := SUBSTR(DTOS(DATE()),5,2)
+	month_arr := {'Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'}
+	month_name := month_arr[VAL(mm)]
+	yyyymm := SUBSTR(DTOS(DATE()),1,6)
+	* выборка журнала за месяц
+	cSql = "SELECT T131__01 FROM T231_"+ sfil_n +" WHERE T131__02=1 AND T131__03="+ yyyymm +" AND T131__08=12012001 AND T131__97="+ sfil_n +" AND T131__98=0"
+*? '<br>4=',cSql
+	IF .NOT. CheckResult(CT12_209_(hPipe,cSql,aTmp_))
+		sRet_ = 'Int.err 7 4'
+		EXIT
+	ENDIF
+*? aTmp_
+	IF LEN(aTmp_) = 0
+		* добавляем ежемесячник
+		cSql = "INSERT INTO T231_"+sfil_n+" SELECT max(T131__01)+1, 1, " + yyyymm + ", '" + month_name + "', 0, 0, 0, 12012001, 0, 0, 0, 0, 0, '', 0, 0, 0, 0, 0, '', 19, 0, 1419 FROM T231_"+sfil_n+" WHERE T131__97="+sfil_n+" AND T131__98=0"
+*? '<br>12=',cSql
+		IF .NOT. CheckResult(SqlBoth(hPipe,cSql,1))
+			sRet_ = 'Int.err 5 1'
+			EXIT
+		ENDIF
+		IF .NOT. CheckResult(SqlBoth(hPipe,"COM"+"MIT",1))
+			sRet_ = 'Int.err 5 2'
+			EXIT
+		ENDIF
+		aTmp_ := {}
+		* выборка журнала за месяц
+		cSql = "SELECT T131__01 FROM T231_"+sfil_n+" WHERE T131__02=1 AND T131__03="+yyyymm+" AND T131__08=12012001 AND T131__97="+sfil_n+" AND T131__98=0"
+*? '<br>14=',cSql
+		IF .NOT. CheckResult(CT12_209_(hPipe,cSql,aTmp_))
+			sRet_ = 'Int.err 7 14'
+			EXIT
+		ENDIF
+		sMes_ = CT6_010_TO_UTF("Новый журнал создан")
+	ENDIF
+	a000_[44] := aTmp_[01]
+? AT0_001_(XP:PART[11])
+	
+	EXIT
+ENDDO
+
+a000_[33] := sMes_
+a000_[30] := sRet_
+? AT0_001_(XP:PART[12])	
+*? ZSTR(VAL(a000_[22])), a000_[21],a000_[22]
+*? 'fin=',a000_[01],a000_[02],a000_[03],a000_[04],a000_[05],a000_[06],a000_[20],a000_[21],a000_[22],a000_[24]
+		
+	

@@ -1,0 +1,321 @@
+<div class="pre_loader" id="pre_page_load">...</div>
+<a href="#" class="loader" id="page_load"></a>
+
+<script>
+	function spinerStop() { 
+		var pl = document.getElementById('page_load');
+		var prepl = document.getElementById('pre_page_load');
+		if (pl !== null && prepl !== null) {
+		   pl.style.display = "none";
+		   prepl.style.display = "none";
+		   pl.classList.remove("loader"); 
+		   prepl.classList.remove("pre_loader"); 
+		}
+	}
+</script> 
+
+###
+<style>
+	html {
+		font-size: @D3000950000px !important;
+	}
+	* {
+		padding: 0px;
+		margin: 0px;
+		box-sizing: border-box; 
+	}
+	body {
+		font-size: 1rem !important;
+		background: #8DBBD5;
+	}
+	table {
+		border-collapse: collapse;
+		width: 100%;
+		font-family: Arial Narrow; 
+		font-size: 1rem;
+		font-weight: 600;
+		color: #000000;
+		border-width: 0px;
+		background-color: #53a5b0;
+	}
+	.title {
+		font-size: 3rem !important;
+		font-weight: 600;
+		color: #e5f3f2;
+		padding: 15px 10px !important;
+		text-align: center;
+		background: #8DBBD5;
+	}
+	#thTime {	 
+		font-size: 3rem !important;
+		font-weight: 600;
+		color: #e5f3f2;
+		text-align: center;
+		vertical-align: middle;
+		background: #8DBBD5;
+	}
+	.aBorder {
+		font-size: 1.5rem !important;
+		padding: 5px !important;
+	}
+	.name-group {
+		font-size: 1.5rem !important;
+		text-align: center;
+		font-weight: 600;
+		background-color: #8DBBD5;
+		border: 0px solid #53a5b0;
+		border-right-width: 0px !important;
+		border-left-width: 0px !important;
+		padding: 5px !important;
+	}
+	/* tr:nth-child(even) {
+	   background-color: #a5d4de;
+	   border: 5px solid #53a5b0;
+	}*/
+	tr {
+	  background-color: #8DBBD5;
+	  /* border: 3px solid #53a5b0; */ 
+	}
+	/*td:nth-child(odd) {
+	  border: 5px solid #53a5b0;
+	} */
+	th {
+	  /* font-size: 30pt; */
+	  font-weight: 600;
+	  color: #000000;
+	  border: 4px solid #53a5b0 !important;
+	  /* border-bottom: 5px solid white; */
+	  
+	}
+	h99 { 
+	  text-transform: uppercase;
+	  font-size: 0.8rem !important;
+	  color: #000000; 
+	}
+	h98 { 
+	  text-transform: uppercase;
+	  font-size: 1.1rem !important;
+	  font-weight: 600;
+	  color: #000000; 
+	}
+	.index {
+		text-align:center;
+		/* margin:20px; */
+	}
+	.rowDoctor {
+		display: grid;
+		grid-template-columns: 18% 22% repeat(8, 7.5%);
+		background-color: #53a5b0;
+		margin-top: 10px !important;
+		margin-bottom: 10px !important;
+	}
+	.itemDoctor {
+		margin: 2px !important;
+		background-color: #a5d4de;
+		padding: 5px !important;
+		display: flex;
+		flex-direction: column;
+		gap: 5px;
+	}
+	.itemComent {
+		font-size: 1.1rem !important;
+	}
+	.itemDay {
+		font-size: 1.4rem !important;
+		align-items: center;
+		flex-direction: row;
+		justify-content: center;
+		text-align: center;
+	}
+</style>
+
+<table cellpadding='1' width="100%">
+<tbody id="raspisanie">
+	<tr class="rgtd" >
+		<th id="thTime" width="30%" colspan="2">
+			<script>
+				const newDate = new Date();
+				const newDay = newDate.toLocaleString('ru',{day: 'numeric', month: 'long', year: 'numeric'});
+				const newTime = newDate.toLocaleString('ru',{hour: 'numeric', minute: 'numeric'});
+				document.write(`${newDay} ${newTime}`);
+			</script>
+		</th>
+		<th colspan="12" class="title" width="70%">
+			Расписание работы врачей
+		</th>
+	</tr>
+	<TR class="rgtd">
+		<TH width="18%" class="aBorder">
+			каб.
+		</TH>
+		<TH rowspan="2" width="22%" class="aBorder">
+			Врач-специалист
+		</TH>
+		<TH colspan="10" width="60%" class="aBorder">
+			Чистая зона / <span style="color:red;">Красная зона</span>
+		</TH>
+	</TR>
+	<tr id="table_header" class="rgtd">
+	</tr>
+</tbody>
+</table>
+###
+<script>
+	async function getData() {
+	  try {
+		const response = await fetch('https://tutmed.by/cgi-bin/is10_09?sSd_=0&svid_=5&sgr_l=40&sit_l=211&stst_=0&shead_=0&style_=0&sfil_n=@D30009601TR&sadd_=1000,1000');
+		
+		if (!response.ok) {
+		  throw new Error(`HTTP error! Status: ${response.status}`);
+		}
+		
+		const data = await response.json();
+		console.log('Данные:', data);
+		spinerStop();
+		mainLoop(data);
+	  } catch (error) {
+		console.error('Ошибка:', error);
+	  }
+	}
+</script>
+###
+<script>
+	const arrRows = [];
+	
+	function mainLoop(data) {
+		
+		const tableHeader = document.getElementById('table_header');
+		const thCol1 = document.createElement('th');
+		thCol1.textContent = 'участок';
+		thCol1.classList.add('aBorder');
+		thCol1.width = '18%'
+		tableHeader.appendChild(thCol1);
+		
+		data['header'].forEach((item, i) => {
+		  if (i > 7) return;
+		  const th = document.createElement('th');
+		  th.innerHTML = `${item}`;
+		  th.classList.add('aBorder');
+		  th.width = '7.5%'
+		  tableHeader.appendChild(th);   
+		})
+		
+		const table = document.getElementById('raspisanie');
+		let nameGroup = '';
+		let tdTable;
+		let rowCount = 0;
+		data['data'].forEach(element => {
+		  if (rowCount >= @D3000916010 || rowCount == 0) {
+			  rowCount = 0;
+			  const rowTable = document.createElement('tr');
+			  rowTable.remove();
+			  arrRows.push(rowTable);
+			  tdTable = document.createElement('td');
+			  tdTable.colSpan = '14';
+			  rowTable.appendChild(tdTable);
+		  }
+		  if (nameGroup != element[0] || rowCount == 0) {
+			  nameGroup = element[0]
+			  const divName = document.createElement('div');
+			  divName.classList.add('name-group');
+			  divName.innerHTML = nameGroup;
+			  tdTable.appendChild(divName);
+		  }
+		  const divRow = document.createElement('div');
+		  divRow.classList.add('rowDoctor');
+		  const divCom = document.createElement('div');
+		  divCom.classList.add('itemDoctor');
+		  divCom.classList.add('itemComent');
+		  divCom.innerHTML = element[1];
+		  const divDoctor = document.createElement('div');
+		  divDoctor.innerHTML = `<h99>${element[2]}</h99><h98>${element[3]}</h98>`;
+		  divDoctor.classList.add('itemDoctor');
+		  divRow.appendChild(divCom);
+		  divRow.appendChild(divDoctor);
+		  element.slice(4).forEach((item, i) => {
+			  if (i > 7) return;
+			  const divTd = document.createElement('div');
+			  divTd.innerHTML = item;
+			  divTd.classList.add('itemDoctor');
+			  divTd.classList.add('itemDay');
+			  divRow.appendChild(divTd);
+		  })
+		  tdTable.appendChild(divRow);
+		  rowCount++;
+		})
+		if (arrRows.length == 1) {
+			table.appendChild(arrRows[0]);
+		} else if (arrRows.length > 1) {
+			table.appendChild(arrRows[0]);
+			window.setInterval(() => {
+				const rowRemove = arrRows.shift();
+				arrRows.push(rowRemove);
+				rowRemove.remove();
+				table.appendChild(arrRows[0]);
+			},@D3000926010);
+		}
+	};
+	
+	const thTime = document.getElementById('thTime');
+	window.setInterval(() => {
+		const newDate = new Date();
+		const newDay = newDate.toLocaleString('ru',{day: 'numeric', month: 'long', year: 'numeric'});
+		const newTime = newDate.toLocaleString('ru',{hour: 'numeric', minute: 'numeric'});
+		thTime.innerHTML = `${newDay} ${newTime}`;
+	},5000);
+	
+	window.setTimeout(() => {
+		jsa_031(1,360,1021,'_self')
+	},@D3000946010);
+	 
+	getData();
+</script>
+###
+<TR class="rgtd">
+ <TH colspan="14" bgcolor='#53a5b0'>@D30009501TR</TH>
+</TR>
+###
+
+#PROGRAM:
+LOCAL sTmp
+*? a003_
+*1 первый параметр - Периодичность в секундах обновления информации, 60
+*2 второй параметр - Количество строк на странице, 13
+*3 третий параметр - Периодичность в секундах перезагрузки страницы, 10800
+*4 третий параметр - Размер шрифта для HTML, 16
+* Пример вызова
+* http://tutmed.by/cgi-bin/is10_02?sSd_=0&sfil_n=126&svid_=5&sgr_l=40&stst_=0&sit_l=200&shead_=0&sadd_=60,10
+/*
+	svid_ - вид шаблона (поле Т070__01 шаблона выборки)
+	sgr_l - номер группы шаблонов (поле Т070__02 шаблона выборки)
+	sit_l - номер шаблона (поле Т070__03 шаблона выборки)
+	stst_ - признак тестового запуска 0-нет, 1-да
+	sadd_ - дополнительные атрибуты через запятую
+	nAgain_ - номер окна, в котором выполняется выборка 1-левое, 3-правое
+
+Дополнительные параметры:
+	sSd_ - ='0' при вызове "гостем"
+	nfil_n - номер филиалал при вызове "гостем"
+*/
+
+DO WHILE .T.
+? AT0_001_(XP:PART[01])
+
+	a000_[91] := 9 //количество строк на экране
+	a000_[92] := 10*1000  // частота обновления экрана
+	a000_[94] := 10800*1000  //частота обращения на сервер
+	a000_[95] := 38  // размер основного шрифта
+	a000_[96] := '314'  // номер филиала
+
+	IF a000_[91] = 0 .OR. a000_[92] = 0 .OR. a000_[94] = 0 .OR. a000_[95] = 0
+		sRet_ = 'Int.err 1'
+		EXIT
+	ENDIF
+	
+? AT0_001_(XP:PART[02])
+? AT0_001_(XP:PART[03])
+? AT0_001_(XP:PART[04])
+	EXIT
+ENDDO
+		
+	
