@@ -139,6 +139,7 @@ class Mediator(TMediator):
             self._app.frame_Queue.f_message.show_message(body['message'])
             self._app.frame_Queue.f_ticket.show_ticket()
             self._app.frame_Queue.f_ticket.set_action('adv_with_ticket')
+            self._app.frame_Queue.f_queues.buttons_shake_stop()
             return
         
         if event == 'next_success_after':
@@ -307,6 +308,9 @@ class Mediator(TMediator):
         if event == 'button_queue_toggle_state':
             self._app.frame_Queue.adv_ticket_close()
             return
+        
+        if event == 'app_deiconify':
+            self._app.deiconify()
         
 # Main run
 if __name__ == "__main__":

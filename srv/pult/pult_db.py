@@ -92,6 +92,12 @@ class DataBase:
         else:
             self.queues.append(queue)
             return True
+        
+    def isInQueues(self, queue: str) -> bool:
+        if queue in self.queues:
+            return True
+        else:
+            return False    
 
     async def request(self, path: str) -> TRequest:
         data = {'stdout': None, 'stderr': ''}

@@ -64,3 +64,7 @@ class FrameQueues(ctk.CTkFrame):
     def buttons_unlock(self):
         for _, item in self.buttons.items():
             item.unlock()
+
+    def buttons_shake_stop(self):
+        for _, item in self.buttons.items():
+            item.shake_stop()
