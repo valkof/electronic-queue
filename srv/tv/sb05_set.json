@@ -19,7 +19,8 @@
         "videoplayer": {
             "fg_bg": ["white", "green"],
             "font": ["DejaVu Sans", 80, "bold"],
-            "mode": 0
+            "mode": 0,
+            "volume": 100
         }
     }
 }

@@ -127,6 +127,7 @@ class ScoreBoard:
         # Левый фрейм делим на видеоплеер и время
         self.frame_left_player = ctk.CTkFrame(self.frame_left, fg_color=v.dU["videoplayer"]["fg_bg"][1], overwrite_preferred_drawing_method='direct')
         self.frame_left_time = ctk.CTkFrame(self.frame_left)
+        self.vls_volume = v.dU["videoplayer"]["volume"]
 
         # Настраиваем веса строк
         self.frame_left.columnconfigure(0, weight=1)
@@ -144,8 +145,7 @@ class ScoreBoard:
         # видеоплеер
         self.instance = vlc.Instance(['--no-xlib', '--ignore-config', '--no-plugins-cache'])
  
-        self.player = self.instance.media_player_new()
-        self.player.audio_set_volume(100)
+        self.player: vlc.MediaPlayer = self.instance.media_player_new()
         self.list_player = self.instance.media_list_player_new()
 
         folder_path = os.path.join(os.getcwd(), "videos")
@@ -252,6 +252,23 @@ class ScoreBoard:
           print('centos')
           self.player.set_xwindow(winfo_id)
         self.list_player.play()
+        self.set_vlc_volume(self.vls_volume)
+
+    def set_vlc_volume(self, volume_level: int):
+        if self.player.is_playing():
+            self.player.audio_set_volume(int(volume_level))
+            # self.player.audio_output_set("mmdevice")
+            # devices = self.player.audio_output_device_enum()
+            # device = devices
+            # while device:
+            #     # device.contents.device — это ID устройства (нужен нам)
+            #     # device.contents.description — это понятное имя (например, "HDMI Audio")
+            #     print(f"ID: {device.contents.device.decode('utf-8')}")
+            #     print(f"Name: {device.contents.description.decode('utf-8')}")
+            #     print("-" * 20)
+            #     device = device.contents.next
+        else:
+            self.frame_left_player.after(500, lambda: self.set_vlc_volume(volume_level))
 
     def put_photo(self):
         width = self.frame_left_player.winfo_width() * 3/4
