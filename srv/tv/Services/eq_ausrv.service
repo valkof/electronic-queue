@@ -1,0 +1,16 @@
+[Unit]
+Description=eq_ausrv06
+#After=pulseaudio.service systemd-user-sessions.service
+After=systemd-user-sessions.service
+#ConditionUser=!root
+
+[Service]
+Type=simple
+ExecStart=/srv/eq_ausrv06/eq_ausrv06
+WorkingDirectory=/srv/eq_ausrv06
+#User=user001
+#Group=user
+Restart=on-abort
+
+[Install]
+WantedBy=default.target

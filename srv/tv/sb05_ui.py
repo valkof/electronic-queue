@@ -77,7 +77,7 @@ class CardCall:
         print('end')
 
 class ScoreBoard:
-    def __init__(self, master, v):
+    def __init__(self, master: tk.Tk, v):
         global cur_time
         cur_time = ''
         #root.option_add("*Font", "roman 100")
@@ -88,6 +88,8 @@ class ScoreBoard:
         master.title('Очередь. Инфотабло.')
         master.geometry(v.dU["win_geometry"])
         master.attributes('-fullscreen', True)
+        master.is_fullscreen = True
+        master.bind("<Double-Button-1>", lambda event: self.toggle_fullscreen(master, event))
         # master.geometry(str(WIDTH)+"x"+str(HEIGHT)+"+1280+0")
         # master.geometry("800x1600")
 #        fontd40 = ("Liberation Mono", 40, "bold") # c точкой на нуле
@@ -227,6 +229,18 @@ class ScoreBoard:
             self.elementsWplace.append({'id': key, 'card': card})
             i += 1
 
+    def toggle_fullscreen(self, master, event=None):
+        # Инвертируем состояние
+        master.is_fullscreen = not master.is_fullscreen
+        
+        # Устанавливаем атрибут полноэкранного режима
+        master.attributes("-fullscreen", master.is_fullscreen)
+        
+        # Если выходим из полноэкранного режима, полезно принудительно 
+        # вернуть фокус, чтобы окно не "спряталось"
+        if not master.is_fullscreen:
+            master.deiconify()
+    
     def timetick(self, mode):
         global cur_time
         newtime = time.strftime('%d.%m.%Y.%H.%M')
