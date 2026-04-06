@@ -259,9 +259,9 @@ class DataBase:
         """
         # 
         queues_ids = ','.join([x for x in self.queues])
-        # print(queues_ids)
         path = f"svid_=1&sgr_l=360&sit_l=29"
         path += f"&queues_ids={queues_ids}&month_id={self.setDevice['month_id']}"
+        # print(path)
         ThreadLoop(self.request, path, time.time(), 0, func)
 
     def getTabloTickets(self, func: Callable[[TResponseInfoTickets, float], None]):

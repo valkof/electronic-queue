@@ -37,26 +37,6 @@ class FrameQueues(ctk.CTkFrame):
                 column = 0
                 row += 1
 
-        # setLenQueue()
-
-    # def setLenQueue():
-    #     for key, value in dLenQueue.items():
-    #         self.lqueue_[key].configure(text=str(value))
-    #     self.l_len_aside.configure(text=self.count_aside)
-        
-    #     for key, value in dLenQueue.items():
-    #         try:
-    #             path = 'qlen?q=' + key
-    #             dLenQueue[key] = self.get_request(path)["stdout"]
-    #         finally:
-    #             pass
-    #     try:
-    #         path = 'qlen?q=' + app_set.dH['eq_wplace']
-    #         self.count_aside = 'Отлож. ' + str(self.get_request(path)["stdout"])
-    #     finally:
-    #         pass    
-    #     self.after(app_set.dH["ui"]["timeout_check"]*1000, setLenQueue)
-
     def buttons_lock(self):
         for _, item in self.buttons.items():
             item.lock()

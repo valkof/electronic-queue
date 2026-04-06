@@ -42,7 +42,7 @@ class FrameReserve(ctk.CTkFrame):
         column: int = 0
         row: int = 0
         for item in data['stdout']['tickets']:
-            text = f"{item['title']}   Время: {item['time']}"
+            text = f"{item['title']}   Время: {item['time']} Причина: {item['description']}"
             button = LockableButton(
                 self.f_tickets, text=text,
                 command=functools.partial(self.button_click, item)
@@ -52,8 +52,8 @@ class FrameReserve(ctk.CTkFrame):
                 fg_color="transparent", width=170, border_width=2,
                 text_color=("gray10", "#DCE4EE")
             )
-            button.grid(row=row, column=column, padx=(3, 3), pady=(3, 3), sticky="w")
-            if column < 2:
+            button.grid(row=row, column=column, padx=(3, 3), pady=(3, 3), sticky="w", columnspan=3)
+            if column < 0:
                 column += 1
             else:
                 column = 0
