@@ -11,21 +11,6 @@ from pult_db import DataBase
 from modules.layouts.FrameAuth import FrameAuth
 from modules.layouts.FrameQueue import FrameQueue
 
-# queue = app_set.dW['queue'][0]
-
-# dLenQueue = {}
-# queues = []
-# # список очередей по которым делаем запрос о количестве талонов
-# queues_check = app_set.dW['queue'].copy()
-# # добавим отложенную очередь
-# queues_check.append(app_set.dH['eq_wplace'])
-# print("queues_check=", queues_check)
-# print(queues)
-# for key, value in app_set.dE.items():
-#     dLenQueue[key] = 0
-# print()
-# print(dLenQueue)
-
 class App(ctk.CTk):
     def __init__(self, mediator: Mediator, db: DataBase):
         super().__init__()
@@ -36,20 +21,14 @@ class App(ctk.CTk):
         self._db.pult['width'] = 600
         self._db.pult['height'] = 160
 
-        self.title("Пульт оператора")
+        self.version = 'v.1.1.0'
+        self.title(f"Пульт оператора ({self.version})")
         self.resizable(False, False)
         self.put_position()
         self.grid_columnconfigure(0, weight=1, minsize=self._db.pult['width']*db.setPult['ui']['scaling'])
         self.grid_rowconfigure(0, weight=1, minsize=self._db.pult['height']*db.setPult['ui']['scaling'])
-        # self.extmenu = False
         self.ticket = False
-        # self.mess = None
-        # self.curr_time = datetime.datetime.now()
-        # self.columnconfigure(index=0, weight=1)
-        # self.columnconfigure(index=1, weight=3)
-        # self.count_aside = 'Отлож. 0'
-        # self.clear_message = lambda: self.lmess = ''
-        # self.timer_id = None
+
 
         self.frame_Auth = FrameAuth(self, mediator, db)
         self.frame_Auth.grid(row=0, column=0, sticky="nsew")
