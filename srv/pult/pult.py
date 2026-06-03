@@ -21,7 +21,7 @@ class App(ctk.CTk):
         self._db.pult['width'] = 600
         self._db.pult['height'] = 160
 
-        self.version = 'v.1.1.0'
+        self.version = 'v.1.1.1'
         self.title(f"Пульт оператора ({self.version})")
         self.resizable(False, False)
         self.put_position()

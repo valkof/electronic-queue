@@ -53,13 +53,16 @@ class ButtonQueue(ctk.CTkFrame):
         self.button.unlock()
 
     def button_toggle_state(self):
-        state = self._db.addInQueues(self.queue['id'])
-        self._mediator.state('button_queue_toggle_state')
+        if self.status_shake:
+            self.shake_stop()
+            state = self._db.addInQueues(self.queue['id'], True)
+        else:
+            state = self._db.addInQueues(self.queue['id'])
+            self._mediator.state('button_queue_toggle_state')
         if state:
             self.facade_inv()
         else:
             self.facade()
-            self.shake_stop()
 
     def update_count_tickets(self):
         count = self._db.getCountQueueTickets(self.queue['id'])

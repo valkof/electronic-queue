@@ -85,8 +85,11 @@ class DataBase:
         for item in self.setDevice['queues']:
             self.queues.append(item['id'])
 
-    def addInQueues(self, queue: str) -> bool:
-        if queue in self.queues:
+    def addInQueues(self, queue: str, toogle: bool = False) -> bool:
+        is_queue = queue in self.queues
+        if toogle:
+            return is_queue
+        if is_queue:
             self.queues.remove(queue)
             return False
         else:
@@ -365,7 +368,7 @@ class DataBase:
         """
         # 
         queues_ids = ','.join([x['id'] for x in self.setDevice['queues']])
-        # print(queues_ids)
+        queues_ids_active = ','.join([x for x in self.queues])
         path = f"svid_=1&sgr_l=360&sit_l=31"
-        path += f"&queues_ids={queues_ids}&month_id={self.setDevice['month_id']}"
+        path += f"&queues_ids={queues_ids}&queues_ids_active={queues_ids_active}&month_id={self.setDevice['month_id']}"
         ThreadLoop(self.request, path, time.time(), 0, func)
