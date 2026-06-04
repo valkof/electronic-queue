@@ -42,7 +42,7 @@ class DataBase:
         'title': '----',
         'time': ''
     }
-    queues: List[str] = [] # Список id выбранных очередей
+    queues: List[str] = [] # Список id выбранных (активных) очередей
     pult: TPultSize = {
       'width': 0,
       'height': 0
@@ -85,10 +85,8 @@ class DataBase:
         for item in self.setDevice['queues']:
             self.queues.append(item['id'])
 
-    def addInQueues(self, queue: str, toogle: bool = False) -> bool:
+    def addInQueues(self, queue: str) -> bool:
         is_queue = queue in self.queues
-        if toogle:
-            return is_queue
         if is_queue:
             self.queues.remove(queue)
             return False
@@ -100,7 +98,10 @@ class DataBase:
         if queue in self.queues:
             return True
         else:
-            return False    
+            return False
+
+    def isQueuesActive(self) -> bool:
+        return len(self.queues) > 0
 
     async def request(self, path: str) -> TRequest:
         data = {'stdout': None, 'stderr': ''}
@@ -371,4 +372,19 @@ class DataBase:
         queues_ids_active = ','.join([x for x in self.queues])
         path = f"svid_=1&sgr_l=360&sit_l=31"
         path += f"&queues_ids={queues_ids}&queues_ids_active={queues_ids_active}&month_id={self.setDevice['month_id']}"
+        ThreadLoop(self.request, path, time.time(), 0, func)
+
+    def transferTickets(self, func: Callable[[TResponseMessage, float], None], queue_id: str, queue_delay_id: str):
+        """
+        Пример ответа:
+        {
+          "stdout": {
+            "message": "Нет записи на табло окна оператора 192.168.10.15:2323"
+          },
+          "stderr": ""
+        }
+        """
+        # 
+        path = f"svid_=1&sgr_l=360&sit_l=36"
+        path += f"&queue_id={queue_id}&queue_delay_id={queue_delay_id}&month_id={self.setDevice['month_id']}"
         ThreadLoop(self.request, path, time.time(), 0, func)

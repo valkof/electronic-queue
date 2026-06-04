@@ -29,7 +29,7 @@ class FrameTicket(ctk.CTkFrame):
 
         self.update_count_tickets()
 
-    def set_action(self, state: Literal['adv_with_ticket', 'adv_without_ticket']):
+    def set_action(self, state: Literal['adv_with_ticket', 'adv_without_ticket', 'adv_without_queues']):
         # print(state)
         if state == 'adv_with_ticket':
             self.BOption.configure(command=self.adv_with_ticket)
@@ -39,11 +39,18 @@ class FrameTicket(ctk.CTkFrame):
             self.BOption.configure(command=self.adv_without_ticket)
             return
         
+        if state == 'adv_without_queues':
+            self.BOption.configure(command=self.adv_without_queues)
+            return
+        
     def adv_with_ticket(self):
         self._mediator.state('adv_with_ticket')
         
     def adv_without_ticket(self):
         self._mediator.state('adv_without_ticket')
+
+    def adv_without_queues(self):
+        self._mediator.state('adv_without_queues')
         
     def button_lock(self):
         self.BOption.lock()

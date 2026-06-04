@@ -21,7 +21,7 @@ class App(ctk.CTk):
         self._db.pult['width'] = 600
         self._db.pult['height'] = 160
 
-        self.version = 'v.1.1.1'
+        self.version = 'v.1.1.2'
         self.title(f"Пульт оператора ({self.version})")
         self.resizable(False, False)
         self.put_position()
@@ -201,6 +201,10 @@ class Mediator(TMediator):
             self._app.frame_Queue.adv_without_ticket()
             return
         
+        if event == 'adv_without_queues':
+            self._app.frame_Queue.adv_without_queues()
+            return
+        
         if event == 'background':
             self.state('adv_with_ticket')
             self._app.frame_Queue.f_control.buttons_lock()
@@ -284,8 +288,12 @@ class Mediator(TMediator):
             self._app.frame_Queue.f_control.begin_state(body['time_out'])
             return
         
-        if event == 'button_queue_toggle_state':
-            self._app.frame_Queue.adv_ticket_close()
+        if event == 'close_adv_panel':
+            self._app.frame_Queue.router_adv_panel('close')
+            return
+        
+        if event == 'change_adv_action':
+            self._app.frame_Queue.f_ticket.set_action(body)
             return
         
         if event == 'app_deiconify':

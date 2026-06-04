@@ -55,10 +55,16 @@ class ButtonQueue(ctk.CTkFrame):
     def button_toggle_state(self):
         if self.status_shake:
             self.shake_stop()
-            state = self._db.addInQueues(self.queue['id'], True)
+            state = self._db.isInQueues(self.queue['id'])
         else:
             state = self._db.addInQueues(self.queue['id'])
-            self._mediator.state('button_queue_toggle_state')
+            self._mediator.state('close_adv_panel')
+        
+        if self._db.isQueuesActive():
+            self._mediator.state('change_adv_action', 'adv_without_ticket')
+        else:
+            self._mediator.state('change_adv_action', 'adv_without_queues')
+
         if state:
             self.facade_inv()
         else:
