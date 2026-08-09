@@ -11,6 +11,7 @@ psutil
 pygame
 pyinstaller
 pyinstaller-hooks-contrib
+pyserial
 requests
 tk
 urllib3
