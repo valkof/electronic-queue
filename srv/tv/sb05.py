@@ -173,14 +173,14 @@ def on_closing():
 def httpd_start():
     handler_class = partial(
         AuthHTTPRequestHandler,
-        username=v.dH['username'],
-        password=v.dH['password'],
+        username=v.dH.username,
+        password=v.dH.password,
         directory=directory
     )
     http.server.test(
             HandlerClass=handler_class,
-            port=v.dH['port'],
-            bind=v.dH['bind'])
+            port=v.dH.port,
+            bind=v.dH.bind)
 
 
 def uiworker(wplace, wticket):
@@ -284,7 +284,7 @@ def run_gui():
 
 async def pusk():
     await asyncio.sleep(2)  # Асинхронная пауза на 2 секунды
-    sb.play_video()
+    sb.frame_left_player.play_video()
 
 threading.Thread(target=run_gui, daemon=True).start()
 root.protocol("WM_DELETE_WINDOW", on_closing)

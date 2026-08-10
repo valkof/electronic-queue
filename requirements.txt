@@ -19,3 +19,4 @@ zipp
 python-vlc
 aiohttp
 asyncio
+dacite

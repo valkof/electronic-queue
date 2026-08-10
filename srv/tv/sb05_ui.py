@@ -1,12 +1,12 @@
 import os
-import platform
-import vlc
 import customtkinter as ctk
 import tkinter as tk
 # from tkinter import *
 from PIL import Image
 import time
 from date_time import get_date_time
+from sb05_vars import V
+from modules.layouts.videoplayer import FrameVideoplayer as FVP
 
 class CardCall:
     def __init__(self, parent, data, timeout):
@@ -77,7 +77,7 @@ class CardCall:
         print('end')
 
 class ScoreBoard:
-    def __init__(self, master: tk.Tk, v):
+    def __init__(self, master: tk.Tk, v: V):
         global cur_time
         cur_time = ''
         #root.option_add("*Font", "roman 100")
@@ -86,36 +86,22 @@ class ScoreBoard:
 #        master.option_add( "*font", "Comic Sans MS" )
         master.configure(background='green')
         master.title('Очередь. Инфотабло.')
-        master.geometry(v.dU["win_geometry"])
+        master.geometry(v.dU.win_geometry)
         master.attributes('-fullscreen', True)
         master.is_fullscreen = True
         master.bind("<Double-Button-1>", lambda event: self.toggle_fullscreen(master, event))
-        # master.geometry(str(WIDTH)+"x"+str(HEIGHT)+"+1280+0")
-        # master.geometry("800x1600")
-#        fontd40 = ("Liberation Mono", 40, "bold") # c точкой на нуле
-#        fontd40_ = ("Liberation Mono", 40 )
-#        fontd40 = ("Nimbus Mono PS", 50, "bold") #растянутый
-#        fontd40_ = ("Nimbus Mono PS", 50)
-#        fontd40_ = ("FreeMono", 80, "bold")
-#        fontd40 = ("Nimbus Mono PS", 80, "bold")
-#        fontd40_ = ("FreeMono", 80)
         fontd40 = ("Noto Sans Mono CJK TC", 60, "bold")
         fontd40_ = ("Noto Sans Mono CJK TC", 60)
 
-#        font_ticket = ("Noto Sans Mono CJK TC", 80, "bold")
-        # font_place = ("Nimbus Mono PS", 110, "bold")
-        # font_ticket = ("Nimbus Mono PS", 120, "bold")
-        # font_clock = ("DejaVu Sans", 60) #растянутый
-
         master.resizable(False, False)
         # self.imgheart = tkinter.PhotoImage(file = "images/h4.gif")
-        # self.bgimg = tkinter.PhotoImage(file=v.dU["win_bg_img"])
+        # self.bgimg = tkinter.PhotoImage(file=v.dU.win_bg_img)
         # self.lbgimg = tkinter.Label(master, i=self.bgimg)
         # self.lbgimg.pack()
 
         # Создаем фреймы (лево-право)
-        self.frame_left = ctk.CTkFrame(master, fg_color=v.dU["videoplayer"]["fg_bg"][1])
-        self.frame_right = ctk.CTkFrame(master, fg_color=v.dU["videoplayer"]["fg_bg"][1])
+        self.frame_left = ctk.CTkFrame(master, fg_color=v.dU.videoplayer.bg)
+        self.frame_right = ctk.CTkFrame(master, fg_color=v.dU.videoplayer.bg)
 
         # Размещаем фреймы с весами 1 и 4
         self.frame_left.grid(row=0, column=0, sticky="nsew")
@@ -127,63 +113,38 @@ class ScoreBoard:
         master.rowconfigure(0, weight=1, minsize=100)  # Единственная строка
 
         # Левый фрейм делим на видеоплеер и время
-        self.frame_left_player = ctk.CTkFrame(self.frame_left, fg_color=v.dU["videoplayer"]["fg_bg"][1], overwrite_preferred_drawing_method='direct')
+        self.frame_left_player = FVP(self.frame_left, v.dU.videoplayer)
         self.frame_left_time = ctk.CTkFrame(self.frame_left)
-        self.vls_volume = v.dU["videoplayer"]["volume"]
 
         # Настраиваем веса строк
         self.frame_left.columnconfigure(0, weight=1)
         self.frame_left.rowconfigure(0, weight=5)
         self.frame_left.rowconfigure(1, weight=1, minsize=100)
 
-        self.frame_left_player.grid(row=0, column=0, sticky="nsew", pady=15, padx=15)
-        self.frame_left_player.columnconfigure(0, weight=1)
-        self.frame_left_player.rowconfigure(0, weight=1)
         self.frame_left_time.grid(row=1, column=0, sticky="nsew")
-
         self.frame_left_time.columnconfigure(0, weight=1)
         self.frame_left_time.rowconfigure(0, weight=1)
         
-        # видеоплеер
-        self.instance = vlc.Instance(['--no-xlib', '--ignore-config', '--no-plugins-cache'])
- 
-        self.player: vlc.MediaPlayer = self.instance.media_player_new()
-        self.list_player = self.instance.media_list_player_new()
-
-        folder_path = os.path.join(os.getcwd(), "videos")
-
-        video_filesname = []
-        video_filesname += os.listdir(folder_path)
-        
-        self.media_list = self.instance.media_list_new()
-        for f in video_filesname:
-          media = self.instance.media_new(os.path.join(os.getcwd(), "videos", str(f)))
-          self.media_list.add_media(media)
-
-        self.list_player.set_media_list(self.media_list)
-        self.list_player.set_media_player(self.player)
-        self.list_player.set_playback_mode(vlc.PlaybackMode.loop)
-
         # фотозаставка
-        folder_image_path = os.path.join(os.getcwd(), "images")
-        file_image_path = os.path.join(folder_image_path, 'screen.jpg')
-        if os.path.isfile(file_image_path):
-            self.screen = ctk.CTkImage(
-                light_image=Image.open(file_image_path)
-                # size=(1200, 800)  # Размер изображения
-            )
-            self.label_screen = ctk.CTkLabel(self.frame_left_player, image=self.screen, text='')
-        else:
-            self.label_screen = ctk.CTkLabel(self.frame_left_player, text='')
+        # folder_image_path = os.path.join(os.getcwd(), "images")
+        # file_image_path = os.path.join(folder_image_path, 'screen.jpg')
+        # if os.path.isfile(file_image_path):
+        #     self.screen = ctk.CTkImage(
+        #         light_image=Image.open(file_image_path)
+        #         # size=(1200, 800)  # Размер изображения
+        #     )
+        #     self.label_screen = ctk.CTkLabel(self.frame_left_player, image=self.screen, text='')
+        # else:
+        #     self.label_screen = ctk.CTkLabel(self.frame_left_player, text='')
 
         # время
-        self.headertime = ctk.CTkLabel(self.frame_left_time, text="", font=tuple(v.dU["clock"]["font"]), text_color=v.dU["clock"]["fg_bg"][0], bg_color=v.dU["clock"]["fg_bg"][1])
+        self.headertime = ctk.CTkLabel(self.frame_left_time, text="", font=tuple(v.dU.clock.font), text_color=v.dU.clock.fg, bg_color=v.dU.clock.bg)
         self.headertime.grid(row=0, column=0, sticky="nsew")
-        self.timetick(v.dU["clock"]["mode"])
+        self.timetick(v.dU.clock.mode)
 
         # правый фрейм делим на шапку и тело
         self.frame_right_header = ctk.CTkFrame(self.frame_right)
-        self.frame_right_body = ctk.CTkFrame(self.frame_right, fg_color=v.dU["videoplayer"]["fg_bg"][1])
+        self.frame_right_body = ctk.CTkFrame(self.frame_right, fg_color=v.dU.videoplayer.bg)
         
         # Настраиваем веса строк
         self.frame_right.columnconfigure(0, weight=1)
@@ -213,7 +174,7 @@ class ScoreBoard:
         header_left.rowconfigure(0, weight=1)
         label_header_left.grid(row=0, column=0, sticky="nsew")
 
-        label_header_right = ctk.CTkLabel(header_right, text="ОКНО", text_color="white", bg_color="green", font=tuple(["Nimbus Mono PS", 60, "bold"]), anchor=ctk.CENTER)
+        label_header_right = ctk.CTkLabel(header_right, text=v.dU.kabinet_title, text_color="white", bg_color="green", font=tuple(["Nimbus Mono PS", 60, "bold"]), anchor=ctk.CENTER)
         header_right.columnconfigure(0, weight=1)
         header_right.rowconfigure(0, weight=1)
         label_header_right.grid(row=0, column=0, sticky="nsew")
@@ -224,7 +185,7 @@ class ScoreBoard:
         i = 0
         for key in v.dW:
             self.frame_right_body.rowconfigure(i, weight=1)
-            card = CardCall(self.frame_right_body, v.dW[key], v.dU["timeout_blink"])
+            card = CardCall(self.frame_right_body, v.dW[key], v.dU.timeout_blink)
             card.put_to_row(i)
             self.elementsWplace.append({'id': key, 'card': card})
             i += 1
@@ -251,39 +212,6 @@ class ScoreBoard:
         self.headertime.after(1000, self.timetick, mode)
 
         
-    def play_video(self):
-        count_media = self.media_list.count()
-        if count_media == 0:
-            self.put_photo()
-            return        
-        # # Воспроизведение
-        # print(f"код {self.frame_left_player.winfo_id()}")
-        winfo_id = int(self.frame_left_player.winfo_id())
-        if platform.system() == 'Windows':
-          print('windows')
-          self.player.set_hwnd(winfo_id)
-        else:
-          print('centos')
-          self.player.set_xwindow(winfo_id)
-        self.list_player.play()
-        self.set_vlc_volume(self.vls_volume)
-
-    def set_vlc_volume(self, volume_level: int):
-        if self.player.is_playing():
-            self.player.audio_set_volume(int(volume_level))
-            # self.player.audio_output_set("mmdevice")
-            # devices = self.player.audio_output_device_enum()
-            # device = devices
-            # while device:
-            #     # device.contents.device — это ID устройства (нужен нам)
-            #     # device.contents.description — это понятное имя (например, "HDMI Audio")
-            #     print(f"ID: {device.contents.device.decode('utf-8')}")
-            #     print(f"Name: {device.contents.description.decode('utf-8')}")
-            #     print("-" * 20)
-            #     device = device.contents.next
-        else:
-            self.frame_left_player.after(500, lambda: self.set_vlc_volume(volume_level))
-
     def put_photo(self):
         width = self.frame_left_player.winfo_width() * 3/4
         height = self.frame_left_player.winfo_height() * 3/4
