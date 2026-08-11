@@ -1,12 +1,9 @@
-import os
 import customtkinter as ctk
 import tkinter as tk
-# from tkinter import *
 from PIL import Image
-import time
-from date_time import get_date_time
 from sb05_vars import V
 from modules.layouts.videoplayer import FrameVideoplayer as FVP
+from modules.layouts.datetime import FrameDateTime as FDT
 
 class CardCall:
     def __init__(self, parent, data, timeout):
@@ -78,8 +75,6 @@ class CardCall:
 
 class ScoreBoard:
     def __init__(self, master: tk.Tk, v: V):
-        global cur_time
-        cur_time = ''
         #root.option_add("*Font", "roman 100")
         # master.option_add("*Background", "white")
         # master.option_add("*Foreground", "black")
@@ -94,36 +89,35 @@ class ScoreBoard:
         fontd40_ = ("Noto Sans Mono CJK TC", 60)
 
         master.resizable(False, False)
+        # Настраиваем веса столбцов
+        for i, column in enumerate(v.dM):
+            master.columnconfigure(i, weight=column.weight)
+        master.rowconfigure(0, weight=1, minsize=100)  # Единственная строка
+
         # self.imgheart = tkinter.PhotoImage(file = "images/h4.gif")
         # self.bgimg = tkinter.PhotoImage(file=v.dU.win_bg_img)
         # self.lbgimg = tkinter.Label(master, i=self.bgimg)
         # self.lbgimg.pack()
 
         # Создаем фреймы (лево-право)
-        self.frame_left = ctk.CTkFrame(master, fg_color=v.dU.videoplayer.bg)
-        self.frame_right = ctk.CTkFrame(master, fg_color=v.dU.videoplayer.bg)
+        self.frame_left = ctk.CTkFrame(master) #self.frame_left = ctk.CTkFrame(master, fg_color=v.dU.videoplayer.bg)
+        self.frame_right = ctk.CTkFrame(master) # self.frame_right = ctk.CTkFrame(master, fg_color=v.dU.videoplayer.bg)
 
         # Размещаем фреймы с весами 1 и 4
         self.frame_left.grid(row=0, column=0, sticky="nsew")
         self.frame_right.grid(row=0, column=1, sticky="nsew", pady=15, padx=15)
 
-        # Настраиваем веса столбцов
-        master.columnconfigure(0, weight=2)
-        master.columnconfigure(1, weight=1)
-        master.rowconfigure(0, weight=1, minsize=100)  # Единственная строка
-
         # Левый фрейм делим на видеоплеер и время
-        self.frame_left_player = FVP(self.frame_left, v.dU.videoplayer)
-        self.frame_left_time = ctk.CTkFrame(self.frame_left)
+        self.frame_left_player = FVP(self.frame_left, v.dU.components.videoplayer)
+        self.frame_left_time = FDT(self.frame_left, v.dU.components.datetime)
 
         # Настраиваем веса строк
         self.frame_left.columnconfigure(0, weight=1)
         self.frame_left.rowconfigure(0, weight=5)
         self.frame_left.rowconfigure(1, weight=1, minsize=100)
 
+        self.frame_left_player.grid(row=0, column=0, sticky="nsew", pady=15, padx=15)
         self.frame_left_time.grid(row=1, column=0, sticky="nsew")
-        self.frame_left_time.columnconfigure(0, weight=1)
-        self.frame_left_time.rowconfigure(0, weight=1)
         
         # фотозаставка
         # folder_image_path = os.path.join(os.getcwd(), "images")
@@ -137,14 +131,9 @@ class ScoreBoard:
         # else:
         #     self.label_screen = ctk.CTkLabel(self.frame_left_player, text='')
 
-        # время
-        self.headertime = ctk.CTkLabel(self.frame_left_time, text="", font=tuple(v.dU.clock.font), text_color=v.dU.clock.fg, bg_color=v.dU.clock.bg)
-        self.headertime.grid(row=0, column=0, sticky="nsew")
-        self.timetick(v.dU.clock.mode)
-
         # правый фрейм делим на шапку и тело
         self.frame_right_header = ctk.CTkFrame(self.frame_right)
-        self.frame_right_body = ctk.CTkFrame(self.frame_right, fg_color=v.dU.videoplayer.bg)
+        self.frame_right_body = ctk.CTkFrame(self.frame_right) # self.frame_right_body = ctk.CTkFrame(self.frame_right, fg_color=v.dU.videoplayer.bg)
         
         # Настраиваем веса строк
         self.frame_right.columnconfigure(0, weight=1)
@@ -201,16 +190,6 @@ class ScoreBoard:
         # вернуть фокус, чтобы окно не "спряталось"
         if not master.is_fullscreen:
             master.deiconify()
-    
-    def timetick(self, mode):
-        global cur_time
-        newtime = time.strftime('%d.%m.%Y.%H.%M')
-        if newtime != cur_time:
-            cur_time = newtime
-            text_time = get_date_time(newtime, mode)
-            self.headertime.configure(text=text_time)
-        self.headertime.after(1000, self.timetick, mode)
-
         
     def put_photo(self):
         width = self.frame_left_player.winfo_width() * 3/4

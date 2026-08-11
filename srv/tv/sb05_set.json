@@ -11,25 +11,53 @@
     "win_bg_img": "images/bg02.png",
     "timeout_blink": 6,
     "kabinet_title": "КАБИНЕТ",
-    "clock": {
-      "fg": "white",
-      "bg": "green",
-      "font": ["DejaVu Sans", 80, "bold"],
-      "mode": 0
-    },
-    "videoplayer": {
-      "fg": "white",
-      "bg": "green",
-      "font": ["DejaVu Sans", 80, "bold"],
-      "mode": 0,
-      "volume": 20
-    },
-    "wait_screen": {
+    "components": {
+      "datetime": {
+        "fg": "white",
+        "bg": "green",
+        "font": ["DejaVu Sans", 80, "bold"],
+        "mode": 0
+      },
+      "videoplayer": {
+        "fg": "white",
+        "bg": "green",
+        "font": ["DejaVu Sans", 80, "bold"],
+        "mode": 0,
+        "volume": 20
+      },
+      "work_call": {
 
+      },
+      "wait_screen": {
+  
+      }
     }
   },
-  "mode": {
-    "wait_screen": true,
-    "videoplayer": false
-  }
+  "mode": 0,
+  "modes": [
+    [
+      {
+        "weight": 66,
+        "components": [
+          {
+            "weight": 66,
+            "type": "videoplayer"
+          },
+          {
+            "weight": 34,
+            "type": "datetime"
+          }
+        ]
+      },
+      {
+        "weight": 34,
+        "components": [
+          {
+            "weight": 100,
+            "type": "work_call"
+          }
+        ]
+      }
+    ]
+  ] 
 }

@@ -9,10 +9,9 @@ class FrameVideoplayer(ctk.CTkFrame):
     """
     Фрейм проигрывания видеофайлов
     """
-    def __init__(self, parent, vplayer: Tvpc):
-        super().__init__(parent, fg_color=vplayer.bg, overwrite_preferred_drawing_method='direct')
+    def __init__(self, parent, config: Tvpc):
+        super().__init__(parent, fg_color=config.bg, overwrite_preferred_drawing_method='direct')
         # self.configure(border_width=1, border_color="blue")
-        self.grid(row=0, column=0, sticky="nsew", pady=15, padx=15)
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
 
@@ -21,7 +20,7 @@ class FrameVideoplayer(ctk.CTkFrame):
         self.instance = vlc.Instance(['--no-xlib', '--ignore-config', '--no-plugins-cache'])
  
         self.player: vlc.MediaPlayer = self.instance.media_player_new()
-        self.vls_volume = vplayer.volume
+        self.vls_volume = config.volume
         self.list_player = self.instance.media_list_player_new()
 
         folder_path = os.path.join(os.getcwd(), "videos")

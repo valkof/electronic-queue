@@ -12,7 +12,7 @@ class HostConfig:
     password: str
 
 @dataclass
-class ClockConfig:
+class DateTimeConfig:
     fg: str
     bg: str
     font: List[Any]
@@ -27,19 +27,29 @@ class VideoPlayerConfig:
     volume: int
 
 @dataclass
+class UIComponents:
+    datetime: DateTimeConfig
+    videoplayer: VideoPlayerConfig
+    work_call: Dict[str, Any] = field(default_factory=dict)  # Для пустых объектов {}
+    wait_screen: Dict[str, Any] = field(default_factory=dict)
+
+@dataclass
 class UIConfig:
     win_geometry: str
     win_bg_img: str
     timeout_blink: int
     kabinet_title: str
-    clock: ClockConfig
-    videoplayer: VideoPlayerConfig
-    # wait_screen: Dict[str, Any] # Пустой словарь на данный момент
+    components: UIComponents
 
 @dataclass
-class ModeConfig:
-    wait_screen: bool
-    videoplayer: bool
+class ModeSubComponent:
+    weight: int
+    type: str
+
+@dataclass
+class ModeColumn:
+    components: List[ModeSubComponent]
+    weight: int
 
 @dataclass
 class AppConfig:
@@ -47,7 +57,8 @@ class AppConfig:
     id: str
     host: HostConfig
     ui: UIConfig
-    mode: ModeConfig
+    mode: int
+    modes: List[List[ModeColumn]]
 
 def read_settings_wplace():
     with open('sb05_wplace.json', 'r', encoding='utf-8') as data2:
@@ -70,8 +81,12 @@ def read_settings_ui():
 
 def read_settings_mode():
     with open('sb05_set.json', 'r', encoding='utf-8') as data1:
-        dict_dM = json.load(data1)['mode']
-        dM = from_dict(data_class=ModeConfig, data=dict_dM)
+        config = json.load(data1)
+        mode_index: int = config["mode"]
+        list_dM: List[ModeColumn] = config["modes"][mode_index]
+        dM = []
+        for item in list_dM:
+            dM.append(from_dict(data_class=ModeColumn, data=item))
     return dM
 
 @dataclass
@@ -84,7 +99,7 @@ class V:
     dW: dict = field(default_factory=read_settings_wplace)
     dH: HostConfig = field(default_factory=read_settings_host)
     dU: UIConfig = field(default_factory=read_settings_ui)
-    dM: ModeConfig = field(default_factory=read_settings_mode)
+    dM: List[ModeColumn] = field(default_factory=read_settings_mode)
     lW: list = field(init=False)
 
     def __post_init__(self):
