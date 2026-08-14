@@ -1,85 +1,42 @@
 import customtkinter as ctk
 import tkinter as tk
+from dataclasses import dataclass, field
+from typing import List
 from PIL import Image
 from sb05_vars import V
 from modules.layouts.videoplayer import FrameVideoplayer as FVP
 from modules.layouts.datetime import FrameDateTime as FDT
+from modules.layouts.work_call import FrameWorkCall as FWC
+from modules.layouts.wait_screen import FrameWaitScreen as FWS
 
-class CardCall:
-    def __init__(self, parent, data, timeout):
-        self.card = ctk.CTkFrame(parent, border_width=5, border_color="blue")
-        
-        card_left = ctk.CTkFrame(self.card)
-        card_right = ctk.CTkFrame(self.card)
+@dataclass
+class TIComponents:
+    videoplayer: List[FVP]
+    datetime: List[FDT]
+    work_call: List[FWC]
+    wait_screen: List[FWS]
 
-        self.card.columnconfigure(0, weight=1)
-        self.card.columnconfigure(1, weight=1)
-        self.card.rowconfigure(0, weight=1)
-        
-        card_left.grid(row=0, column=0, sticky="nsew")
-        card_right.grid(row=0, column=1, sticky="nsew")
-
-        self.tct = data['wticket_fg_bg'][0]  # color text ticket
-        self.btct = data['wticket_fg_bg'][1]  # color text ticket
-        ft = tuple(data['wticket_font'])  # font text ticket
-        
-        self.labelTicket = ctk.CTkLabel(card_left, text="----", text_color=(self.tct), bg_color=self.btct, font=ft, anchor=ctk.CENTER)
-        card_left.columnconfigure(0, weight=1)
-        card_left.rowconfigure(0, weight=1)
-        self.labelTicket.grid(row=0, column=0, sticky="nsew")
-
-        tcp = data['wplace_fg_bg'][0]  # color text place
-        btcp = data['wplace_fg_bg'][1]  # color text place
-        fp = tuple(data['wplace_font'])  # font text place
-
-        labelWplace = ctk.CTkLabel(card_right, text=data['wplace_name'], text_color=(tcp), bg_color=btcp, font=fp, anchor=ctk.CENTER)
-        card_right.columnconfigure(0, weight=1)
-        card_right.rowconfigure(0, weight=1)
-        labelWplace.grid(row=0, column=0, sticky="nsew")
-
-        # Параметры мигания
-        self.blink_interval = 500  # интервал в миллисекундах
-        self.blink_time = timeout * 1000  # общее время мигания в миллисекундах (10 секунд)
-        self.is_visible = True
-        self.blinking_task = ""
-        self.stop_timer = ""
-    
-    def put_to_row(self, row):
-        self.card.grid(row=row, column=0, sticky="nsew", pady=5)
-
-    def start_blinking(self):
-        self.stop_blinking()
-        self.stop_timer = self.card.after(self.blink_time, self.stop_blinking)
-        print(self.stop_timer)
-        self.repeat_blinking()
-
-    def repeat_blinking(self):
-        self.toggle_visibility()
-        self.blinking_task = self.card.after(self.blink_interval, self.repeat_blinking)
-
-    def toggle_visibility(self):
-        self.is_visible = not self.is_visible
-        if self.is_visible:
-            self.labelTicket.configure(text_color=self.tct)  # делаем видимым
-        else:
-            self.labelTicket.configure(text_color=self.btct)  # делаем невидимым
-
-    def stop_blinking(self):
-        if self.blinking_task:
-            self.card.after_cancel(self.blinking_task)
-        if self.stop_timer:
-            self.card.after_cancel(self.stop_timer)
-        self.labelTicket.configure(text_color=self.tct)  # возвращаем видимое состояние
-        self.is_visible = True
-        print('end')
+COMPONENT_REGISTRY = {
+    "videoplayer": FVP,
+    "datetime": FDT,
+    "work_call": FWC,
+    "wait_screen": FWS
+}
 
 class ScoreBoard:
+    instans_components: TIComponents = {
+        "videoplayer": [],
+        "datetime": [],
+        "work_call": [],
+        "wait_screen": []
+    }
+
     def __init__(self, master: tk.Tk, v: V):
         #root.option_add("*Font", "roman 100")
         # master.option_add("*Background", "white")
         # master.option_add("*Foreground", "black")
 #        master.option_add( "*font", "Comic Sans MS" )
-        master.configure(background='green')
+        master.configure(background=v.dU.bg)
         master.title('Очередь. Инфотабло.')
         master.geometry(v.dU.win_geometry)
         master.attributes('-fullscreen', True)
@@ -89,35 +46,45 @@ class ScoreBoard:
         fontd40_ = ("Noto Sans Mono CJK TC", 60)
 
         master.resizable(False, False)
-        # Настраиваем веса столбцов
+        win_H = master.winfo_screenheight()
+        win_W = master.winfo_screenwidth()
+        master.rowconfigure(0, minsize=win_H)  # Единственная строка
+        # Настраиваем столбцы
         for i, column in enumerate(v.dM):
-            master.columnconfigure(i, weight=column.weight)
-        master.rowconfigure(0, weight=1, minsize=100)  # Единственная строка
+            master.columnconfigure(i, minsize=win_W * column.weight / 100)
+            frame = ctk.CTkFrame(master, bg_color=v.dU.bg, fg_color=v.dU.fg)
+            frame.grid(row=0, column=i, sticky="nsew")
+            frame.columnconfigure(0, minsize=win_W * column.weight / 100)
+            # Настраиваем компоненты
+            for j, row in enumerate(column.components):
+                frame.rowconfigure(j, minsize=win_H * row.weight / 100)
+                cls = COMPONENT_REGISTRY[row.type]
+                params = {
+                    "parent": frame,
+                    "config": getattr(v.dU.components, row.type)[row.view],
+                }
+                params["size"] = {
+                    "w": win_W * column.weight / 100 - 2 * getattr(params["config"], "px"),
+                    "h": win_H * row.weight / 100 - 2 * getattr(params["config"], "py")
+                }
+                if row.type == "work_call":
+                    params["wplace"] = v.dW
+                    params["hsize"] = master.winfo_screenheight() * getattr(params["config"], "hsize")/100
+                instance: ctk.CTkFrame = cls(**params)
+                self.instans_components[row.type].append(instance)
+                instance.grid(**{
+                    "row": j,
+                    "column": 0,
+                    "padx": getattr(params["config"], "px"),
+                    "pady": getattr(params["config"], "py"),
+                    "sticky": "nsew"
+                })
+
 
         # self.imgheart = tkinter.PhotoImage(file = "images/h4.gif")
         # self.bgimg = tkinter.PhotoImage(file=v.dU.win_bg_img)
         # self.lbgimg = tkinter.Label(master, i=self.bgimg)
         # self.lbgimg.pack()
-
-        # Создаем фреймы (лево-право)
-        self.frame_left = ctk.CTkFrame(master) #self.frame_left = ctk.CTkFrame(master, fg_color=v.dU.videoplayer.bg)
-        self.frame_right = ctk.CTkFrame(master) # self.frame_right = ctk.CTkFrame(master, fg_color=v.dU.videoplayer.bg)
-
-        # Размещаем фреймы с весами 1 и 4
-        self.frame_left.grid(row=0, column=0, sticky="nsew")
-        self.frame_right.grid(row=0, column=1, sticky="nsew", pady=15, padx=15)
-
-        # Левый фрейм делим на видеоплеер и время
-        self.frame_left_player = FVP(self.frame_left, v.dU.components.videoplayer)
-        self.frame_left_time = FDT(self.frame_left, v.dU.components.datetime)
-
-        # Настраиваем веса строк
-        self.frame_left.columnconfigure(0, weight=1)
-        self.frame_left.rowconfigure(0, weight=5)
-        self.frame_left.rowconfigure(1, weight=1, minsize=100)
-
-        self.frame_left_player.grid(row=0, column=0, sticky="nsew", pady=15, padx=15)
-        self.frame_left_time.grid(row=1, column=0, sticky="nsew")
         
         # фотозаставка
         # folder_image_path = os.path.join(os.getcwd(), "images")
@@ -130,55 +97,13 @@ class ScoreBoard:
         #     self.label_screen = ctk.CTkLabel(self.frame_left_player, image=self.screen, text='')
         # else:
         #     self.label_screen = ctk.CTkLabel(self.frame_left_player, text='')
-
-        # правый фрейм делим на шапку и тело
-        self.frame_right_header = ctk.CTkFrame(self.frame_right)
-        self.frame_right_body = ctk.CTkFrame(self.frame_right) # self.frame_right_body = ctk.CTkFrame(self.frame_right, fg_color=v.dU.videoplayer.bg)
         
-        # Настраиваем веса строк
-        self.frame_right.columnconfigure(0, weight=1)
-        self.frame_right.rowconfigure(0, weight=1)
-        self.frame_right.rowconfigure(1, weight=5)
+    # def put_photo(self):
+    #     width = self.frame_left_player.winfo_width() * 3/4
+    #     height = self.frame_left_player.winfo_height() * 3/4
+    #     self.screen.configure(size=(width, height))
+    #     self.label_screen.grid(row=0, column=0, pady=0, padx=0, sticky="nsew")
         
-        self.frame_right_header.grid(row=0, column=0, sticky="nsew")
-        self.frame_right_body.grid(row=1, column=0, sticky="nsew")
-
-        header = ctk.CTkFrame(self.frame_right_header)
-        self.frame_right_header.rowconfigure(0, weight=1)
-        self.frame_right_header.columnconfigure(0, weight=1)
-        header.grid(row=0, column=0, sticky="nsew")
-
-        header_left = ctk.CTkFrame(header)
-        header_right = ctk.CTkFrame(header)
-
-        header.columnconfigure(0, weight=1)
-        header.columnconfigure(1, weight=1)
-        header.rowconfigure(0, weight=1)
-
-        header_left.grid(row=0, column=0, sticky="nsew")
-        header_right.grid(row=0, column=1, sticky="nsew")
-
-        label_header_left = ctk.CTkLabel(header_left, text="ТАЛОН", text_color="white", bg_color="green", font=tuple(["Nimbus Mono PS", 60, "bold"]), anchor=ctk.CENTER)
-        header_left.columnconfigure(0, weight=1)
-        header_left.rowconfigure(0, weight=1)
-        label_header_left.grid(row=0, column=0, sticky="nsew")
-
-        label_header_right = ctk.CTkLabel(header_right, text=v.dU.kabinet_title, text_color="white", bg_color="green", font=tuple(["Nimbus Mono PS", 60, "bold"]), anchor=ctk.CENTER)
-        header_right.columnconfigure(0, weight=1)
-        header_right.rowconfigure(0, weight=1)
-        label_header_right.grid(row=0, column=0, sticky="nsew")
-        
-        # Создаем элементы
-        self.elementsWplace = []
-        self.frame_right_body.columnconfigure(0, weight=1)  # Первый столбец (1 часть)
-        i = 0
-        for key in v.dW:
-            self.frame_right_body.rowconfigure(i, weight=1)
-            card = CardCall(self.frame_right_body, v.dW[key], v.dU.timeout_blink)
-            card.put_to_row(i)
-            self.elementsWplace.append({'id': key, 'card': card})
-            i += 1
-
     def toggle_fullscreen(self, master, event=None):
         # Инвертируем состояние
         master.is_fullscreen = not master.is_fullscreen
@@ -190,21 +115,15 @@ class ScoreBoard:
         # вернуть фокус, чтобы окно не "спряталось"
         if not master.is_fullscreen:
             master.deiconify()
-        
-    def put_photo(self):
-        width = self.frame_left_player.winfo_width() * 3/4
-        height = self.frame_left_player.winfo_height() * 3/4
-        self.screen.configure(size=(width, height))
-        self.label_screen.grid(row=0, column=0, pady=0, padx=0, sticky="nsew")
 
-    def wticket0_set(self, id, new_ticket):
-        index = next((i for i, el in enumerate(self.elementsWplace) if el['id'] == str(id)), None)
+    def ticketShow(self, idElement: int, ticketTitle: str):
+        for frame in self.instans_components["work_call"]:
+            frame.ticketShow(idElement, ticketTitle)
 
-        element = self.elementsWplace.pop(index)  # Удаляем элемент по индексу 2
-        element['card'].labelTicket.configure(text=new_ticket)
-        self.elementsWplace.insert(0, element)  # Вставляем его в начало
-        
-        for i, el in enumerate(self.elementsWplace):
-            el['card'].put_to_row(i)
+    def ticketWaitShow(self, idElement: int, ticketTitle: str, action: int):
+        for frame in self.instans_components["wait_screen"]:
+            frame.ticketShow(idElement, ticketTitle, action)
 
-        element['card'].start_blinking()
+    def play_video(self):
+        for frame in self.instans_components["videoplayer"]:
+            frame.play_video() 

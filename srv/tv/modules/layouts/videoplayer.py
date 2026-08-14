@@ -2,15 +2,20 @@ import customtkinter as ctk
 import vlc
 import os
 import platform
+from typing import TypedDict
 
 from sb05_vars import VideoPlayerConfig as Tvpc
+
+class ScreenSize(TypedDict):
+    w: float
+    h: float
 
 class FrameVideoplayer(ctk.CTkFrame):
     """
     Фрейм проигрывания видеофайлов
     """
-    def __init__(self, parent, config: Tvpc):
-        super().__init__(parent, fg_color=config.bg, overwrite_preferred_drawing_method='direct')
+    def __init__(self, parent, config: Tvpc, size: ScreenSize):
+        super().__init__(parent, bg_color=config.bg, fg_color=config.fg, overwrite_preferred_drawing_method='direct')
         # self.configure(border_width=1, border_color="blue")
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)

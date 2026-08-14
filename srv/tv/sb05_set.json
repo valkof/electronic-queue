@@ -9,43 +9,109 @@
   "ui": {
     "win_geometry": "1920x1080+0+0",
     "win_bg_img": "images/bg02.png",
-    "timeout_blink": 6,
-    "kabinet_title": "КАБИНЕТ",
+    "fg": "green",
+    "bg": "green",
     "components": {
-      "datetime": {
-        "fg": "white",
-        "bg": "green",
-        "font": ["DejaVu Sans", 80, "bold"],
-        "mode": 0
-      },
-      "videoplayer": {
-        "fg": "white",
-        "bg": "green",
-        "font": ["DejaVu Sans", 80, "bold"],
-        "mode": 0,
-        "volume": 20
-      },
-      "work_call": {
-
-      },
-      "wait_screen": {
-  
-      }
+      "datetime": [
+        {
+          "fg": "white",
+          "bg": "green",
+          "px": 15,
+          "py": 15,
+          "font": ["DejaVu Sans", 80, "bold"],
+          "mode": 0
+        }
+      ],
+      "videoplayer": [
+        {
+          "fg": "white",
+          "bg": "green",
+          "px": 15,
+          "py": 15,
+          "font": ["DejaVu Sans", 80, "bold"],
+          "mode": 0,
+          "volume": 20
+        }
+      ],
+      "work_call": [
+        {
+          "fg": "white",
+          "bg": "green",
+          "px": 15,
+          "py": 15,
+          "wps": ["1", "2", "3"],
+          "lh": "ТАЛОН",
+          "rh": "ОКНО",
+          "font": ["Nimbus Mono PS", 60, "bold"],
+          "hsize": 17,
+          "time_blink": 6
+        },
+        {
+          "fg": "white",
+          "bg": "green",
+          "px": 15,
+          "py": 15,
+          "wps": ["1"],
+          "lh": "ТАЛОН",
+          "rh": "КАБИНЕТ",
+          "font": ["Nimbus Mono PS", 60, "bold"],
+          "hsize": 10,
+          "time_blink": 6
+        },
+        {
+          "fg": "white",
+          "bg": "green",
+          "px": 15,
+          "py": 15,
+          "wps": ["2"],
+          "lh": "ТАЛОН",
+          "rh": "КАБИНЕТ",
+          "font": ["Nimbus Mono PS", 60, "bold"],
+          "hsize": 10,
+          "time_blink": 6
+        }  
+      ],
+      "wait_screen": [
+        {
+          "queues": [138, 139],
+          "fg": "white",
+          "bg": "green",
+          "px": 15,
+          "py": 15,
+          "row": 10,
+          "col": 5,
+          "font": ["Nimbus Mono PS", 40, "bold"],
+          "time_blink": 6
+        },
+        {
+          "queues": [150],
+          "fg": "white",
+          "bg": "green",
+          "px": 15,
+          "py": 15,
+          "row": 10,
+          "col": 4,
+          "font": ["Nimbus Mono PS", 40, "bold"],
+          "time_blink": 6
+        }
+      ]
     }
   },
-  "mode": 0,
+  "mode": 1,
   "modes": [
     [
       {
         "weight": 66,
         "components": [
           {
-            "weight": 66,
-            "type": "videoplayer"
+            "weight": 80,
+            "type": "videoplayer",
+            "view": 0
           },
           {
-            "weight": 34,
-            "type": "datetime"
+            "weight": 20,
+            "type": "datetime",
+            "view": 0
           }
         ]
       },
@@ -54,7 +120,40 @@
         "components": [
           {
             "weight": 100,
-            "type": "work_call"
+            "type": "work_call",
+            "view": 0
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "weight": 50,
+        "components": [
+          {
+            "weight": 30,
+            "type": "work_call",
+            "view": 1
+          },
+          {
+            "weight": 70,
+            "type": "wait_screen",
+            "view": 0
+          }
+        ]
+      },
+      {
+        "weight": 50,
+        "components": [
+          {
+            "weight": 30,
+            "type": "work_call",
+            "view": 2
+          },
+          {
+            "weight": 70,
+            "type": "wait_screen",
+            "view": 1
           }
         ]
       }

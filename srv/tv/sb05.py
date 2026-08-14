@@ -40,7 +40,7 @@ class WORKER:
     def status(self):
         # set server-status
         self.query = self.params.query
-        return str({'stdout': None, 'stderr': None})
+        return {'stdout': None, 'stderr': None}
 
     def ticket(self):
         # показать талон на инфотабло
@@ -51,7 +51,7 @@ class WORKER:
         for key, value in self.dQuery.items():
             if key == 'p':
                 # прочитать и проверить наличие окна "ticket?p=3" в запросе
-                self.wplace = value[0] if check_exist_wplace(value[0]) is not None else None
+                self.wplace = value[0] if int(value[0]) > 0 else None
                 # continue
             elif key == 't':
                 # читаем номер талона "ticket?t=3"
@@ -63,7 +63,42 @@ class WORKER:
                 break
         if (self.wplace is not None and self.wticket is not None):
             # номер окна и талона актуален, отправляем данные на экран
-            t_ui = threading.Thread(target=uiworker, args=[self.wplace, self.wticket])
+            t_ui = threading.Thread(target=worker_ticket, args=[self.wplace, self.wticket])
+            t_ui.start()
+            # t_ui = threading.Thread()
+        else:
+            # недостаточно или неверные параметры запроса
+            self.r['stderr'] = 'Ошибка: Не указано/отсутствует окно или рабочее место'
+            log.debug(str(self.r))
+        return self.r
+
+    def waitticket(self):
+        # показать талон в списках на ожидание
+        self.query = self.params.query
+        self.dQuery = parse_qs(self.query)
+        self.wqueue = None
+        self.wticket = None
+        self.waction = None
+        for key, value in self.dQuery.items():
+            if key == 'q':
+                # прочитать и проверить наличие окна "waitticket?q=3" в запросе
+                self.wqueue = value[0] if int(value[0]) > 0 else None
+                # continue
+            elif key == 't':
+                # читаем номер талона "waitticket?t=3"
+                self.wticket = value[0]
+                # continue
+            elif key == 'a':
+                # читаем действие "waitticket?a=1"
+                self.waction = value[0]
+                # continue
+            else:
+                # запрос с плохими реквизитами, далее вернем ошибку
+                self.wqueue = None
+                break
+        if (self.wqueue is not None and self.wticket is not None and self.waction is not None):
+            # номер окна и талона актуален, отправляем данные на экран
+            t_ui = threading.Thread(target=worker_waitticket, args=[self.wqueue, self.wticket, self.waction])
             t_ui.start()
             # t_ui = threading.Thread()
         else:
@@ -126,7 +161,6 @@ class AuthHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
                 # в запросе установлен путь, продолжаем
                 self.params = urlparse(self.fn)
                 self.method = self.params.path
-                # print(self.method, self.params)
                 if self.method:
                     # выбираем метод по имени пути "self.method" в
                     # запросе и передаем ему параметры "self.params"
@@ -136,7 +170,6 @@ class AuthHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
 
                     # Тут результат выполнения команды
                     self.result = f()
-                    print("self.result=", self.result)
 
                     # Ответ отправляем клиенту
                     self.ret = self.result
@@ -183,18 +216,19 @@ def httpd_start():
             bind=v.dH.bind)
 
 
-def uiworker(wplace, wticket):
-    new_ticket = wticket
+def worker_ticket(wplace, wticket):
     # передача номера талона на "рабочее место"
     try:
-        sb.wticket0_set(wplace, new_ticket)
+        sb.ticketShow(wplace, wticket)
     except Exception as e:
         log.debug(str(e))
-        pass
-    # if new_ticket != "----":
-        # Отображение сообщения о закрытии окна
-        # print("wplace===", wplace)
 
+def worker_waitticket(wqueue, wticket, waction):
+    # передача номера талона ожидание
+    try:
+        sb.ticketWaitShow(wqueue, wticket, waction)
+    except Exception as e:
+        log.debug(str(e))
 
 vers = "v0.4l"
 pid = os.getpid()  # pid сервиса
@@ -283,8 +317,8 @@ def run_gui():
     asyncio.run(pusk())
 
 async def pusk():
-    await asyncio.sleep(2)  # Асинхронная пауза на 2 секунды
-    sb.frame_left_player.play_video()
+    await asyncio.sleep(1)  # Асинхронная пауза на 2 секунды
+    sb.play_video()
 
 threading.Thread(target=run_gui, daemon=True).start()
 root.protocol("WM_DELETE_WINDOW", on_closing)

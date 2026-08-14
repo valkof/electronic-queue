@@ -1,7 +1,12 @@
 import time
 import customtkinter as ctk
+from typing import TypedDict
 
 from sb05_vars import DateTimeConfig as Tdtc
+
+class ScreenSize(TypedDict):
+    w: float
+    h: float
 
 class FrameDateTime(ctk.CTkFrame):
     """
@@ -9,13 +14,11 @@ class FrameDateTime(ctk.CTkFrame):
     """
     cur_time: str = ""
 
-    def __init__(self, parent, config: Tdtc):
-        super().__init__(parent, fg_color=config.bg)
+    def __init__(self, parent, config: Tdtc, size: ScreenSize):
+        super().__init__(parent, fg_color=config.fg, bg_color=config.bg)
         # self.configure(border_width=1, border_color="blue")
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
-
-        # self._mediator = mediator
 
         self.headertime = ctk.CTkLabel(self, text="", font=tuple(config.font), text_color=config.fg, bg_color=config.bg)
         self.headertime.grid(row=0, column=0, sticky="nsew")
@@ -27,7 +30,6 @@ class FrameDateTime(ctk.CTkFrame):
             self.cur_time = newtime
             text_time = self.get_date_time(newtime, mode)
             self.headertime.configure(text=text_time)
-            print(text_time)
         self.after(1000, self.timetick, mode)
 
     def get_date_time(self, date, mode=0):
