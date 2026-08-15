@@ -80,6 +80,8 @@ class UIConfig:
     win_bg_img: str
     fg: str
     bg: str
+    px: int
+    py: int
     components: UIComponents
 
 @dataclass

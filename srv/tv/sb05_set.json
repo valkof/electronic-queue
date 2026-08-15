@@ -11,6 +11,8 @@
     "win_bg_img": "images/bg02.png",
     "fg": "green",
     "bg": "green",
+    "px": 0,
+    "py": 0,
     "components": {
       "datetime": [
         {
@@ -97,7 +99,7 @@
       ]
     }
   },
-  "mode": 1,
+  "mode": 0,
   "modes": [
     [
       {

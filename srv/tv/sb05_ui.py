@@ -49,27 +49,31 @@ class ScoreBoard:
         win_H = master.winfo_screenheight()
         win_W = master.winfo_screenwidth()
         master.rowconfigure(0, minsize=win_H)  # Единственная строка
+        master.columnconfigure(0, minsize=win_W)
+        master_frame = ctk.CTkFrame(master, bg_color=v.dU.bg, fg_color=v.dU.fg)
+        master_frame.grid(row=0, column=0, sticky="nsew", padx=v.dU.px, pady=v.dU.py)
+        master_frame.rowconfigure(0, minsize=win_H - 2* v.dU.py)
         # Настраиваем столбцы
         for i, column in enumerate(v.dM):
-            master.columnconfigure(i, minsize=win_W * column.weight / 100)
-            frame = ctk.CTkFrame(master, bg_color=v.dU.bg, fg_color=v.dU.fg)
+            master_frame.columnconfigure(i, minsize=(win_W - 2* v.dU.px) * column.weight / 100)
+            frame = ctk.CTkFrame(master_frame, bg_color=v.dU.bg, fg_color=v.dU.fg)
             frame.grid(row=0, column=i, sticky="nsew")
-            frame.columnconfigure(0, minsize=win_W * column.weight / 100)
+            frame.columnconfigure(0, minsize=(win_W - 2* v.dU.px) * column.weight / 100)
             # Настраиваем компоненты
             for j, row in enumerate(column.components):
-                frame.rowconfigure(j, minsize=win_H * row.weight / 100)
+                frame.rowconfigure(j, minsize=(win_H - 2* v.dU.py) * row.weight / 100)
                 cls = COMPONENT_REGISTRY[row.type]
                 params = {
                     "parent": frame,
                     "config": getattr(v.dU.components, row.type)[row.view],
                 }
                 params["size"] = {
-                    "w": win_W * column.weight / 100 - 2 * getattr(params["config"], "px"),
-                    "h": win_H * row.weight / 100 - 2 * getattr(params["config"], "py")
+                    "w": (win_W - 2* v.dU.px) * column.weight / 100 - 2 * getattr(params["config"], "px"),
+                    "h": (win_H - 2* v.dU.py) * row.weight / 100 - 2 * getattr(params["config"], "py")
                 }
                 if row.type == "work_call":
                     params["wplace"] = v.dW
-                    params["hsize"] = master.winfo_screenheight() * getattr(params["config"], "hsize")/100
+                    params["hsize"] = (win_H - 2* v.dU.py) * getattr(params["config"], "hsize")/100
                 instance: ctk.CTkFrame = cls(**params)
                 self.instans_components[row.type].append(instance)
                 instance.grid(**{
