@@ -132,9 +132,9 @@ class FrameQueue(ctk.CTkFrame):
 
     def callback_count_tickets(self, data: TResponseCountTickets, time_out: float):
         # print(data)
-        if data['stderr'] != '':
+        # if data['stderr'] != '':
             # self._mediator.state('next_error', {'message': data['stderr']})
-            return
+            # return
         
         self._db.setCountTickets(data['stdout'])
         self.after(5 * 1000, self.update_count_tickets)
